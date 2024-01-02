@@ -16,6 +16,10 @@ import java.util.List;
 public class SummonerRepository {
     @Value("${RIOT_KEY}")
     private String riotKey;
+    String api = "?api_key=" + riotKey;
+    String gameName = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/";
+    String summonerNameIcon = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/";
+    String rankWinLoss = "https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/";
 
     @Autowired
     private JdbcTemplate db;
@@ -35,10 +39,14 @@ public class SummonerRepository {
         }
     }
 
+    public boolean updateGameName(String puuid) {
+        String url = gameName + puuid + api;
+        return true;
+
+    }
+
     public boolean updateSummoners() {
-        String gameName = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/";
-        String summonerNameIcon = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/";
-        String rankWinLoss = "https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/";
+
 
         return true;
     }

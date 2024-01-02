@@ -30,10 +30,9 @@ export class Home extends Component {
                 {summoners.map(summoner => (
                     <Card key={summoner.puuid}>
                         <Card.Body>
-                            <Card.Title>{summoner.name}</Card.Title>
+                            <Card.Title>{summoner.summonerName}</Card.Title>
                             <Card.Text>
-                                Tier: {summoner.tier}<br/>
-                                Rank: {summoner.rank}
+                                Rank: {summoner.tier} {summoner.rank} {summoner.lp}
                             </Card.Text>
                         </Card.Body>
                     </Card>

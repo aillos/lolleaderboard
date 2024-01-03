@@ -3,7 +3,7 @@ package com.andreassolli.leaderboard.models;
 public class RankWinLossDto {
     private String rank;
     private String tier;
-    private int lp;
+    private int leaguePoints;
     private int wins;
 
     private int losses;
@@ -34,12 +34,12 @@ public class RankWinLossDto {
         this.tier = tier;
     }
 
-    public int getLp() {
-        return lp;
+    public int getLeaguePoints() {
+        return leaguePoints;
     }
 
-    public void setLp(int lp) {
-        this.lp = lp;
+    public void setLeaguePoints(int leaguePoints) {
+        this.leaguePoints = leaguePoints;
     }
 
     public int getWins() {

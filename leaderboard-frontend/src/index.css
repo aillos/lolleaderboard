@@ -11,6 +11,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width:100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
 }
 
 a {
@@ -65,4 +70,34 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+
+.summonerIcon > img{
+  height:130px;
+  width:130px;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.playerCard{
+  border:1px solid white;
+  border-radius: 25px;
+  margin-top:20px;
+  margin-bottom:10px;
+}
+
+.card{
+  padding:10px;
+}
+
+.card-text > p {
+  margin-bottom:2px;
+  margin-top:2px;
+}
+
+.card-text{
+  margin-bottom:10px;
 }

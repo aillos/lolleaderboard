@@ -10,11 +10,12 @@ export class Manage extends Component {
         return (
             <div>
                 <div className="searchPlayer">
-                    <img src={""} alt={""} />
+                    <img src={"{`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`}"} alt={""} />
                     <h2> </h2>
                 </div>
                 <div className="inputSearch">
                     <input type={"text"} />
+                    <div className="button"> Test</div>
                 </div>
             </div>
         );

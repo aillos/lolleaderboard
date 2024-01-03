@@ -11,12 +11,20 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  width:100%;
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
+
+#root {
+  max-width: 1280px;
+  min-width: 320px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
 
 a {
   font-weight: 500;
@@ -34,6 +42,15 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+.app-container {
+  width: 100%;
+  max-width: 1280px;
+  min-width: 320px;
+  margin: 0 auto; /* Center the content */
+  padding: 2rem;
+}
+
 
 h1 {
   font-size: 3.2em;
@@ -100,4 +117,53 @@ button:focus-visible {
 
 .card-text{
   margin-bottom:10px;
+}
+
+.searchPlayer > img {
+  height:350px;
+  width:350px;
+}
+
+.inputSearch > input{
+  width:250px;
+  height:30px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.inputSearch > input:focus{
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.inputSearch{
+  width:350px;
+  height:35px;
+  display: flex;
+  justify-content: center;
+  margin:auto;
+}
+
+.button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  height:30px;
+  width:60px;
+  margin-left:5px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.button:hover {
+  border-color: #646cff;
+}
+.button:focus,
+.button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
 }

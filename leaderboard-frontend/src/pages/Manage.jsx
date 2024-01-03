@@ -6,9 +6,6 @@ export class Manage extends Component {
 
 
     render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : Manage.renderSummoner(this.state.summoners, this.winrate, this.state.patchVersion);
 
         return (
             <div>
@@ -19,7 +16,6 @@ export class Manage extends Component {
                 <div className="inputSearch">
                     <input type={"text"} />
                 </div>
-                {contents}
             </div>
         );
     }

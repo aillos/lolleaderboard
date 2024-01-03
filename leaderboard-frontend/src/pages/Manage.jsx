@@ -102,7 +102,7 @@ export const Manage = () => {
                 ) : (
                     <>
                     <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/4299.png`} alt="Placeholder Icon" />
-                    <h2>SummonerName #Tagline</h2>
+                    <h2>Name #Tagline</h2>
                     </>
                 )}
             </div>

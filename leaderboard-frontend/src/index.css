@@ -122,14 +122,33 @@ button:focus-visible {
 .searchPlayer > img {
   height:350px;
   width:350px;
+  margin-bottom:-15px;
+  border-radius:20px;
 }
 
 .inputSearch > input{
-  width:250px;
-  height:30px;
   background-color: #1a1a1a;
   border-radius: 8px;
   border: 1px solid transparent;
+  margin-right:2px;
+  padding: 2px 6px;
+  font-size: 15px;
+}
+
+.tagLineInput{
+  width: 50px;
+  height:28px;
+}
+
+.gameNameInput{
+  width:150px;
+  height:28px;
+}
+
+.hashtag{
+  font-size: 20px;
+  margin: auto 3px;
+  font-weight: bold;
 }
 
 .inputSearch > input:focus{
@@ -137,33 +156,72 @@ button:focus-visible {
 }
 
 .inputSearch{
-  width:350px;
+  width:320px;
   height:35px;
-  display: flex;
+  display:flex;
   justify-content: center;
   margin:auto;
 }
 
 .button {
+  display: flex;
   border-radius: 8px;
   border: 1px solid transparent;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
-  height:30px;
-  width:60px;
+  height:28px;
+  width:70px;
   margin-left:5px;
   justify-content: center;
   align-items: center;
   text-align: center;
+  padding:2px 5px;
+  vertical-align: center;
 }
+
 .button:hover {
   border-color: #646cff;
 }
 .button:focus,
 .button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.secondary{
+  margin-left:5px;
+  background-color: #28508a;
+
+}
+
+.submitButtons{
+  width:350px;
+  display:flex;
+  justify-content: center;
+  margin: 10px auto auto;
+}
+
+.submitButtons .button{
+  width:150px;
+}
+
+.responseText{
+  font-size: 24px;
+  margin-top:15px;
+}
+
+h2{
+  font-size: 36px;
+}
+
+.danger{
+  background-color: #652e2e;
+}
+
+.primary{
+  background-color: #488148;
+
 }

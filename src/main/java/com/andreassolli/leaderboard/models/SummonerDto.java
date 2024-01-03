@@ -11,9 +11,8 @@ public class SummonerDto {
     private String summonerId;
     private int wins;
     private int losses;
-    private String puuid;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid) {
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -24,7 +23,6 @@ public class SummonerDto {
         this.summonerId = summonerId;
         this.wins=wins;
         this.losses=losses;
-        this.puuid=puuid;
     }
 
     public SummonerDto() {
@@ -108,13 +106,5 @@ public class SummonerDto {
 
     public void setLosses(int losses) {
         this.losses = losses;
-    }
-
-    public String getPuuid() {
-        return puuid;
-    }
-
-    public void setPuuid(String puuid) {
-        this.puuid = puuid;
     }
 }

@@ -1,28 +1,34 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import './index.css'
-import {
-    createBrowserRouter,
-    RouterProvider,
-} from "react-router-dom";
-import {Home} from "./pages/Home";
-import {Manage} from "./pages/Manage";
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Home } from "./pages/Home";
+import { Manage } from "./pages/Manage";
+import PatchVersionContext from './context/PatchVersionContext';
 
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Home />,
-    },
-    {
-        path: "/manage",
-        element: <Manage />,
-    },
-]);
+const App = () => {
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-      <div className="app-container">
-      <RouterProvider router={router} />
-      </div>
-  </React.StrictMode>,
-)
+    const router = createBrowserRouter([
+        {
+            path: "/",
+            element: <Home />,
+        },
+        {
+            path: "/manage",
+            element: <Manage />,
+        },
+    ]);
+
+    return (
+            <div className="app-container">
+                <RouterProvider router={router} />
+            </div>
+    );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>
+);

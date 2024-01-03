@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -25,9 +24,17 @@ public class SummonerRepository {
     @Value("${PASSWORD}")
     private String managePassword;
 
+    @Value("${VERIFY}")
+    private String verify;
+
     private String getPassword(){
         return managePassword;
     }
+
+    private String getVerify(){
+        return verify;
+    }
+
     private String getApiUrl() {
         return "?api_key=" + riotKey;
     }
@@ -181,7 +188,6 @@ public class SummonerRepository {
 
     private boolean insertSummoner(Summoner summoner) {
         String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, puuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
         try {
             db.update(sql,
                     summoner.getGameName(),
@@ -202,30 +208,46 @@ public class SummonerRepository {
         }
     }
 
-    public void removeSummoner(String gameName, String tagLine, String password) throws NoSuchAlgorithmException{
-        if (!(hashString(password).equals(password))) return;
+    public boolean removeSummoner(String gameName, String tagLine) {
+        //if (!(getVerify().equals(password))) return;
         String sql = "DELETE FROM Summoner WHERE gameName=? AND tagLine=?";
         try {
             db.update(sql, gameName, tagLine);
+            return true;
         } catch (Exception e) {
             logger.error("Could not delete " + gameName + "#" + tagLine);
+            return false;
         }
     }
 
-    public void addSummoner(String name, String tag, String password) throws NoSuchAlgorithmException{
-        if (!(hashString(password).equals(managePassword))) {
-            logger.info("Wrong password");
-            return;
-        }
+    public boolean addSummoner(String name, String tag) {
+        //if (!(getVerify().equals(password))) return;
         Summoner summoner = new Summoner();
         summoner.setTagLine(tag);
         summoner.setGameName(name);
         try {
             completeSummoner(summoner);
+            return true;
         } catch (Exception e){
             logger.error("Could not complete summoner " + name + "#" + tag);
+            return false;
         }
 
+    }
+
+    public SummonerDto searchSummoner(String name, String tag) {
+        String url = puuidByTag + name + "/" + tag + getApiUrl();
+        GameNameDto gameNameData = restTemplate.getForObject(url, GameNameDto.class);
+
+        String iconUrl = summonerNameIcon + gameNameData.getPuuid() + getApiUrl();
+        SummonerNameIconDto summonerNameIconData = restTemplate.getForObject(iconUrl, SummonerNameIconDto.class);
+
+        SummonerDto summoner = new SummonerDto();
+        summoner.setGameName(gameNameData.getGameName());
+        summoner.setTagLine(gameNameData.getTagLine());
+        summoner.setSummonerIcon(summonerNameIconData.getProfileIconId());
+
+        return summoner;
     }
 
     public String hashString(String input) {
@@ -234,7 +256,6 @@ public class SummonerRepository {
 
     public boolean checkPassword(String inputPassword) {
         BCrypt.Result result = BCrypt.verifyer().verify(inputPassword.toCharArray(), getPassword());
-        logger.info(String.valueOf(result.verified));
         return result.verified;
     }
 

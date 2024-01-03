@@ -6,6 +6,7 @@ import com.andreassolli.leaderboard.repositories.SummonerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.NoSuchAlgorithmException;
@@ -30,14 +31,19 @@ public class SummonerController {
         repo.updateSummoners();
     }
 
-    @GetMapping("/api/add/{name}/{tag}/{password}")
-    public void add(@PathVariable String name, @PathVariable String tag, @PathVariable String password) throws NoSuchAlgorithmException {
-        repo.addSummoner(name, tag, password);
+    @GetMapping("/api/add/{name}/{tag}")
+    public boolean add(@PathVariable String name, @PathVariable String tag) {
+        return repo.addSummoner(name, tag);
     }
 
-    @GetMapping("/api/remove/{name}/{tag}/{password}")
-    public void remove(@PathVariable String name, @PathVariable String tag, @PathVariable String password) throws NoSuchAlgorithmException {
-        repo.removeSummoner(name, tag, password);
+    @GetMapping("/api/remove/{name}/{tag}")
+    public boolean remove(@PathVariable String name, @PathVariable String tag) {
+        return repo.removeSummoner(name, tag);
+    }
+
+    @GetMapping("/api/search/{name}/{tag}")
+    public SummonerDto search(@PathVariable String name, @PathVariable String tag){
+        return repo.searchSummoner(name, tag);
     }
 
 }

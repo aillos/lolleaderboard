@@ -3,9 +3,18 @@ package com.andreassolli.leaderboard.models;
 public class GameNameDto {
     private String gameName;
     private String tagLine;
+    private String puuid;
 
     public String getGameName() {
         return gameName;
+    }
+
+    public String getPuuid() {
+        return puuid;
+    }
+
+    public void setPuuid(String puuid) {
+        this.puuid = puuid;
     }
 
     public void setGameName(String gameName) {

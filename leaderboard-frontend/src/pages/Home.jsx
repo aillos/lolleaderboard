@@ -32,7 +32,6 @@ export class Home extends Component {
             let patchVersion = response.data.v;
             const patchNumber = patchVersion.charAt(patchVersion.length-1);
             let bPatch = '';
-            console.log(patchNumber);
             if (parseInt(patchNumber) !== 1) bPatch = 'B';
             const patchVersionText = patchVersion.replace(/\.\d+$/, '') + bPatch;
 

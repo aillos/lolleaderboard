@@ -1,6 +1,8 @@
 package com.andreassolli.leaderboard.models;
 
 public class Summoner {
+    private String gameName;
+    private String tagLine;
     private String summonerName;
     private String rank;
     private String tier;
@@ -11,7 +13,9 @@ public class Summoner {
     private int losses;
     private String puuid;
 
-    public Summoner(String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid) {
+    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid) {
+        this.gameName = gameName;
+        this.tagLine = tagLine;
         this.summonerName = summonerName;
         this.rank = rank;
         this.tier = tier;
@@ -24,6 +28,22 @@ public class Summoner {
     }
 
     public Summoner() {
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
+    }
+
+    public String getTagLine() {
+        return tagLine;
+    }
+
+    public void setTagLine(String tagLine) {
+        this.tagLine = tagLine;
     }
 
     public String getSummonerName() {

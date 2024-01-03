@@ -18,4 +18,9 @@ public class SummonerController {
     public List<Summoner> getAll() {
         return repo.getAllSummoners();
     }
+
+    @GetMapping("/api/update")
+    public void update() {
+        repo.updateSummoners();
+    }
 }

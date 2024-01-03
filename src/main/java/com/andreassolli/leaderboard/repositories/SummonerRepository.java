@@ -9,9 +9,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Optional;
@@ -26,6 +25,9 @@ public class SummonerRepository {
     @Value("${PASSWORD}")
     private String managePassword;
 
+    private String getPassword(){
+        return managePassword;
+    }
     private String getApiUrl() {
         return "?api_key=" + riotKey;
     }
@@ -226,16 +228,14 @@ public class SummonerRepository {
 
     }
 
-    public String hashString (String input) throws NoSuchAlgorithmException {
+    public String hashString(String input) {
+        return BCrypt.withDefaults().hashToString(12, input.toCharArray());
+    }
 
-        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
-
-        byte[] messageDigest = sha1.digest(input.getBytes());
-
-        BigInteger bigInt = new BigInteger(1, messageDigest);
-
-        return bigInt.toString(16);
-
+    public boolean checkPassword(String inputPassword) {
+        BCrypt.Result result = BCrypt.verifyer().verify(inputPassword.toCharArray(), getPassword());
+        logger.info(String.valueOf(result.verified));
+        return result.verified;
     }
 
 }

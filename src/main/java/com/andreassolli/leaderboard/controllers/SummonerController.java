@@ -14,8 +14,11 @@ import java.util.List;
 @RestController
 public class SummonerController {
 
-    @Autowired
     private SummonerRepository repo;
+    @Autowired
+    public void setRepo(SummonerRepository summonerRepository) {
+        this.repo = summonerRepository;
+    }
 
     @GetMapping("/api/getAll")
     public List<SummonerDto> getAll() {

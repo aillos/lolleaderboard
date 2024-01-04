@@ -1,10 +1,13 @@
 package com.andreassolli.leaderboard.repositories;
 
 import com.andreassolli.leaderboard.models.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -217,6 +220,26 @@ public class SummonerRepository {
         } catch (Exception e) {
             logger.error("Could not delete " + gameName + "#" + tagLine);
             return false;
+        }
+    }
+
+    public int serviceStatus() {
+        try {
+            String url = "https://euw1.api.riotgames.com/lol/status/v4/platform-data" + getApiUrl();
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.getBody());
+
+            JsonNode maintenances = root.path("maintenances");
+            JsonNode incidents = root.path("incidents");
+
+            return maintenances.size() + incidents.size();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
         }
     }
 

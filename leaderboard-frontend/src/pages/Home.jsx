@@ -9,13 +9,25 @@ export class Home extends Component {
         super(props);
         this.state = {
             patchVersion: null,
-            patchVersionText: '',
             summoners: [],
             loading: true
         };
         this.winrate = this.winrate.bind(this);
+        this.update = this.update.bind(this);
+
     }
 
+    async update(){
+
+        try {
+            await axios.get('api/update');
+            console.log("Update successful");
+        } catch {
+            console.error("Error updating.");
+        }
+        await this.populateSummoners();
+
+    }
     async populateSummoners() {
         try {
             const response = await axios.get('api/getAll');
@@ -35,7 +47,7 @@ export class Home extends Component {
             if (parseInt(patchNumber) !== 1) bPatch = 'B';
             const patchVersionText = patchVersion.replace(/\.\d+$/, '') + bPatch;
 
-            this.setState({ patchVersion, patchVersionText });
+            this.setState({ patchVersion });
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -81,7 +93,9 @@ export class Home extends Component {
 
         return (
             <div>
-                Patch {this.state.patchVersionText}
+                <div className="button secondary" onClick={() => this.update()}>
+                    Update
+                </div>
                 {contents}
             </div>
         );

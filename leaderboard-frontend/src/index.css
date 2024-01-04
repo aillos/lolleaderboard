@@ -281,3 +281,33 @@ h2{
 .modal-content > h2{
   font-size: 24px;
 }
+
+.header{
+  width:100%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  border:1px solid white;
+  height:30px;
+}
+
+.patchHeader{
+  width:100px;
+  margin:0 20px 0 20px;
+}
+
+.statusHeader{
+  display: flex;
+  width: 100px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin:0 20px 0 20px;
+}
+
+.statusIcon{
+  margin-left:5px;
+  width:13px;
+  height:13px;
+  margin-top:3px;
+}

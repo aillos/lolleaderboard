@@ -21,6 +21,11 @@ public class SummonerController {
         this.repo = summonerRepository;
     }
 
+    @GetMapping("/api/service")
+    public int serviceStatus(){
+        return repo.serviceStatus();
+    }
+
     @GetMapping("/api/getAll")
     public List<SummonerDto> getAll() {
         return repo.getAllSummonersView();

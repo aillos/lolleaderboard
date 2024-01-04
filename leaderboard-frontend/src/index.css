@@ -40,10 +40,11 @@ body {
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  height: 100%;
 }
 
 .app-container {
+  height:100%;
   width: 100%;
   max-width: 1280px;
   min-width: 320px;
@@ -51,6 +52,39 @@ body {
   padding: 2rem;
 }
 
+.backContainer{
+  width: 350px;
+  align-items: start;
+  justify-content: left;
+  text-align: left;
+  margin: auto;
+}
+
+.backButton:hover {
+  border-color: #646cff;
+}
+.backButton:focus,
+.backButton:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+.backButton {
+  transition: border-color 0.25s;
+  background-color: #1a1a1a;
+  font-size: 20px;
+  cursor:pointer;
+  width:78px;
+  margin-bottom:5px;
+  padding: 0 3px;
+  border: 1px solid transparent;
+  border-radius:8px;
+}
+
+.backIcon{
+  margin-right:2px;
+  width:20px;
+  height:20px;
+  cursor: pointer;
+}
 
 h1 {
   font-size: 3.2em;
@@ -223,5 +257,27 @@ h2{
 
 .primary{
   background-color: #488148;
+}
 
+.inputModal{
+  width:250px;
+  display: flex;
+  margin: auto;
+}
+
+.inputModal > input{
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  margin-right:2px;
+  padding: 2px 6px;
+  font-size: 15px;
+}
+
+.inputModal > input:focus{
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.modal-content > h2{
+  font-size: 24px;
 }

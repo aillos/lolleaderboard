@@ -11,12 +11,15 @@ const PasswordModal = ({ onPasswordSubmit }) => {
         <div className="password-modal">
             <div className="modal-content">
                 <h2>Enter Password</h2>
+                <div className="inputModal">
                 <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <button onClick={handleSubmit}>Submit</button>
+                <div className="button secondary" onClick={handleSubmit}>Submit
+                </div>
+                </div>
             </div>
         </div>
     );

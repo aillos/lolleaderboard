@@ -1,6 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
 import PasswordModal from '../security/PasswordModal';
 import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faHome} from '@fortawesome/free-solid-svg-icons'
+import {useNavigate} from "react-router-dom";
+
 
 export const Manage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -9,6 +13,11 @@ export const Manage = () => {
     const [summoner, setSummoner] = useState(null);
     const [ responseText, setResponseText ] = useState("");
     const [patchVersion, setPatchVersion] = useState("");
+    const navigate = useNavigate();
+
+    const navigateHome = () => {
+        navigate('/');
+    };
 
 
     const getPatchVersion = async () => {
@@ -91,8 +100,15 @@ export const Manage = () => {
     };
 
 
+
     return (
         <div>
+            <div className="backContainer">
+            <div className="backButton" onClick={navigateHome}>
+                <FontAwesomeIcon icon={faHome} className="backIcon"/>
+                Home
+            </div>
+            </div>
             <div className="searchPlayer">
                 {summoner ? (
                     <>

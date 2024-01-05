@@ -12,8 +12,11 @@ public class Summoner {
     private int wins;
     private int losses;
     private String puuid;
+    private String championMastery;
+    private String championImages;
 
-    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid) {
+
+    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid, String championMastery, String championImages) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -25,9 +28,27 @@ public class Summoner {
         this.wins=wins;
         this.losses=losses;
         this.puuid=puuid;
+        this.championMastery=championMastery;
+        this.championImages=championImages;
     }
 
     public Summoner() {
+    }
+
+    public String getChampionMastery() {
+        return championMastery;
+    }
+
+    public void setChampionMastery(String championMastery) {
+        this.championMastery = championMastery;
+    }
+
+    public String getChampionImages() {
+        return championImages;
+    }
+
+    public void setChampionImages(String championImages) {
+        this.championImages = championImages;
     }
 
     public String getGameName() {

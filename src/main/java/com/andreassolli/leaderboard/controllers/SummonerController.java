@@ -57,4 +57,9 @@ public class SummonerController {
         return repo.searchSummoner(name, tag);
     }
 
+    @GetMapping("/api/mastery/{name}/{tag}/{patch}")
+    public boolean championMaster(@PathVariable String name, @PathVariable String tag, @PathVariable String patch){
+        return repo.setChampionMastery(name, tag, patch);
+    }
+
 }

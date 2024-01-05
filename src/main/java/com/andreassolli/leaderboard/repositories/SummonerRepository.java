@@ -3,6 +3,7 @@ package com.andreassolli.leaderboard.repositories;
 import com.andreassolli.leaderboard.models.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Optional;
 
 import java.util.List;
@@ -324,6 +326,80 @@ public class SummonerRepository {
     public boolean checkPassword(String inputPassword) {
         BCrypt.Result result = BCrypt.verifyer().verify(inputPassword.toCharArray(), getPassword());
         return result.verified;
+    }
+
+    public boolean saveMastery(Summoner summoner){
+        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, puuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            db.update(sql,
+                    summoner.getChampionMastery(),
+                    summoner.getChampionImages());
+            return true;
+        } catch (Exception e) {
+            logger.error("Error inserting summoner: " + e);
+            return false;
+        }
+    }
+
+    public boolean updateChampionMastery(String patchVersion){
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners) {
+            try {
+                setChampionMastery(summoner.getGameName(), summoner.getTagLine(), patchVersion);
+                if (saveMastery(summoner)){
+                    logger.info("Updated summoner: " + summoner.getGameName());
+                } else {
+                    logger.error("Could not update " + summoner.getGameName());
+                    return false;
+                }
+            } catch (Exception e) {
+                logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean setChampionMastery(String name, String tag, String patchVersion){
+        String IdToChampUrl = "https://ddragon.leagueoflegends.com/cdn/" + patchVersion + "/data/en_US/champion.json";
+        String [] championNames = new String[3];
+        String [] championImages = new String[3];
+        SummonerNameIconDto summonerPuuid = restTemplate.getForObject(puuidByTag + name + "/" + tag + getApiUrl(), SummonerNameIconDto.class);
+        String puuid = summonerPuuid.getId();
+        String MasteryChampions = "https://euw1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/" + puuid + getApiUrl();
+
+        try {
+            ChampionMastery[] championMasteries = restTemplate.getForObject(MasteryChampions, ChampionMastery[].class);
+
+            Arrays.sort(championMasteries, (a, b) -> Integer.compare(b.getChampionPoints(), a.getChampionPoints()));
+
+            int[] topChampionIds = new int[3];
+            for (int i = 0; i < 3; i++) {
+                topChampionIds[i] = championMasteries[i].getChampionId();
+            }
+
+            JSONObject championsData = restTemplate.getForObject(IdToChampUrl, JSONObject.class).getJSONObject("data");
+
+            for (int i = 0; i < 3; i++) {
+                int champId = topChampionIds[i];
+
+                Iterator<String> keys = championsData.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    JSONObject champion = championsData.getJSONObject(key);
+                    if (champion.getString("key").equals(String.valueOf(champId))) {
+                        championNames[i] = champion.getString("name");
+                        championImages[i] = champion.getJSONObject("image").getString("full");
+                        break;
+                    }
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            // Handle exceptions
+            return false;
+        }
+
     }
 
 }

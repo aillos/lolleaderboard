@@ -90,7 +90,8 @@ export const Home = () => {
                         <OverlayTrigger
                             placement="top"
                             overlay={
-                                <Tooltip id={`tooltip-top`}>
+                                <Tooltip
+                                    id={`tooltip-top`}>
                                     {summoner.gameName} #{summoner.tagLine}
                                 </Tooltip>
                             }

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGlobe} from "@fortawesome/free-solid-svg-icons";
+import {faCross, faGlobe, faSignal} from "@fortawesome/free-solid-svg-icons";
 import {DarkModeToggle} from "./theme/ColorToggle.jsx";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
@@ -33,13 +33,23 @@ export const Header = () => {
         }
     };
 
-    const getGlobeColor = () => {
+    const getConnectionColor = () => {
         if (serviceStatus === -1) {
             return 'red';
         } else if (serviceStatus > 0) {
             return 'yellow';
         } else {
             return 'green';
+        }
+    };
+
+    const getConnectionIcon = () => {
+        if (serviceStatus === -1) {
+            return faCross;
+        } else if (serviceStatus > 0) {
+            return faSignal
+        } else {
+            return faSignal;
         }
     };
 
@@ -52,19 +62,38 @@ export const Header = () => {
 
     return (
         <div className={"header"}>
+            <OverlayTrigger
+                placement="bottom"
+                overlay={
+                    <Tooltip id={`tooltip-bottom`}>
+                        Riot Games Service Status
+                    </Tooltip>
+                }
+            >
             <div className={"statusHeader"}>
-                <p>Status: </p>
+                Status:
                 <FontAwesomeIcon
-                    icon={faGlobe}
-                    style={{ color: getGlobeColor() }}
+                    icon={getConnectionIcon()}
+                    style={{ color: getConnectionColor() }}
                     className={"statusIcon"}>
                 </FontAwesomeIcon>
             </div>
+            </OverlayTrigger>
             |
+            <OverlayTrigger
+                placement="bottom"
+                overlay={
+                    <Tooltip id={`tooltip-bottom`}>
+                        Current patch
+                    </Tooltip>
+                }
+            >
             <div className={"patchHeader"}>
                  Patch: {patchVersion}
             </div>
+            </OverlayTrigger>
             |
+            <div className={"headerTheme"}>
             <OverlayTrigger
                 placement="bottom"
                 overlay={
@@ -77,6 +106,7 @@ export const Header = () => {
                     <DarkModeToggle />
                 </div>
             </OverlayTrigger>
+            </div>
         </div>
     );
 }

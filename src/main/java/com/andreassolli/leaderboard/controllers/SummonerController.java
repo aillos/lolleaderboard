@@ -32,8 +32,8 @@ public class SummonerController {
     }
 
     @GetMapping("/api/update")
-    public void update() {
-        repo.updateSummoners();
+    public boolean update() {
+        return repo.updateSummoners();
     }
 
     @GetMapping("/api/add/{name}/{tag}")

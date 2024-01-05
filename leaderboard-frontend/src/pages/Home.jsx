@@ -1,103 +1,99 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Card from 'react-bootstrap/Card';
+import { Spinner } from 'react-bootstrap';
 
-export class Home extends Component {
-    static displayName = Home.name;
+export const Home = () => {
+    const [patchVersion, setPatchVersion] = useState(null);
+    const [summoners, setSummoners] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            patchVersion: null,
-            summoners: [],
-            loading: true
-        };
-        this.winrate = this.winrate.bind(this);
-        this.update = this.update.bind(this);
+    const winrate = (wins, losses) => {
+        if (wins + losses === 0) return '0%';
+        return `${((wins / (wins + losses)) * 100).toFixed(2)}%`;
+    };
 
-    }
-
-    async update(){
-
+    const update = async () => {
+        setLoading(true); // Start loading
         try {
-            await axios.get('api/update');
-            console.log("Update successful");
-        } catch {
-            console.error("Error updating.");
+            const response = await axios.get('api/update');
+            if (response.data === true) {
+                console.log("Update successful");
+            } else {
+                console.error("Error updating: Update process failed.");
+            }
+        } catch (error) {
+            console.error("Error updating: ", error.message);
+        } finally {
+            setLoading(false); // Stop loading regardless of the result
         }
-        await this.populateSummoners();
 
-    }
-    async populateSummoners() {
+        await populateSummoners();
+    };
+
+    const populateSummoners = async () => {
         try {
             const response = await axios.get('api/getAll');
-
-            this.setState({ summoners: response.data, loading: false });
+            setSummoners(response.data);
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching summoners:", error);
         }
-    }
+    };
 
-    async getPatchVersion() {
+    const getPatchVersion = async () => {
         try {
             const response = await axios.get('https://ddragon.leagueoflegends.com/realms/euw.json');
-            let patchVersion = response.data.v;
-            const patchNumber = patchVersion.charAt(patchVersion.length-1);
-            let bPatch = '';
-            if (parseInt(patchNumber) !== 1) bPatch = 'B';
-            const patchVersionText = patchVersion.replace(/\.\d+$/, '') + bPatch;
+            let patch = response.data.v;
 
-            this.setState({ patchVersion });
+            setPatchVersion(patch);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
-    }
+    };
 
-    winrate(wins, losses){
-        if(wins+losses === 0) return '0%';
-        return `${((wins / (wins + losses)) * 100).toFixed(2)}%`;
-    }
+    const updateButton = (
+        <div className="button secondary" onClick={update}>
+            Update
+        </div>
+    );
 
-    static renderSummoner(summoners, winrate, patchVersion) {
-        return (
-            <div>
-                {summoners.map((summoner, index) => (
-                    <Card className="playerCard" key={summoner.gameName+summoner.tagLine}>
-                        <Card.Body>
-                            <div className="summonerIcon">
-                                <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt="" />
-                            </div>
-                            <Card.Title>{index+1}. {summoner.gameName}</Card.Title>
-                            <Card.Text>
-                                <p>Rank: {summoner.tier} {summoner.rank} {summoner.lp}</p>
-                                <p>Wins: {summoner.wins}</p>
-                                <p>Losses: {summoner.losses}</p>
-                                <p>Winrate: {winrate(summoner.wins, summoner.losses)}</p>
-                            </Card.Text>
-                        </Card.Body>
-                    </Card>
-                ))}
-            </div>
-        );
-    }
+    const loadingSpinner = (
+        <div className="spinner-container"><div className="spinner"/></div>
+    );
 
-    componentDidMount() {
-        this.populateSummoners();
-        this.getPatchVersion()
-    }
+    useEffect(() => {
+        populateSummoners();
+        getPatchVersion();
+    }, []);
 
-    render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : Home.renderSummoner(this.state.summoners, this.winrate, this.state.patchVersion);
+    const renderSummoner = (summoners, winrate, patchVersion) => (
+        <div>
+            {summoners.map((summoner, index) => (
+                <Card className="playerCard" key={summoner.gameName + summoner.tagLine}>
+                    <Card.Body>
+                        <div className="summonerIcon">
+                            <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt="" />
+                        </div>
+                        <Card.Title>{index + 1}. {summoner.gameName}</Card.Title>
+                        <Card.Text>
+                            <p>Rank: {summoner.tier} {summoner.rank} {summoner.lp}</p>
+                            <p>Wins: {summoner.wins}</p>
+                            <p>Losses: {summoner.losses}</p>
+                            <p>Winrate: {winrate(summoner.wins, summoner.losses)}</p>
+                        </Card.Text>
+                    </Card.Body>
+                </Card>
+            ))}
+        </div>
+    );
 
-        return (
-            <div>
-                <div className="button secondary" onClick={() => this.update()}>
-                    Update
-                </div>
-                {contents}
-            </div>
-        );
-    }
-}
+    let contents = renderSummoner(summoners, winrate, patchVersion);
+
+    return (
+        <div>
+            {loading ? loadingSpinner : updateButton}
+            {contents}
+        </div>
+    );
+};

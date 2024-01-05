@@ -10,10 +10,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -92,7 +97,32 @@ public class SummonerRepository {
             }
     }
 
-        public void updateSummoners() {
+    public LocalDateTime getTime() {
+        String sql = "SELECT Time FROM Info";
+        try {
+            return db.query(sql, new ResultSetExtractor<LocalDateTime>() {
+                @Override
+                public LocalDateTime extractData(ResultSet rs) throws SQLException {
+                    if (rs.next()) {
+                        return rs.getTimestamp("Time").toLocalDateTime();
+                    }
+                    return LocalDateTime.now();
+                }
+            });
+        } catch (Exception e) {
+            logger.error("Could not fetch Time", e);
+            return LocalDateTime.now();
+        }
+    }
+
+        public boolean updateSummoners() {
+            LocalDateTime lastUpdatedTime = getTime();
+            LocalDateTime currentTime = LocalDateTime.now();
+
+            if (ChronoUnit.MINUTES.between(lastUpdatedTime, currentTime) < 2) {
+                return false;
+            }
+
             List<Summoner> summoners = getAllSummoners();
             for (Summoner summoner : summoners) {
                 try {
@@ -103,11 +133,28 @@ public class SummonerRepository {
                         logger.info("Updated summoner: " + summoner.getGameName());
                     } else {
                         logger.error("Could not update " + summoner.getGameName());
+                        return false;
                     }
                 } catch (Exception e) {
                     logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
+                    return false;
                 }
             }
+
+            String newTimeSql = "UPDATE Info SET Time = ?";
+            try {
+                db.update(newTimeSql, LocalDateTime.now());
+            } catch (Exception e) {
+                logger.error("Could not save new Time", e);
+            }
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                logger.error("Thread interrupted", ie);
+            }
+
+            return true;
         }
 
     private void updateGameName(Summoner summoner, String puuid) {

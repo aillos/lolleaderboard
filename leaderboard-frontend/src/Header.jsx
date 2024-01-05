@@ -1,7 +1,9 @@
-import React, {Component, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGlobe} from "@fortawesome/free-solid-svg-icons";
+import {DarkModeToggle} from "./theme/ColorToggle.jsx";
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
 export const Header = () => {
 
@@ -63,9 +65,18 @@ export const Header = () => {
                  Patch: {patchVersion}
             </div>
             |
-            <div className={"themeHeader"}>
-                <input type={"checkbox"} />
-            </div>
+            <OverlayTrigger
+                placement="bottom"
+                overlay={
+                    <Tooltip id={`tooltip-bottom`}>
+                        Change theme
+                    </Tooltip>
+                }
+            >
+                <div className="toggleButton">
+                    <DarkModeToggle />
+                </div>
+            </OverlayTrigger>
         </div>
     );
 }

@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Manage } from "./pages/Manage";
 import {Header} from "./Header.jsx";
+import 'bootstrap/dist/css/bootstrap.css';
 
 const App = () => {
 

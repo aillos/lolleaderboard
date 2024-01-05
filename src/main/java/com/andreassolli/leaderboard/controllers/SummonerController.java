@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -24,6 +25,11 @@ public class SummonerController {
     @GetMapping("/api/service")
     public int serviceStatus(){
         return repo.serviceStatus();
+    }
+
+    @GetMapping("api/time")
+    public LocalDateTime getTime(){
+        return repo.getTime();
     }
 
     @GetMapping("/api/getAll")

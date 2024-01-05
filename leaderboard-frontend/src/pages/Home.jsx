@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Card from 'react-bootstrap/Card';
-import { Spinner } from 'react-bootstrap';
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
 export const Home = () => {
     const [patchVersion, setPatchVersion] = useState(null);
     const [summoners, setSummoners] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [timeUpdated, setTimeUpdated] = useState("");
 
     const winrate = (wins, losses) => {
         if (wins + losses === 0) return '0%';
@@ -31,11 +32,22 @@ export const Home = () => {
         await populateSummoners();
     };
 
+    const lastTimeUpdated = async () => {
+        try {
+            const response = await axios.get('api/time');
+            const formattedTime = formatDateTime(response.data);
+            setTimeUpdated(formattedTime);
+        } catch (error) {
+            console.error("Error getting time " + error.message);
+        }
+    };
+
     const populateSummoners = async () => {
         try {
             const response = await axios.get('api/getAll');
             setSummoners(response.data);
             setLoading(false);
+            await lastTimeUpdated();
         } catch (error) {
             console.error("Error fetching summoners:", error);
         }
@@ -53,7 +65,7 @@ export const Home = () => {
     };
 
     const updateButton = (
-        <div className="button secondary" onClick={update}>
+        <div className="button updateB" onClick={update}>
             Update
         </div>
     );
@@ -75,7 +87,16 @@ export const Home = () => {
                         <div className="summonerIcon">
                             <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt="" />
                         </div>
+                        <OverlayTrigger
+                            placement="top"
+                            overlay={
+                                <Tooltip id={`tooltip-top`}>
+                                    {summoner.gameName} #{summoner.tagLine}
+                                </Tooltip>
+                            }
+                        >
                         <Card.Title>{index + 1}. {summoner.gameName}</Card.Title>
+                        </OverlayTrigger>
                         <Card.Text>
                             <p>Rank: {summoner.tier} {summoner.rank} {summoner.lp}</p>
                             <p>Wins: {summoner.wins}</p>
@@ -88,11 +109,30 @@ export const Home = () => {
         </div>
     );
 
+    const formatDateTime = (isoString) => {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const date = new Date(isoString);
+        const day = date.getDate();
+        const month = months[date.getMonth()];
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+
+        return `${day}. ${month} ${year} at ${hours}:${minutes}`;
+    };
+
     let contents = renderSummoner(summoners, winrate, patchVersion);
 
     return (
         <div>
-            {loading ? loadingSpinner : updateButton}
+            <div className={"updateSection"}>
+                <div className={"lastUpdated"}>
+                    <p>Last updated: {timeUpdated}</p>
+                </div>
+                <div className={"updateButton"}>
+                    {loading ? loadingSpinner : updateButton}
+                </div>
+            </div>
             {contents}
         </div>
     );

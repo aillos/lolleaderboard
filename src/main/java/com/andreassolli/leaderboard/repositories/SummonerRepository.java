@@ -100,14 +100,11 @@ public class SummonerRepository {
     public LocalDateTime getTime() {
         String sql = "SELECT Time FROM Info";
         try {
-            return db.query(sql, new ResultSetExtractor<LocalDateTime>() {
-                @Override
-                public LocalDateTime extractData(ResultSet rs) throws SQLException {
-                    if (rs.next()) {
-                        return rs.getTimestamp("Time").toLocalDateTime();
-                    }
-                    return LocalDateTime.now();
+            return db.query(sql, rs -> {
+                if (rs.next()) {
+                    return rs.getTimestamp("Time").toLocalDateTime();
                 }
+                return LocalDateTime.now();
             });
         } catch (Exception e) {
             logger.error("Could not fetch Time", e);

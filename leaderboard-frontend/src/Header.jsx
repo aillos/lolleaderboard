@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCross, faGlobe, faSignal} from "@fortawesome/free-solid-svg-icons";
+import {faCross, faGlobe, faSignal, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {DarkModeToggle} from "./theme/ColorToggle.jsx";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
@@ -33,24 +33,19 @@ export const Header = () => {
         }
     };
 
-    const getConnectionColor = () => {
-        if (serviceStatus === -1) {
-            return 'red';
-        } else if (serviceStatus > 0) {
-            return 'yellow';
-        } else {
-            return 'green';
-        }
-    };
+    const getConnectionStatus = () => {
+        let color = 'green';
+        let icon = faSignal;
 
-    const getConnectionIcon = () => {
         if (serviceStatus === -1) {
-            return faCross;
+            color = 'red';
+            icon = faXmark;
         } else if (serviceStatus > 0) {
-            return faSignal
-        } else {
-            return faSignal;
+            color = 'yellow';
+            icon = faSignal;
         }
+
+        return { color, icon };
     };
 
 
@@ -73,8 +68,8 @@ export const Header = () => {
             <div className={"statusHeader"}>
                 Status:
                 <FontAwesomeIcon
-                    icon={getConnectionIcon()}
-                    style={{ color: getConnectionColor() }}
+                    icon={getConnectionStatus().icon}
+                    style={{ color: getConnectionStatus().color }}
                     className={"statusIcon"}>
                 </FontAwesomeIcon>
             </div>

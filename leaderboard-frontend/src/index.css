@@ -74,10 +74,11 @@ body.dark {
 
 .backContainer{
   width: 350px;
+  display: flex;
   align-items: start;
-  justify-content: left;
-  text-align: left;
+  justify-content: space-between;
   margin: auto;
+  text-align: center;
 }
 
 .backButton:hover {
@@ -92,8 +93,8 @@ body.dark {
   background-color: var(--color-accent-border);
   font-size: 20px;
   cursor:pointer;
-  width:85px;
-  margin-bottom:5px;
+  width:110px;
+  margin-bottom:10px;
   padding: 0 3px;
   border: 1px solid transparent;
   border-radius:8px;
@@ -433,4 +434,9 @@ h2{
   font-size: 16px;
   background-color: var(--color-background);
   color: var(--color-foreground);
+}
+
+.placementText{
+  margin-top:2px;
+  font-size: 14px;
 }

@@ -3,7 +3,7 @@
 }
 
 .react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
-    background-color: #ffffff;
+    background-color: #ababab;
 }
 
 .react-toggle-track-check {
@@ -11,7 +11,7 @@
 }
 
 .react-toggle--checked .react-toggle-thumb {
-    border-color: #545454;
+    border-color: #302c3d;
 }
 
 .fa-sun,
@@ -21,11 +21,11 @@
 }
 
 .fa-sun{
-    color: #3c3540;
+    color: #f8b757;
 }
 
 .fa-moon{
-    color: #FFFCFA;
+    color: #d4d9d6;
 }
 
 .custom-toggle{

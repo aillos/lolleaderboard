@@ -59,9 +59,8 @@ public class SummonerController {
         repo.setChampionMastery(name, tag, patch);
     }
 
-    @GetMapping("/api/updateMastery")
-    public boolean updateMastery(){
-        String patch = "13.24.1";
+    @GetMapping("/api/updateMastery/{patch}")
+    public boolean updateMastery(@PathVariable String patch){
         return repo.updateChampionMastery(patch);
     }
 

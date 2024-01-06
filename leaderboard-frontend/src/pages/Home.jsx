@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Card from 'react-bootstrap/Card';
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
+import {faAward, faCircle, faCross, faMedal, faShield, faSignal, faTrophy} from "@fortawesome/free-solid-svg-icons";
+import {faPatreon} from "@fortawesome/free-brands-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const Home = () => {
     const [patchVersion, setPatchVersion] = useState(null);
@@ -79,6 +82,28 @@ export const Home = () => {
         getPatchVersion();
     }, []);
 
+    const getPlacement = (index) => {
+        let color = 'green'; // default color
+        let icon;  // default icon
+        let icon2;
+
+        if (index === 0) {
+            color = 'red';
+            icon = faMedal;
+            icon2 = faCircle;
+        } else if (index === 1) {
+            color = 'yellow';
+            icon = faMedal;
+            icon2 = faCircle;
+        } else if (index === 2){
+            color = '';
+            icon = faMedal;
+            icon2 = faCircle;
+        }
+
+        return { color, icon, icon2 };
+    };
+
     const renderSummoner = (summoners, winrate, patchVersion) => (
         <div>
             {summoners.map((summoner, index) => (
@@ -96,7 +121,20 @@ export const Home = () => {
                                 </Tooltip>
                             }
                         >
-                        <Card.Title>{index + 1}. {summoner.gameName}</Card.Title>
+                        <Card.Title>
+                            <div className="icon-container">
+                                <span className="fa-layers fa-fw">
+                                    <FontAwesomeIcon
+                                    icon={getPlacement(index).icon}
+                                    style={{ color: getPlacement(index).color }}
+                                    className={"statusIcon"}
+                                    />
+                                    <FontAwesomeIcon icon={getPlacement(index).icon2} transform={"shrink-8 down-2"} className={"placementCircle"} color={getPlacement(index).color}/>
+                                <span className="fa-layers-text placementText">{index + 1}</span>
+                                </span>
+                            </div>
+                             {index + 1}. {summoner.gameName}
+                        </Card.Title>
                         </OverlayTrigger>
                         <Card.Text>
                             <p>Rank: {summoner.tier} {summoner.rank} {summoner.lp}</p>

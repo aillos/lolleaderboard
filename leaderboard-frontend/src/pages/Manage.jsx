@@ -2,7 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import PasswordModal from '../security/PasswordModal';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faHome} from '@fortawesome/free-solid-svg-icons'
+import {faHome, faRefresh} from '@fortawesome/free-solid-svg-icons'
 import {useNavigate} from "react-router-dom";
 
 
@@ -14,9 +14,27 @@ export const Manage = () => {
     const [ responseText, setResponseText ] = useState("");
     const [patchVersion, setPatchVersion] = useState("");
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const navigateHome = () => {
         navigate('/');
+    };
+
+    const updateChampionMastery = async() => {
+        setLoading(true);
+        try {
+            const response = await axios.get('api/updateMastery/' + patchVersion);
+            if (response.data === true) {
+                console.log("Update successful");
+            } else {
+                console.error("Error updating: Update process failed.");
+            }
+        } catch (error){
+            console.error("Error updating: ", error.message);
+        } finally {
+            setLoading(false);
+        }
+
     };
 
 
@@ -99,15 +117,27 @@ export const Manage = () => {
         }
     };
 
+    const updateButton = (
+        <div className="backButton" onClick={updateChampionMastery}>
+            <FontAwesomeIcon icon={faRefresh} className={"backIcon"} />
+            Mastery
+        </div>
+    );
 
+    const loadingSpinner = (
+        <div className="spinner-container"><div className="spinner"/></div>
+    );
 
     return (
         <div>
             <div className="backContainer">
-            <div className="backButton" onClick={navigateHome}>
-                <FontAwesomeIcon icon={faHome} className="backIcon"/>
-                Home
-            </div>
+                <div className="backButton" onClick={navigateHome}>
+                    <FontAwesomeIcon icon={faHome} className="backIcon"/>
+                    Home
+                </div>
+                <div className={"updateButton"}>
+                    {loading ? loadingSpinner : updateButton}
+                </div>
             </div>
             <div className="searchPlayer">
                 {summoner ? (
@@ -123,9 +153,9 @@ export const Manage = () => {
                 )}
             </div>
             <div className="inputSearch">
-                <input type="text" className="gameNameInput" onChange={e => setPlayerName(e.target.value)} />
+                <input type="text" className="gameNameInput" placeholder={"Name"} onChange={e => setPlayerName(e.target.value)} />
                 <div className="hashtag"> #</div>
-                <input type="text" className="tagLineInput" onChange={e => setPlayerTag(e.target.value)} />
+                <input type="text" className="tagLineInput" placeholder={"Tag"} onChange={e => setPlayerTag(e.target.value)} />
                 <div className="button secondary" onClick={() => searchForPlayer(playerName, playerTag)}>Search</div>
             </div>
             <div className="submitButtons">

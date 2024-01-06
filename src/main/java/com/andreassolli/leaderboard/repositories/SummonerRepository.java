@@ -146,12 +146,6 @@ public class SummonerRepository {
             } catch (Exception e) {
                 logger.error("Could not save new Time", e);
             }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-                logger.error("Thread interrupted", ie);
-            }
 
             return true;
         }

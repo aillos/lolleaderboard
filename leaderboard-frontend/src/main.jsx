@@ -6,7 +6,7 @@ import { Home } from "./pages/Home";
 import { Manage } from "./pages/Manage";
 import {Header} from "./Header.jsx";
 import 'bootstrap/dist/css/bootstrap.css';
-import {Footer} from "./Footer";
+import Contact from "./pages/Contact.jsx";
 
 const App = () => {
 
@@ -18,6 +18,10 @@ const App = () => {
         {
             path: "/manage",
             element: <Manage />,
+        },
+        {
+            path: "/contact",
+            element: <Contact />,
         },
     ]);
 

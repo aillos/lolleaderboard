@@ -161,7 +161,7 @@ button:focus-visible {
   margin: 20px auto 10px;
   background-color: var(--color-accent-border) !important;
   color: var(--color-text) !important;
-  width:400px;
+  width:600px;
 }
 
 .card{
@@ -321,7 +321,10 @@ h2{
 
 .updateB{
   background-color: var(--color-accent-border);
-  height:24px;
+  display:flex;
+  gap:5px;
+  height:26px;
+  width:100px;
   font-size: 16px;
   font-weight: normal;
   color: var(--color-text);
@@ -355,7 +358,7 @@ h2{
   margin: -50px auto 50px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   height:30px;
 }
 
@@ -389,7 +392,7 @@ h2{
 .updateSection {
   display: flex;
   align-items: center;
-  width: 400px;
+  width: 600px;
   margin: auto auto -5px;
 }
 
@@ -405,7 +408,7 @@ h2{
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-right: auto;
+  margin:auto;
   font-size: 16px;
 }
 
@@ -441,7 +444,7 @@ h2{
   font-size: 14px;
 }
 .footer{
-  width:100%;
+  width:600px;
   margin: 100px auto -100%;
   display: flex;
   align-items: center;
@@ -452,7 +455,6 @@ h2{
 .techstackFooter{
   display: flex;
   width:300px;
-  margin:0 20px 0 20px;
   justify-content: center;
   gap:10px;
   align-items: center;
@@ -463,12 +465,10 @@ h2{
   display: flex;
   align-items: center;
   width:150px;
-  margin:0 20px 0 20px;
   cursor:pointer;
   gap:10px;
 }
 
 .copyrightFooter{
   width:150px;
-  margin:0 20px 0 20px;
 }

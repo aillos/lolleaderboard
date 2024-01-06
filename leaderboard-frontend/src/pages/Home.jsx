@@ -2,17 +2,30 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Card from 'react-bootstrap/Card';
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
-import {faAward, faCircle, faCross, faMedal, faShield, faSignal, faTrophy} from "@fortawesome/free-solid-svg-icons";
+import {
+    faAward,
+    faCircle,
+    faCross,
+    faMedal, faRefresh,
+    faShield,
+    faSignal,
+    faTrophy,
+    faUserPlus
+} from "@fortawesome/free-solid-svg-icons";
 import {faPatreon} from "@fortawesome/free-brands-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Footer} from "../Footer";
+import {useNavigate} from "react-router-dom";
 
 export const Home = () => {
     const [patchVersion, setPatchVersion] = useState(null);
     const [summoners, setSummoners] = useState([]);
     const [loading, setLoading] = useState(true);
     const [timeUpdated, setTimeUpdated] = useState("");
-
+    const navigate = useNavigate();
+    const goToContact = () => {
+        navigate('/contact');
+    };
     const winrate = (wins, losses) => {
         if (wins + losses === 0) return '0%';
         return `${((wins / (wins + losses)) * 100).toFixed(2)}%`;
@@ -70,6 +83,7 @@ export const Home = () => {
 
     const updateButton = (
         <div className="button updateB" onClick={update}>
+            <FontAwesomeIcon icon={faRefresh} />
             Update
         </div>
     );
@@ -84,8 +98,8 @@ export const Home = () => {
     }, []);
 
     const getPlacement = (index) => {
-        let color = 'green'; // default color
-        let icon;  // default icon
+        let color = 'gray';
+        let icon;
         let icon2;
 
         if (index === 0) {
@@ -166,6 +180,10 @@ export const Home = () => {
     return (
         <div>
             <div className={"updateSection"}>
+                <div className={"button updateB"} onClick={goToContact}>
+                    <FontAwesomeIcon icon={faUserPlus} />
+                    Add me
+                </div>
                 <div className={"lastUpdated"}>
                     <p>Last updated: {timeUpdated}</p>
                 </div>

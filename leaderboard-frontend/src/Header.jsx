@@ -28,6 +28,7 @@ export const Header = () => {
         try {
             const response = await axios.get('api/service');
             setServiceStatus(response.data);
+            console.log(serviceStatus);
         } catch (error) {
             console.error('Error fetching data:', error);
         }

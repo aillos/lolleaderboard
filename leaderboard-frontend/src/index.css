@@ -462,8 +462,8 @@ h2{
 .socialsFooter{
   display: flex;
   align-items: center;
-  width:100px;
-  margin:0 20px 0 70px;
+  width:150px;
+  margin:0 20px 0 20px;
   cursor:pointer;
   gap:10px;
 }

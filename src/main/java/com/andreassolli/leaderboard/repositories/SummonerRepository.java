@@ -328,7 +328,7 @@ public class SummonerRepository {
         return result.verified;
     }
 
-    public boolean saveMastery(Summoner summoner) {
+    public boolean saveMastery(SummonerDto summoner) {
         String sql = "UPDATE Summoner SET championMastery=?, championImages=? WHERE gameName=? AND tagLine=?";
         try {
             String championMasteryString = String.join(",", summoner.getChampionMastery());
@@ -346,8 +346,8 @@ public class SummonerRepository {
     }
 
     public boolean updateChampionMastery(String patchVersion){
-        List<Summoner> summoners = getAllSummoners();
-        for (Summoner summoner : summoners) {
+        List<SummonerDto> summoners = getAllSummonersView();
+        for (SummonerDto summoner : summoners) {
             try {
                 String[][] mastery;
                 mastery=setChampionMastery(summoner.getGameName(), summoner.getTagLine(), patchVersion);
@@ -363,6 +363,37 @@ public class SummonerRepository {
                 logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
                 return false;
             }
+        }
+        return true;
+    }
+
+    public SummonerDto getSummoner(String name, String tag){
+        String sql = "SELECT * FROM frontendSummoner WHERE gameName=? AND tagLine=?";
+        try {
+            return db.queryForObject(sql, new BeanPropertyRowMapper<>(SummonerDto.class), name, tag);
+        } catch (Exception e) {
+            logger.error("Error " + e);
+            return null;
+        }
+    }
+
+
+    public boolean updateChampionForSummoner(String name, String tag, String patchVersion){
+        SummonerDto summoner = getSummoner(name, tag);
+        try {
+            String[][] mastery;
+            mastery=setChampionMastery(summoner.getGameName(), summoner.getTagLine(), patchVersion);
+            summoner.setChampionMastery(mastery[0]);
+            summoner.setChampionImages(mastery[1]);
+            if (saveMastery(summoner)){
+                logger.info("Updated summoner: " + summoner.getGameName());
+            } else {
+                logger.error("Could not update " + summoner.getGameName());
+                return false;
+            }
+        } catch (Exception e) {
+            logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
+            return false;
         }
         return true;
     }
@@ -389,7 +420,6 @@ public class SummonerRepository {
 
                 for (int i = 0; i < 3; i++) {
                     int champId = topChampionIds[i];
-                    boolean isChampIdFound = false;
 
                     Iterator<String> keys = championsData.keys();
                     while (keys.hasNext()) {
@@ -398,14 +428,8 @@ public class SummonerRepository {
                         if (champion.getString("key").equals(String.valueOf(champId))) {
                             championNames[i] = champion.getString("name");
                             championImages[i] = champion.getJSONObject("image").getString("full");
-                            isChampIdFound = true;
                             break;
                         }
-                    }
-
-                    if (!isChampIdFound) {
-                        logger.error("Champion ID not found: " + champId);
-                        // Set default values or handle the error as appropriate
                     }
                 }
             }catch (Exception e){

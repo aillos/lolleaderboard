@@ -6,6 +6,7 @@ import { Home } from "./pages/Home";
 import { Manage } from "./pages/Manage";
 import {Header} from "./Header.jsx";
 import 'bootstrap/dist/css/bootstrap.css';
+import {Footer} from "./Footer";
 
 const App = () => {
 

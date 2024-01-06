@@ -5,6 +5,7 @@ import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import {faAward, faCircle, faCross, faMedal, faShield, faSignal, faTrophy} from "@fortawesome/free-solid-svg-icons";
 import {faPatreon} from "@fortawesome/free-brands-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Footer} from "../Footer";
 
 export const Home = () => {
     const [patchVersion, setPatchVersion] = useState(null);
@@ -173,6 +174,8 @@ export const Home = () => {
                 </div>
             </div>
             {contents}
+            <Footer />
         </div>
+
     );
 };

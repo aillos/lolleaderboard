@@ -440,3 +440,35 @@ h2{
   margin-top:2px;
   font-size: 14px;
 }
+.footer{
+  width:100%;
+  margin: 100px auto -100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:30px;
+}
+
+.techstackFooter{
+  display: flex;
+  width:300px;
+  margin:0 20px 0 20px;
+  justify-content: center;
+  gap:10px;
+  align-items: center;
+}
+
+
+.socialsFooter{
+  display: flex;
+  align-items: center;
+  width:100px;
+  margin:0 20px 0 70px;
+  cursor:pointer;
+  gap:10px;
+}
+
+.copyrightFooter{
+  width:150px;
+  margin:0 20px 0 20px;
+}

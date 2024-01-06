@@ -1,15 +1,12 @@
 package com.andreassolli.leaderboard.controllers;
 
-import com.andreassolli.leaderboard.models.Summoner;
 import com.andreassolli.leaderboard.models.SummonerDto;
 import com.andreassolli.leaderboard.repositories.SummonerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -58,8 +55,14 @@ public class SummonerController {
     }
 
     @GetMapping("/api/mastery/{name}/{tag}/{patch}")
-    public boolean championMaster(@PathVariable String name, @PathVariable String tag, @PathVariable String patch){
-        return repo.setChampionMastery(name, tag, patch);
+    public void championMaster(@PathVariable String name, @PathVariable String tag, @PathVariable String patch){
+        repo.setChampionMastery(name, tag, patch);
+    }
+
+    @GetMapping("/api/updateMastery")
+    public boolean updateMastery(){
+        String patch = "13.24.1";
+        return repo.updateChampionMastery(patch);
     }
 
 }

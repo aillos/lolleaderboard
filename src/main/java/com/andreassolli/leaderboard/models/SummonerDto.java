@@ -12,7 +12,27 @@ public class SummonerDto {
     private int wins;
     private int losses;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses) {
+    private String[] championMastery;
+
+    private String[] championImages;
+
+    public String[] getChampionMastery() {
+        return championMastery;
+    }
+
+    public void setChampionMastery(String[] championMastery) {
+        this.championMastery = championMastery;
+    }
+
+    public String[] getChampionImages() {
+        return championImages;
+    }
+
+    public void setChampionImages(String[] championImages) {
+        this.championImages = championImages;
+    }
+
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -23,6 +43,8 @@ public class SummonerDto {
         this.summonerId = summonerId;
         this.wins=wins;
         this.losses=losses;
+        this.championMastery=championMastery;
+        this.championImages=championImages;
     }
 
     public SummonerDto() {

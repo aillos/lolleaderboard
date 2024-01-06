@@ -328,15 +328,19 @@ public class SummonerRepository {
         return result.verified;
     }
 
-    public boolean saveMastery(Summoner summoner){
-        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, puuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public boolean saveMastery(Summoner summoner) {
+        String sql = "UPDATE Summoner SET championMastery=?, championImages=? WHERE gameName=? AND tagLine=?";
         try {
+            String championMasteryString = String.join(",", summoner.getChampionMastery());
+            String championImagesString = String.join(",", summoner.getChampionImages());
             db.update(sql,
-                    summoner.getChampionMastery(),
-                    summoner.getChampionImages());
+                    championMasteryString,
+                    championImagesString,
+                    summoner.getGameName(),
+                    summoner.getTagLine());
             return true;
         } catch (Exception e) {
-            logger.error("Error inserting summoner: " + e);
+            logger.error("Error updating summoner: " + e);
             return false;
         }
     }
@@ -345,7 +349,10 @@ public class SummonerRepository {
         List<Summoner> summoners = getAllSummoners();
         for (Summoner summoner : summoners) {
             try {
-                setChampionMastery(summoner.getGameName(), summoner.getTagLine(), patchVersion);
+                String[][] mastery;
+                mastery=setChampionMastery(summoner.getGameName(), summoner.getTagLine(), patchVersion);
+                summoner.setChampionMastery(mastery[0]);
+                summoner.setChampionImages(mastery[1]);
                 if (saveMastery(summoner)){
                     logger.info("Updated summoner: " + summoner.getGameName());
                 } else {
@@ -360,17 +367,15 @@ public class SummonerRepository {
         return true;
     }
 
-    public boolean setChampionMastery(String name, String tag, String patchVersion){
+    public String[][] setChampionMastery(String name, String tag, String patchVersion){
         String IdToChampUrl = "https://ddragon.leagueoflegends.com/cdn/" + patchVersion + "/data/en_US/champion.json";
         String [] championNames = new String[3];
         String [] championImages = new String[3];
-        SummonerNameIconDto summonerPuuid = restTemplate.getForObject(puuidByTag + name + "/" + tag + getApiUrl(), SummonerNameIconDto.class);
-        String puuid = summonerPuuid.getId();
+        GameNameDto summonerPuuid = restTemplate.getForObject(puuidByTag + name + "/" + tag + getApiUrl(), GameNameDto.class);
+        String puuid = summonerPuuid.getPuuid();
         String MasteryChampions = "https://euw1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/" + puuid + getApiUrl();
-
         try {
             ChampionMastery[] championMasteries = restTemplate.getForObject(MasteryChampions, ChampionMastery[].class);
-
             Arrays.sort(championMasteries, (a, b) -> Integer.compare(b.getChampionPoints(), a.getChampionPoints()));
 
             int[] topChampionIds = new int[3];
@@ -378,28 +383,43 @@ public class SummonerRepository {
                 topChampionIds[i] = championMasteries[i].getChampionId();
             }
 
-            JSONObject championsData = restTemplate.getForObject(IdToChampUrl, JSONObject.class).getJSONObject("data");
+            try {
+                ResponseEntity<String> response = restTemplate.getForEntity(IdToChampUrl, String.class);
+                JSONObject championsData = new JSONObject(response.getBody()).getJSONObject("data");
 
-            for (int i = 0; i < 3; i++) {
-                int champId = topChampionIds[i];
+                for (int i = 0; i < 3; i++) {
+                    int champId = topChampionIds[i];
+                    boolean isChampIdFound = false;
 
-                Iterator<String> keys = championsData.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    JSONObject champion = championsData.getJSONObject(key);
-                    if (champion.getString("key").equals(String.valueOf(champId))) {
-                        championNames[i] = champion.getString("name");
-                        championImages[i] = champion.getJSONObject("image").getString("full");
-                        break;
+                    Iterator<String> keys = championsData.keys();
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        JSONObject champion = championsData.getJSONObject(key);
+                        if (champion.getString("key").equals(String.valueOf(champId))) {
+                            championNames[i] = champion.getString("name");
+                            championImages[i] = champion.getJSONObject("image").getString("full");
+                            isChampIdFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!isChampIdFound) {
+                        logger.error("Champion ID not found: " + champId);
+                        // Set default values or handle the error as appropriate
                     }
                 }
+            }catch (Exception e){
+                logger.error("Error" + e);
             }
-            return true;
-        } catch (Exception e) {
-            // Handle exceptions
-            return false;
-        }
 
+            String[][] result = new String[2][3];
+            result[0]=championImages;
+            result[1]=championNames;
+            return result;
+        } catch (Exception e) {
+            logger.error("Error in setChampionMastery: ", e);
+            return new String[2][3];
+        }
     }
 
 }

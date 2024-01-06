@@ -17,9 +17,8 @@ public class MailController {
     @PostMapping("/api/sendMail")
     public void sendMail(@RequestBody MailForm mailForm) {
         emailService.sendSimpleMessage(
-                mailForm.getEmail(),
-                "New Contact Request",
-                "Name: " + mailForm.getName() + "\nMessage: " + mailForm.getMessage()
+                "Add Summoner Request",
+                "Name: " + mailForm.getName() + "\nTag: " + mailForm.getTag()
         );
     }
 }

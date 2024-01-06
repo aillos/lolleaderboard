@@ -2,8 +2,7 @@ package com.andreassolli.leaderboard.models;
 
 public class MailForm {
     private String name;
-    private String email;
-    private String message;
+    private String tag;
 
     public String getName() {
         return name;
@@ -13,19 +12,11 @@ public class MailForm {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getTag() {
+        return tag;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

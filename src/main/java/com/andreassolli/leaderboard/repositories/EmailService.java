@@ -18,10 +18,10 @@ public class EmailService {
 
     public void sendSimpleMessage(MailForm mailForm) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mailForm.getEmail());
+        message.setFrom("leaderboard@lol.com");
         message.setTo(myEmailAddress);
-        message.setSubject("New Contact Request from " + mailForm.getName());
-        message.setText("From: " + mailForm.getName() + " (" + mailForm.getEmail() + ")\n\n" + mailForm.getMessage());
+        message.setSubject("Add Summoner Request from " + mailForm.getName());
+        message.setText("From: " + mailForm.getName() + mailForm.getTag());
         mailSender.send(message);
     }
 }

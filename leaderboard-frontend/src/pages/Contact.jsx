@@ -21,15 +21,15 @@ function Contact() {
     };
 
     return (
-        <Form>
-            <Form.Group className="mb-3" controlId="formGroupPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password" />
+        <Form className={"contactForm"}>
+            <Form.Group className="mb-3" controlId="formGroupName">
+                <Form.Label>Input Name and Tagline</Form.Label>
+                <Form.Control type="text" placeholder="Name" />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formGroupEmail">
+            <Form.Group className="mb-3" controlId="formGroupTag">
                 <InputGroup>
                     <InputGroup.Text>#</InputGroup.Text>
-                <Form.Control type="email" placeholder="Enter email" />
+                <Form.Control type="text" placeholder="Tag" />
                 </InputGroup>
             </Form.Group>
         </Form>

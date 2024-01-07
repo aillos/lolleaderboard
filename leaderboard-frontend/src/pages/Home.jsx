@@ -28,7 +28,7 @@ export const Home = () => {
     };
     const winrate = (wins, losses) => {
         if (wins + losses === 0) return '0%';
-        return `${((wins / (wins + losses)) * 100).toFixed(2)}%`;
+        return `${((wins / (wins + losses)) * 100).toFixed(1)}%`;
     };
 
     const update = async () => {
@@ -185,9 +185,22 @@ export const Home = () => {
                         <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt={`${summoner.gameName} avatar`} />
                     </div>
                     <div className="player-info">
-                        <h3>{summoner.gameName}</h3>
-                        <p>{summoner.tier} {summoner.rank} - {summoner.lp} LP</p>
-                        <p>Winrate: {winrate(summoner.wins, summoner.losses)}</p>
+                        <div className={"rankAndName"}>
+                            <h2>{summoner.gameName}</h2>
+                            <p>{summoner.tier} {summoner.rank} - {summoner.lp} LP</p>
+                        </div>
+                        <div className={"winsLosses"}>
+                            <p>{summoner.wins} wins</p>
+                            <p>{summoner.losses} losses</p>
+                        </div>
+                        <div className={"winRate"}>
+                            <div className={"winrate1"}>
+                            <p> {winrate(summoner.wins, summoner.losses)}</p>
+                            </div>
+                            <div className={"winrate2"}>
+                                <p>WINRATE</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             ))}

@@ -518,13 +518,14 @@ h2{
 }
 
 .player-rank {
-  margin-right: 10px;
+  margin-left:15px;
   width:40px;
   height:40px;
 }
 
 .player-avatar img {
-  margin-left:15px;
+  margin-left:35px;
+  margin-right:-30px;
   width: 70px; /* Adjust as needed */
   height: 70px; /* Adjust as needed */
   border-radius: 50%;
@@ -536,7 +537,11 @@ h2{
 
 .player-info p {
   margin: 0;
-  font-size: 0.8rem;
+}
+
+.player-info{
+  display: flex;
+  width: 100%;
 }
 
 .rankingIcon{
@@ -548,4 +553,46 @@ h2{
 .placementCircle{
   height:18px;
   width:18px;
+}
+
+.rankAndName{
+  height:50px;
+  width:240px;
+  margin: auto;
+  text-align: center;
+
+}
+
+.winsLosses{
+  width:70px;
+  height:100%;
+  margin: auto;
+  text-align: center;
+  font-size:24px;
+}
+
+.winsLosses > p{
+  font-size: 14px;
+
+}
+
+.winRate{
+  margin: auto 0 auto auto;
+  width:80px;
+  height:100%;
+  font-size:12px;
+}
+
+.rankAndName > h2 {
+  font-size: 24px;
+  margin-bottom:0;
+}
+
+.winrate1{
+  font-size:16px;
+  font-weight: bold;
+}
+
+.winrate2{
+
 }

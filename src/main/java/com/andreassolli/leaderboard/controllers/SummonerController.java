@@ -56,7 +56,7 @@ public class SummonerController {
 
     @GetMapping("/api/mastery/{name}/{tag}/{patch}")
     public void championMaster(@PathVariable String name, @PathVariable String tag, @PathVariable String patch){
-        repo.setChampionMastery(name, tag, patch);
+        repo.updateChampionForSummoner(name, tag, patch);
     }
 
     @GetMapping("/api/updateMastery/{patch}")

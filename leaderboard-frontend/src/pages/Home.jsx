@@ -101,22 +101,26 @@ export const Home = () => {
         let color = 'gray';
         let icon;
         let icon2;
+        let medal;
 
         if (index === 0) {
-            color = 'red';
+            color = '#FFD700';
             icon = faMedal;
             icon2 = faCircle;
+            medal = '#181818';
         } else if (index === 1) {
-            color = 'yellow';
+            color = '#C0C0C0';
             icon = faMedal;
             icon2 = faCircle;
+            medal = '#181818';
         } else if (index === 2){
-            color = '';
+            color = '#CD7F32';
             icon = faMedal;
             icon2 = faCircle;
+            medal = '#181818';
         }
 
-        return { color, icon, icon2 };
+        return { color, icon, icon2, medal };
     };
 
     const renderSummoner2 = (summoners, winrate, patchVersion) => (
@@ -132,7 +136,7 @@ export const Home = () => {
                                         className={"statusIcon"}
                                     />
                                     <FontAwesomeIcon icon={getPlacement(index).icon2} transform={"shrink-8 down-2"} className={"placementCircle"} color={getPlacement(index).color}/>
-                                <span className="fa-layers-text placementText">{index + 1}</span>
+                                <span className="fa-layers-text placementText" style={{color: getPlacement(index).medal}}>{index + 1}</span>
                                 </span>
                         </div>
                         <div className="summonerIcon">
@@ -165,6 +169,10 @@ export const Home = () => {
         </div>
     );
 
+    const games = (wins, losses) =>{
+        return wins+losses;
+    }
+
     const renderSummoner = (summoners, winrate, patchVersion) => (
         <div className="player-cards-container">
             {summoners.map((summoner, index) => (
@@ -178,7 +186,7 @@ export const Home = () => {
                                         transform={"down-1"}
                                     />
                                     <FontAwesomeIcon icon={getPlacement(index).icon2} transform={"down-8 right-10"} className={"placementCircle"} color={getPlacement(index).color}/>
-                                <span className="fa-layers-text placementText" >{index + 1}</span>
+                                <span className="fa-layers-text placementText" style={{color: getPlacement(index).medal}} >{index + 1}</span>
                             </span>
                     </div>
                     <div className="player-avatar">
@@ -186,14 +194,75 @@ export const Home = () => {
                     </div>
                     <div className="player-info">
                         <div className={"rankAndName"}>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                    <Tooltip
+                                        id={`tooltip-top`}>
+                                        {summoner.gameName} #{summoner.tagLine}
+                                    </Tooltip>
+                                }
+                            >
                             <h2>{summoner.gameName}</h2>
+                            </OverlayTrigger>
                             <p>{summoner.tier} {summoner.rank} - {summoner.lp} LP</p>
                         </div>
                         <div className={"winsLosses"}>
-                            <p>{summoner.wins} wins</p>
-                            <p>{summoner.losses} losses</p>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                    <Tooltip
+                                        id={`tooltip-top`}>
+                                        {summoner.championImages[0]}
+                                    </Tooltip>
+                                }
+                            >
+                            <div className="image-container">
+                            <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championMastery[0]}`} alt={`${summoner.championImages[0]} champion`} />
+                            </div>
+                            </OverlayTrigger>
+                            <div className={"image-bottom"}>
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                        <Tooltip
+                                            id={`tooltip-top`}>
+                                            {summoner.championImages[1]}
+                                        </Tooltip>
+                                    }
+                                >
+                            <div className="image-container">
+                                <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championMastery[1]}`} alt={`${summoner.championImages[1]} champion`} />
+                            </div>
+                                </OverlayTrigger>
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                        <Tooltip
+                                            id={`tooltip-top`}>
+                                            {summoner.championImages[2]}
+                                        </Tooltip>
+                                    }
+                                >
+                            <div className="image-container">
+                                <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championMastery[2]}`} alt={`${summoner.championImages[2]} champion`} />
+                            </div>
+                                </OverlayTrigger>
+                            </div>
                         </div>
+                        <OverlayTrigger
+                            placement="right"
+                            overlay={
+                                <Tooltip
+                                    id={`tooltip-right`}>
+                                    {summoner.wins} wins<br />
+                                    {summoner.losses} losses<br />
+                                    {games(summoner.wins,summoner.losses)} games<br />
+                                </Tooltip>
+                            }
+                        >
                         <div className={"winRate"}>
+
                             <div className={"winrate1"}>
                             <p> {winrate(summoner.wins, summoner.losses)}</p>
                             </div>
@@ -201,6 +270,7 @@ export const Home = () => {
                                 <p>WINRATE</p>
                             </div>
                         </div>
+                        </OverlayTrigger>
                     </div>
                 </div>
             ))}

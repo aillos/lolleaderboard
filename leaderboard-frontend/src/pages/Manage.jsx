@@ -108,6 +108,7 @@ export const Manage = () => {
             const response = await axios.get(`/api/add/${name}/${tag}`);
             if (response.data === true) {
                 setResponseText("Successfully added " + name + "#" + tag);
+                await axios.get(`/api/mastery/${name}/${tag}/${patchVersion}`);
             } else {
                 setResponseText("Failed to add " + name + "#" + tag);
             }

@@ -429,6 +429,17 @@ h2{
   color: var(--color-foreground);
 }
 
+#tooltip-right .tooltip-arrow::before {
+  border-right-color: var(--color-background);
+}
+
+#tooltip-right > .tooltip-inner {
+  padding:5px;
+  border-radius: 5px;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
 #tooltip-top .tooltip-arrow::before {
   border-top-color: var(--color-background);
 }
@@ -444,12 +455,12 @@ h2{
 .placementText{
   font-weight: bold;
   margin-top:7px;
-  margin-left:9px;
+  margin-left:10px;
   font-size: 24px;
 }
 .footer{
   width:600px;
-  margin: 100px auto -100%;
+  margin: 100px auto -80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -503,6 +514,7 @@ h2{
   flex-direction: column;
   align-items: center;
   margin-top:30px;
+  width:600px;
 }
 
 .player-card {
@@ -525,10 +537,14 @@ h2{
 
 .player-avatar img {
   margin-left:35px;
-  margin-right:-30px;
+  margin-right:-50px;
   width: 70px; /* Adjust as needed */
   height: 70px; /* Adjust as needed */
   border-radius: 50%;
+}
+
+.player-avatar{
+  width:100px;
 }
 
 .player-info h3 {
@@ -541,7 +557,7 @@ h2{
 
 .player-info{
   display: flex;
-  width: 100%;
+  width: 500px;
 }
 
 .rankingIcon{
@@ -557,7 +573,7 @@ h2{
 
 .rankAndName{
   height:50px;
-  width:240px;
+  width:300px;
   margin: auto;
   text-align: center;
 
@@ -566,7 +582,7 @@ h2{
 .winsLosses{
   width:70px;
   height:100%;
-  margin: auto;
+  margin: auto auto auto -30px;
   text-align: center;
   font-size:24px;
 }
@@ -589,10 +605,39 @@ h2{
 }
 
 .winrate1{
-  font-size:16px;
+  font-size:20px;
   font-weight: bold;
 }
 
 .winrate2{
+  font-size: 14px;
+}
+
+.image-container {
+  margin:auto;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  border-radius: 50%; /* To maintain the circular shape */
+}
+
+.winsLosses > .image-container > img {
+  display: block;
+  width: calc(100% + 5px); /* Adjust this to effectively zoom in */
+  height: calc(100% + 5px); /* Adjust this to effectively zoom in */
+  margin: -2px; /* Half of the added width/height to center the image */
+}
+
+.image-bottom > .image-container > img {
+  display: block;
+  width: calc(100% + 5px);
+  height: calc(100% + 5px);
+  margin: -2px;
+}
+
+.image-bottom{
+  margin-top:5px;
+  display: flex;
+  width:70px;
 
 }

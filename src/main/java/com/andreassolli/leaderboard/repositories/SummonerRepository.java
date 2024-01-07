@@ -34,15 +34,8 @@ public class SummonerRepository {
     @Value("${PASSWORD}")
     private String managePassword;
 
-    @Value("${VERIFY}")
-    private String verify;
-
     private String getPassword(){
         return managePassword;
-    }
-
-    private String getVerify(){
-        return verify;
     }
 
     private String getApiUrl() {

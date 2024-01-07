@@ -520,8 +520,8 @@ h2{
 .player-card {
   display: flex;
   align-items: center;
-  background-color: var(--color-accent-border); /* Your desired background color */
-  color: var(--color-text); /* Your desired text color */
+  background-color: var(--color-accent-border);
+  color: var(--color-text);
   border-radius: 20px;
   margin-bottom: 10px;
   padding: 10px;

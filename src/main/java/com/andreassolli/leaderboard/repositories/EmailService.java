@@ -21,7 +21,7 @@ public class EmailService {
         message.setFrom("leaderboard@lol.com");
         message.setTo(myEmailAddress);
         message.setSubject("Add Summoner Request from " + mailForm.getName());
-        message.setText("From: " + mailForm.getName() + mailForm.getTag());
+        message.setText("From: " + mailForm.getName() + " #" + mailForm.getTag());
         mailSender.send(message);
     }
 }

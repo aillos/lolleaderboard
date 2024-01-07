@@ -474,5 +474,22 @@ h2{
 }
 
 .contactForm{
-  text-align: left;
+  width:400px;
+}
+
+.contactForm > h1{
+  font-size:28px;
+  margin-bottom:20px;
+}
+
+.submitForm{
+  margin-left:auto;
+}
+
+.submitForm, .backForm{
+  width:85px;
+}
+
+.addButton{
+  display: flex;
 }

@@ -119,14 +119,26 @@ export const Home = () => {
         return { color, icon, icon2 };
     };
 
-    const renderSummoner = (summoners, winrate, patchVersion) => (
+    const renderSummoner2 = (summoners, winrate, patchVersion) => (
         <div>
             {summoners.map((summoner, index) => (
                 <Card className="playerCard" key={summoner.gameName + summoner.tagLine}>
                     <Card.Body>
+                        <div className="icon-container">
+                                <span className="fa-layers fa-fw">
+                                    <FontAwesomeIcon
+                                        icon={getPlacement(index).icon}
+                                        style={{ color: getPlacement(index).color }}
+                                        className={"statusIcon"}
+                                    />
+                                    <FontAwesomeIcon icon={getPlacement(index).icon2} transform={"shrink-8 down-2"} className={"placementCircle"} color={getPlacement(index).color}/>
+                                <span className="fa-layers-text placementText">{index + 1}</span>
+                                </span>
+                        </div>
                         <div className="summonerIcon">
                             <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt="" />
                         </div>
+                        <div className={"summonerName"}>
                         <OverlayTrigger
                             placement="top"
                             overlay={
@@ -137,20 +149,10 @@ export const Home = () => {
                             }
                         >
                         <Card.Title>
-                            <div className="icon-container">
-                                <span className="fa-layers fa-fw">
-                                    <FontAwesomeIcon
-                                    icon={getPlacement(index).icon}
-                                    style={{ color: getPlacement(index).color }}
-                                    className={"statusIcon"}
-                                    />
-                                    <FontAwesomeIcon icon={getPlacement(index).icon2} transform={"shrink-8 down-2"} className={"placementCircle"} color={getPlacement(index).color}/>
-                                <span className="fa-layers-text placementText">{index + 1}</span>
-                                </span>
-                            </div>
-                             {index + 1}. {summoner.gameName}
+                             {summoner.gameName}
                         </Card.Title>
                         </OverlayTrigger>
+                        </div>
                         <Card.Text>
                             <p>Rank: {summoner.tier} {summoner.rank} {summoner.lp}</p>
                             <p>Wins: {summoner.wins}</p>
@@ -159,6 +161,35 @@ export const Home = () => {
                         </Card.Text>
                     </Card.Body>
                 </Card>
+            ))}
+        </div>
+    );
+
+    const renderSummoner = (summoners, winrate, patchVersion) => (
+        <div className="player-cards-container">
+            {summoners.map((summoner, index) => (
+                <div className="player-card" key={summoner.gameName + summoner.tagLine}>
+                    <div className="player-rank">
+                            <span className="fa-layers fa-fw">
+                                    <FontAwesomeIcon
+                                        icon={getPlacement(index).icon}
+                                        style={{ color: getPlacement(index).color }}
+                                        className={"rankingIcon"}
+                                        transform={"down-1"}
+                                    />
+                                    <FontAwesomeIcon icon={getPlacement(index).icon2} transform={"down-8 right-10"} className={"placementCircle"} color={getPlacement(index).color}/>
+                                <span className="fa-layers-text placementText" >{index + 1}</span>
+                            </span>
+                    </div>
+                    <div className="player-avatar">
+                        <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt={`${summoner.gameName} avatar`} />
+                    </div>
+                    <div className="player-info">
+                        <h3>{summoner.gameName}</h3>
+                        <p>{summoner.tier} {summoner.rank} - {summoner.lp} LP</p>
+                        <p>Winrate: {winrate(summoner.wins, summoner.losses)}</p>
+                    </div>
+                </div>
             ))}
         </div>
     );

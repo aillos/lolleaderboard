@@ -95,6 +95,7 @@ export const Home = () => {
     useEffect(() => {
         populateSummoners();
         getPatchVersion();
+        databaseUrl();
     }, []);
 
     const getPlacement = (index) => {
@@ -171,6 +172,11 @@ export const Home = () => {
 
     const games = (wins, losses) =>{
         return wins+losses;
+    }
+
+    const databaseUrl = async() => {
+        const response = await axios.get('/api/database');
+        console.log(response.data);
     }
 
     const renderSummoner = (summoners, winrate, patchVersion) => (

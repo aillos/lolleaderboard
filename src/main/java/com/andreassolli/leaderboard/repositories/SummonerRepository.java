@@ -34,6 +34,11 @@ public class SummonerRepository {
     @Value("${PASSWORD}")
     private String managePassword;
 
+    @Value("${DATABASEURL}")
+    private String databaseUrl;
+
+    private String getDatabase(){ return databaseUrl; }
+
     private String getPassword(){
         return managePassword;
     }
@@ -63,6 +68,11 @@ public class SummonerRepository {
             logger.error("Error in getting all summoners " + e);
             return null;
         }
+    }
+
+    public String databaseUrl(){
+        return getDatabase();
+
     }
 
     public List<Summoner> getAllSummoners() {

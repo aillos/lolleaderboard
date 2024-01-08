@@ -3,6 +3,7 @@ package com.andreassolli.leaderboard.repositories;
 import com.andreassolli.leaderboard.models.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import java.util.Optional;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class SummonerRepository {
     @Value("${RIOT_KEY}")
     private String riotKey;
@@ -48,8 +50,7 @@ public class SummonerRepository {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Autowired
-    private JdbcTemplate db;
+    private final JdbcTemplate db;
 
     private Logger logger = LoggerFactory.getLogger(SummonerRepository.class);
 

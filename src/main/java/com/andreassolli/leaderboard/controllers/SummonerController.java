@@ -64,9 +64,4 @@ public class SummonerController {
         return repo.updateChampionMastery(patch);
     }
 
-    @GetMapping("/api/database")
-    public String database(){
-        return repo.databaseUrl();
-    }
-
 }

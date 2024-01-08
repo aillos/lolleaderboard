@@ -134,7 +134,7 @@
                         <configuration>
                             <target>
                                 <copy todir="${project.build.directory}/classes/public">
-                                    <fileset dir="${project.basedir}/leaderboard-frontend/build"/>
+                                    <fileset dir="${project.basedir}/leaderboard-frontend/dist"/>
                                 </copy>
                             </target>
                         </configuration>

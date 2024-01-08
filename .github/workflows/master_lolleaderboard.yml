@@ -14,6 +14,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug secrets
+        env:
+          RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
+          EMAILPASS: ${{ secrets.EMAILPASS }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          DATABASEURL: ${{ secrets.DATABASEURL }}
+        run: |
+          echo "EMAILPASS: $EMAILPASS"
+          echo "PASSWORD: $PASSWORD"
+          echo "DATABASEURL: $DATABASEURL"
+          echo "RIOT_API_KEY: $RIOT_API_KEY"
       - uses: actions/checkout@v4
 
       - name: Set up Java version
@@ -22,6 +33,11 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
+        env:
+          RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
+          EMAILPASS: ${{ secrets.EMAILPASS }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          DATABASEURL: ${{ secrets.DATABASEURL }}
         run: mvn clean install
 
       - name: Upload artifact for deployment job

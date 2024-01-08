@@ -17,7 +17,7 @@ public class ApplicationConfig {
     public DataSource dataSource(){
         return DataSourceBuilder
                 .create()
-                .url(databaseUrl)
+                .url("jdbc:"+databaseUrl)
                 .build();
     }
 }

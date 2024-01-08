@@ -10,14 +10,19 @@ import javax.sql.DataSource;
 @Configuration
 public class ApplicationConfig {
 
-    @Value("DATABASEURL")
+    @Value("${DATABASEURL}")
     private String databaseUrl;
+
+    private String getDatabase(){
+        return databaseUrl;
+
+    }
 
     @Bean
     public DataSource dataSource(){
         return DataSourceBuilder
                 .create()
-                .url("jdbc:"+databaseUrl)
+                .url("jdbc:"+getDatabase())
                 .build();
     }
 }

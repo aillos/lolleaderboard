@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from "react";
-import axios from "axios";
+import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGithub, faInstagram, faJava, faReact, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
@@ -95,7 +94,7 @@ export const Footer = () => {
                 </OverlayTrigger>
             </div>
             <div className={"copyrightFooter"} onClick={goToManage}>
-                ©2024 Andreas Solli
+                ©2024 - Andreas Solli
             </div>
         </div>
     );

@@ -15,8 +15,12 @@ public class Summoner {
     private String[] championMastery;
     private String[] championImages;
 
+    private String[] masteryPoints;
 
-    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid, String[] championMastery, String[] championImages) {
+    private int hotStreak;
+
+
+    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -30,11 +34,28 @@ public class Summoner {
         this.puuid=puuid;
         this.championMastery=championMastery;
         this.championImages=championImages;
+        this.masteryPoints=masteryPoints;
+        this.hotStreak=hotStreak;
     }
 
     public Summoner() {
     }
 
+    public int getHotStreak() {
+        return hotStreak;
+    }
+
+    public void setHotStreak(int hotStreak) {
+        this.hotStreak = hotStreak;
+    }
+
+    public String[] getMasteryPoints() {
+        return masteryPoints;
+    }
+
+    public void setMasteryPoints(String[] masteryPoints) {
+        this.masteryPoints = masteryPoints;
+    }
     public String[] getChampionMastery() {
         return championMastery;
     }

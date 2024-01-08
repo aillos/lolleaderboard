@@ -100,6 +100,31 @@ export const Home = () => {
         getPatchVersion();
     }, []);
 
+    const getRankColor = (rank) => {
+        const rankColors = {
+            "IRON": "#c0c0c0",
+            "BRONZE": "#ad5600",
+            "SILVER": "#d2d2d2",
+            "GOLD": "#ffd700",
+            "PLATINUM": "#00bda7",
+            "EMERALD": "#3eab62",
+            "DIAMOND": "#00a1e9",
+            "MASTER": "#ac39ac",
+            "GRANDMASTER": "#d32f2f",
+            "CHALLENGER": "#21fff7"
+        };
+
+        return rankColors[rank] || "#c7c7c7";
+    };
+
+    const hotStreak = (
+        <div className="button updateB" onClick={update}>
+            <FontAwesomeIcon icon={faRefresh} />
+            Update
+        </div>
+    );
+
+
     const getPlacement = (index) => {
         let color = 'gray';
         let icon;
@@ -129,6 +154,11 @@ export const Home = () => {
     const games = (wins, losses) =>{
         return wins+losses;
     }
+
+    const formatNumberWithSpaces = (number) => {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    };
+
 
     const renderSummoner = (summoners, winrate, patchVersion) => (
         <div className="player-cards-container">
@@ -162,7 +192,12 @@ export const Home = () => {
                             >
                             <h2>{summoner.gameName}</h2>
                             </OverlayTrigger>
-                            <p>{summoner.tier} {summoner.rank} - {summoner.lp} LP</p>
+                            <div>
+                                <span style={{ color: getRankColor(summoner.tier), fontWeight: "bold"}}>
+                                    {summoner.tier} {summoner.rank}
+                                </span>
+                                <span> {summoner.lp} LP</span>
+                            </div>
                         </div>
                         <div className={"winsLosses"}>
                             <OverlayTrigger
@@ -170,12 +205,13 @@ export const Home = () => {
                                 overlay={
                                     <Tooltip
                                         id={`tooltip-top`}>
-                                        {summoner.championImages[0]}
+                                        {summoner.championMastery[0]}<br/>
+                                        {formatNumberWithSpaces(summoner.masteryPoints[0])} points
                                     </Tooltip>
                                 }
                             >
-                            <div className="image-container">
-                            <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championMastery[0]}`} alt={`${summoner.championImages[0]} champion`} />
+                            <div className="image-container2">
+                            <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championImages[0]}`} alt={`${summoner.championImages[0]} champion`} />
                             </div>
                             </OverlayTrigger>
                             <div className={"image-bottom"}>
@@ -184,12 +220,13 @@ export const Home = () => {
                                     overlay={
                                         <Tooltip
                                             id={`tooltip-top`}>
-                                            {summoner.championImages[1]}
+                                            {summoner.championMastery[2]}<br/>
+                                            {formatNumberWithSpaces(summoner.masteryPoints[2])} points
                                         </Tooltip>
                                     }
                                 >
                             <div className="image-container">
-                                <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championMastery[1]}`} alt={`${summoner.championImages[1]} champion`} />
+                                <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championImages[2]}`} alt={`${summoner.championImages[2]} champion`} />
                             </div>
                                 </OverlayTrigger>
                                 <OverlayTrigger
@@ -197,12 +234,13 @@ export const Home = () => {
                                     overlay={
                                         <Tooltip
                                             id={`tooltip-top`}>
-                                            {summoner.championImages[2]}
+                                            {summoner.championMastery[1]} <br/>
+                                            {formatNumberWithSpaces(summoner.masteryPoints[1])} points
                                         </Tooltip>
                                     }
                                 >
-                            <div className="image-container">
-                                <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championMastery[2]}`} alt={`${summoner.championImages[2]} champion`} />
+                            <div className="image-container1">
+                                <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championImages[1]}`} alt={`${summoner.championImages[1]} champion`} />
                             </div>
                                 </OverlayTrigger>
                             </div>

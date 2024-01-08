@@ -8,7 +8,17 @@ public class RankWinLossDto {
 
     private int losses;
 
+    private boolean hotStreak;
+
     private String queueType;
+
+    public boolean isHotStreak() {
+        return hotStreak;
+    }
+
+    public void setHotStreak(boolean hotStreak) {
+        this.hotStreak = hotStreak;
+    }
 
     public String getQueueType() {
         return queueType;

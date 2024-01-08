@@ -16,6 +16,38 @@ public class SummonerDto {
 
     private String[] championImages;
 
+    private String[] masteryPoints;
+
+    private int hotStreak;
+
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak) {
+        this.gameName = gameName;
+        this.tagLine = tagLine;
+        this.summonerName = summonerName;
+        this.rank = rank;
+        this.tier = tier;
+        this.lp = lp;
+        this.summonerIcon = summonerIcon;
+        this.summonerId = summonerId;
+        this.wins=wins;
+        this.losses=losses;
+        this.championMastery=championMastery;
+        this.championImages=championImages;
+        this.masteryPoints=masteryPoints;
+        this.hotStreak=hotStreak;
+    }
+
+    public SummonerDto() {
+    }
+
+    public int getHotStreak() {
+        return hotStreak;
+    }
+
+    public void setHotStreak(int hotStreak) {
+        this.hotStreak = hotStreak;
+    }
+
     public String[] getChampionMastery() {
         return championMastery;
     }
@@ -32,22 +64,13 @@ public class SummonerDto {
         this.championImages = championImages;
     }
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages) {
-        this.gameName = gameName;
-        this.tagLine = tagLine;
-        this.summonerName = summonerName;
-        this.rank = rank;
-        this.tier = tier;
-        this.lp = lp;
-        this.summonerIcon = summonerIcon;
-        this.summonerId = summonerId;
-        this.wins=wins;
-        this.losses=losses;
-        this.championMastery=championMastery;
-        this.championImages=championImages;
+
+    public String[] getMasteryPoints() {
+        return masteryPoints;
     }
 
-    public SummonerDto() {
+    public void setMasteryPoints(String[] masteryPoints) {
+        this.masteryPoints = masteryPoints;
     }
 
     public String getGameName() {

@@ -538,8 +538,8 @@ h2{
 .player-avatar img {
   margin-left:35px;
   margin-right:-50px;
-  width: 70px; /* Adjust as needed */
-  height: 70px; /* Adjust as needed */
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
 }
 
@@ -614,21 +614,44 @@ h2{
 }
 
 .image-container {
-  margin:auto;
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
   overflow: hidden;
-  border-radius: 50%; /* To maintain the circular shape */
+  border-radius: 50%;
+  margin: 3px 2px auto auto;
 }
 
-.winsLosses > .image-container > img {
+.image-container1 {
+  margin: auto auto 5px 5px;
+  width: 35px;
+  height: 35px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.image-container2 {
+  margin: 5px auto -4px;
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.winsLosses > .image-container2 > img {
   display: block;
-  width: calc(100% + 5px); /* Adjust this to effectively zoom in */
-  height: calc(100% + 5px); /* Adjust this to effectively zoom in */
-  margin: -2px; /* Half of the added width/height to center the image */
+  width: calc(100% + 5px);
+  height: calc(100% + 5px);
+  margin: -2px;
 }
 
 .image-bottom > .image-container > img {
+  display: block;
+  width: calc(100% + 5px);
+  height: calc(100% + 5px);
+  margin: -2px;
+}
+
+.image-bottom > .image-container1 > img {
   display: block;
   width: calc(100% + 5px);
   height: calc(100% + 5px);

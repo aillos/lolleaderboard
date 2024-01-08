@@ -4,8 +4,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGithub, faInstagram, faJava, faReact, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import {faCode} from "@fortawesome/free-solid-svg-icons";
+import {useNavigate} from "react-router-dom";
 
 export const Footer = () => {
+    const navigate = useNavigate();
 
     const navigateToTwitter = () => {
         window.open('https://twitter.com/aillostft', '_blank');
@@ -13,6 +15,10 @@ export const Footer = () => {
 
     const navigateToGithub = () => {
         window.open('https://github.com/aillos', '_blank');
+    };
+
+    const goToManage = () => {
+        navigate('/manage');
     };
 
     const navigateToInstagram = () => {
@@ -88,7 +94,7 @@ export const Footer = () => {
                 <FontAwesomeIcon icon={faCode} />
                 </OverlayTrigger>
             </div>
-            <div className={"copyrightFooter"}>
+            <div className={"copyrightFooter"} onClick={goToManage}>
                 ©2024 Andreas Solli
             </div>
         </div>

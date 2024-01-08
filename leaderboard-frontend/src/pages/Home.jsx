@@ -26,6 +26,7 @@ export const Home = () => {
     const goToContact = () => {
         navigate('/contact');
     };
+
     const winrate = (wins, losses) => {
         if (wins + losses === 0) return '0%';
         return `${((wins / (wins + losses)) * 100).toFixed(1)}%`;
@@ -122,52 +123,6 @@ export const Home = () => {
 
         return { color, icon, icon2, medal };
     };
-
-    const renderSummoner2 = (summoners, winrate, patchVersion) => (
-        <div>
-            {summoners.map((summoner, index) => (
-                <Card className="playerCard" key={summoner.gameName + summoner.tagLine}>
-                    <Card.Body>
-                        <div className="icon-container">
-                                <span className="fa-layers fa-fw">
-                                    <FontAwesomeIcon
-                                        icon={getPlacement(index).icon}
-                                        style={{ color: getPlacement(index).color }}
-                                        className={"statusIcon"}
-                                    />
-                                    <FontAwesomeIcon icon={getPlacement(index).icon2} transform={"shrink-8 down-2"} className={"placementCircle"} color={getPlacement(index).color}/>
-                                <span className="fa-layers-text placementText" style={{color: getPlacement(index).medal}}>{index + 1}</span>
-                                </span>
-                        </div>
-                        <div className="summonerIcon">
-                            <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt="" />
-                        </div>
-                        <div className={"summonerName"}>
-                        <OverlayTrigger
-                            placement="top"
-                            overlay={
-                                <Tooltip
-                                    id={`tooltip-top`}>
-                                    {summoner.gameName} #{summoner.tagLine}
-                                </Tooltip>
-                            }
-                        >
-                        <Card.Title>
-                             {summoner.gameName}
-                        </Card.Title>
-                        </OverlayTrigger>
-                        </div>
-                        <Card.Text>
-                            <p>Rank: {summoner.tier} {summoner.rank} {summoner.lp}</p>
-                            <p>Wins: {summoner.wins}</p>
-                            <p>Losses: {summoner.losses}</p>
-                            <p>Winrate: {winrate(summoner.wins, summoner.losses)}</p>
-                        </Card.Text>
-                    </Card.Body>
-                </Card>
-            ))}
-        </div>
-    );
 
     const games = (wins, losses) =>{
         return wins+losses;

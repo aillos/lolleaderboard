@@ -223,7 +223,7 @@ public class SummonerRepository {
     }
 
     private boolean insertSummoner(Summoner summoner) {
-        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, puuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             db.update(sql,
                     summoner.getGameName(),
@@ -236,6 +236,7 @@ public class SummonerRepository {
                     summoner.getSummonerIcon(),
                     summoner.getWins(),
                     summoner.getLosses(),
+                    summoner.getHotStreak(),
                     summoner.getPuuid());
             return true;
         } catch (Exception e) {

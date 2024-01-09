@@ -239,7 +239,7 @@ export const Home = () => {
                                 placement="bottom"
                                 overlay={
                                     <Tooltip id={`tooltip-bottom2`}>
-                                        Season 13: {summoner.prevRank}
+                                        S13: {summoner.prevRank}
                                     </Tooltip>
                                 }
                             >

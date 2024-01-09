@@ -574,7 +574,7 @@ h2{
 .rankAndName{
   height:50px;
   width:300px;
-  margin: auto;
+  margin: 17px auto auto;
   text-align: center;
 
 }

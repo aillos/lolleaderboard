@@ -94,7 +94,7 @@ export const Footer = () => {
                 </OverlayTrigger>
             </div>
             <div className={"copyrightFooter"} onClick={goToManage}>
-                ©2024 - Andreas Solli
+                ©2024 Andreas Solli
             </div>
         </div>
     );

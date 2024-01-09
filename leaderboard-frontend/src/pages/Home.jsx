@@ -5,7 +5,7 @@ import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import {
     faAward,
     faCircle,
-    faCross,
+    faCross, faFire,
     faMedal, faRefresh,
     faShield,
     faSignal,
@@ -160,6 +160,16 @@ export const Home = () => {
     };
 
 
+    const hotstreak = (hotstreak) =>{
+        return hotstreak === 1;
+    }
+
+    const streak = (
+        <span className="streak">
+            <FontAwesomeIcon icon={faFire} />
+        </span>
+    );
+
     const renderSummoner = (summoners, winrate, patchVersion) => (
         <div className="player-cards-container">
             {summoners.map((summoner, index) => (
@@ -190,7 +200,7 @@ export const Home = () => {
                                     </Tooltip>
                                 }
                             >
-                            <h2>{summoner.gameName}</h2>
+                            <h2>{hotstreak(summoner.hotstreak) ? streak : ""} {summoner.gameName}</h2>
                             </OverlayTrigger>
                             <div>
                                 <span style={{ color: getRankColor(summoner.tier), fontWeight: "bold"}}>

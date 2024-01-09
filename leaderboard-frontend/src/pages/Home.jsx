@@ -117,13 +117,6 @@ export const Home = () => {
         return rankColors[rank] || "#c7c7c7";
     };
 
-    const hotStreak = (
-        <div className="button updateB" onClick={update}>
-            <FontAwesomeIcon icon={faRefresh} />
-            Update
-        </div>
-    );
-
 
     const getPlacement = (index) => {
         let color = 'gray';
@@ -165,9 +158,19 @@ export const Home = () => {
     }
 
     const streak = (
+        <OverlayTrigger
+            placement="top"
+            overlay={
+                <Tooltip
+                    id={`tooltip-top`}>
+                    Winstreak
+                </Tooltip>
+            }
+        >
         <span className="streak">
             <FontAwesomeIcon icon={faFire} />
         </span>
+        </OverlayTrigger>
     );
 
     const renderSummoner = (summoners, winrate, patchVersion) => (
@@ -191,17 +194,21 @@ export const Home = () => {
                     </div>
                     <div className="player-info">
                         <div className={"rankAndName"}>
-                            <OverlayTrigger
-                                placement="top"
-                                overlay={
-                                    <Tooltip
-                                        id={`tooltip-top`}>
-                                        {summoner.gameName} #{summoner.tagLine}
-                                    </Tooltip>
-                                }
-                            >
-                            <h2>{hotstreak(summoner.hotstreak) ? streak : ""} {summoner.gameName}</h2>
-                            </OverlayTrigger>
+                            <div className="nameAndStreak">
+                                {hotstreak(summoner.hotStreak) ? streak : ""}
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                        <Tooltip id={`tooltip-top`}>
+                                            {summoner.gameName} #{summoner.tagLine}
+                                        </Tooltip>
+                                    }
+                                >
+                                    <h2 className="summoner-name">
+                                        {summoner.gameName}
+                                    </h2>
+                                </OverlayTrigger>
+                            </div>
                             <div>
                                 <span style={{ color: getRankColor(summoner.tier), fontWeight: "bold"}}>
                                     {summoner.tier} {summoner.rank}

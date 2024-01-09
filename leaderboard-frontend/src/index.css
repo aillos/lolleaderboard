@@ -667,5 +667,18 @@ h2{
 
 .streak{
   color:orange;
+  font-size:20px;
+  margin-top:-1px;
+  margin-right:5px;
+  margin-left:-20px;
+}
 
+.nameAndStreak{
+  display: flex;
+  justify-content: center;
+  margin-bottom:-5px;
+}
+
+.nameAndStreak > h2{
+  font-size:24px;
 }

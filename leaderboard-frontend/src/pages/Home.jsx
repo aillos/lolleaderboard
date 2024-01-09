@@ -60,12 +60,36 @@ export const Home = () => {
         }
     };
 
+    const assignPositions = (summoners) => {
+        let currentPosition = 1;
+        let skipCount = 1;
+        let lastRank = null, lastTier = null, lastLP = null;
+
+        summoners.forEach((summoner, index) => {
+            if (index === 0) {
+                summoner.position = currentPosition;
+            } else {
+                if (summoner.rank === lastRank && summoner.tier === lastTier && summoner.lp === lastLP) {
+                    summoner.position = currentPosition;
+                    skipCount++;
+                } else {
+                    currentPosition += skipCount;
+                    summoner.position = currentPosition;
+                    skipCount = 1;
+                }
+            }
+            lastRank = summoner.rank;
+            lastTier = summoner.tier;
+            lastLP = summoner.lp;
+        });
+    };
+
     const populateSummoners = async () => {
         try {
             const response = await axios.get('api/getAll');
-            console.log(response);
-            console.log(response.data);
-            setSummoners(response.data);
+            const summoners = response.data;
+            assignPositions(summoners);
+            setSummoners(summoners);
             setLoading(false);
             await lastTimeUpdated();
         } catch (error) {
@@ -174,19 +198,20 @@ export const Home = () => {
     );
 
     const renderSummoner = (summoners, winrate, patchVersion) => (
+
         <div className="player-cards-container">
             {summoners.map((summoner, index) => (
                 <div className="player-card" key={summoner.gameName + summoner.tagLine}>
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">
                                     <FontAwesomeIcon
-                                        icon={getPlacement(index).icon}
-                                        style={{ color: getPlacement(index).color }}
+                                        icon={getPlacement(summoner.position - 1).icon}
+                                        style={{ color: getPlacement(summoner.position - 1).color }}
                                         className={"rankingIcon"}
                                         transform={"down-1"}
                                     />
-                                    <FontAwesomeIcon icon={getPlacement(index).icon2} transform={"down-8 right-10"} className={"placementCircle"} color={getPlacement(index).color}/>
-                                <span className="fa-layers-text placementText" style={{color: getPlacement(index).medal}} >{index + 1}</span>
+                                    <FontAwesomeIcon icon={getPlacement(summoner.position - 1).icon2} transform={"down-8 right-10"} className={"placementCircle"} color={getPlacement(summoner.position - 1).color}/>
+                                <span className="fa-layers-text placementText" style={{color: getPlacement(summoner.position - 1).medal}} >{summoner.position}</span>
                             </span>
                     </div>
                     <div className="player-avatar">

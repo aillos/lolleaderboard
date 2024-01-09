@@ -20,7 +20,9 @@ public class SummonerDto {
 
     private int hotStreak;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak) {
+    private String prevRank;
+
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -35,9 +37,18 @@ public class SummonerDto {
         this.championImages=championImages;
         this.masteryPoints=masteryPoints;
         this.hotStreak=hotStreak;
+        this.prevRank=prevRank;
     }
 
     public SummonerDto() {
+    }
+
+    public String getPrevRank() {
+        return prevRank;
+    }
+
+    public void setPrevRank(String prevRank){
+        this.prevRank=prevRank;
     }
 
     public int getHotStreak() {

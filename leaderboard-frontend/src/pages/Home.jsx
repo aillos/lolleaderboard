@@ -90,6 +90,7 @@ export const Home = () => {
             const summoners = response.data;
             assignPositions(summoners);
             setSummoners(summoners);
+            console.log(summoners);
             setLoading(false);
             await lastTimeUpdated();
         } catch (error) {
@@ -234,12 +235,21 @@ export const Home = () => {
                                     </h2>
                                 </OverlayTrigger>
                             </div>
+                            <OverlayTrigger
+                                placement="bottom"
+                                overlay={
+                                    <Tooltip id={`tooltip-bottom2`}>
+                                        Previously {summoner.prevRank}
+                                    </Tooltip>
+                                }
+                            >
                             <div>
                                 <span style={{ color: getRankColor(summoner.tier), fontWeight: "bold"}}>
                                     {summoner.tier} {summoner.rank}
                                 </span>
                                 <span> {summoner.lp} LP</span>
                             </div>
+                            </OverlayTrigger>
                         </div>
                         <div className={"winsLosses"}>
                             <OverlayTrigger

@@ -429,6 +429,17 @@ h2{
   color: var(--color-foreground);
 }
 
+#tooltip-bottom2 .tooltip-arrow::before {
+  border-bottom-color: var(--color-background);
+}
+
+#tooltip-bottom2 > .tooltip-inner {
+  padding:5px;
+  border-radius: 5px;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
 #tooltip-right .tooltip-arrow::before {
   border-right-color: var(--color-background);
 }
@@ -537,7 +548,7 @@ h2{
 
 .player-avatar img {
   margin-left:35px;
-  margin-right:-50px;
+  margin-right:-45px;
   width: 70px;
   height: 70px;
   border-radius: 50%;

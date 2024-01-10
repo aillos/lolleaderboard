@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Card from 'react-bootstrap/Card';
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import {
-    faAward,
-    faCircle,
-    faCross, faFire,
+    faCircle, faFire,
     faMedal, faRefresh,
-    faShield,
-    faSignal,
-    faTrophy,
     faUserPlus
 } from "@fortawesome/free-solid-svg-icons";
-import {faPatreon} from "@fortawesome/free-brands-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Footer} from "../Footer";
 import {useNavigate} from "react-router-dom";
@@ -22,6 +15,7 @@ export const Home = () => {
     const [summoners, setSummoners] = useState([]);
     const [loading, setLoading] = useState(true);
     const [timeUpdated, setTimeUpdated] = useState("");
+    const [updateTime, setUpdateTime] = useState("");
     const navigate = useNavigate();
     const goToContact = () => {
         navigate('/contact');
@@ -33,12 +27,20 @@ export const Home = () => {
     };
 
     const update = async () => {
-        setLoading(true); // Start loading
+
+        setLoading(true);
+
+
         try {
             const response = await axios.get('api/update');
             if (response.data === true) {
                 console.log("Update successful");
             } else {
+                const lastUpdateTime = new Date(updateTime);
+                const currentTime = new Date();
+                const timeDiff = (currentTime - lastUpdateTime) / 1000;
+                const waitTime = 120 - timeDiff;
+                alert(`Please wait ${waitTime.toFixed(0)} more seconds before updating again.`);
                 console.error("Error updating: Update process failed.");
             }
         } catch (error) {
@@ -55,6 +57,7 @@ export const Home = () => {
             const response = await axios.get('api/time');
             const formattedTime = formatDateTime(response.data);
             setTimeUpdated(formattedTime);
+            setUpdateTime(response.data);
         } catch (error) {
             console.error("Error getting time " + error.message);
         }

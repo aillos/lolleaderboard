@@ -4,6 +4,7 @@ import com.andreassolli.leaderboard.models.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ public class SummonerRepository {
 
     private Logger logger = LoggerFactory.getLogger(SummonerRepository.class);
 
+    //VIEW FUNCTIONS START
     public List<SummonerDto> getAllSummonersView() {
         String sql = "SELECT * FROM frontendSummoner ORDER BY dbo.rankToInt(CONCAT(rank, tier, lp)) DESC";
 
@@ -74,21 +76,6 @@ public class SummonerRepository {
         }
     }
 
-    public void completeSummoner(Summoner summoner) {
-            try {
-                addPuuid(summoner);
-                updateSummonerNameIcon(summoner, summoner.getPuuid());
-                updateRankWinLoss(summoner, summoner.getSummonerId());
-                if (insertSummoner(summoner)){
-                    logger.info("Updated summoner: " + summoner.getGameName());
-                } else {
-                    logger.error("Could not update " + summoner.getGameName());
-                }
-            } catch (Exception e) {
-                logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
-            }
-    }
-
     public LocalDateTime getTime() {
         String sql = "SELECT Time FROM Info";
         try {
@@ -104,59 +91,63 @@ public class SummonerRepository {
         }
     }
 
-        public boolean updateSummoners() {
-            LocalDateTime lastUpdatedTime = getTime();
-            LocalDateTime currentTime = LocalDateTime.now();
+    public int serviceStatus() {
+        try {
+            String url = "https://euw1.api.riotgames.com/lol/status/v4/platform-data" + getApiUrl();
+            RestTemplate restTemplate = new RestTemplate();
 
-            if (ChronoUnit.MINUTES.between(lastUpdatedTime, currentTime) < 2) {
-                return false;
-            }
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-            List<Summoner> summoners = getAllSummoners();
-            for (Summoner summoner : summoners) {
-                try {
-                    updateGameName(summoner, summoner.getPuuid());
-                    updateSummonerNameIcon(summoner, summoner.getPuuid());
-                    updateRankWinLoss(summoner, summoner.getSummonerId());
-                    if (saveSummoner(summoner)){
-                        logger.info("Updated summoner: " + summoner.getGameName());
-                    } else {
-                        logger.error("Could not update " + summoner.getGameName());
-                        return false;
-                    }
-                } catch (Exception e) {
-                    logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
-                    return false;
-                }
-            }
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.getBody());
 
-            String newTimeSql = "UPDATE Info SET Time = ?";
-            try {
-                db.update(newTimeSql, LocalDateTime.now());
-            } catch (Exception e) {
-                logger.error("Could not save new Time", e);
-            }
+            JsonNode maintenances = root.path("maintenances");
+            JsonNode incidents = root.path("incidents");
 
-            return true;
-        }
-
-    private void updateGameName(Summoner summoner, String puuid) {
-        String url = gameName + puuid + getApiUrl();
-        GameNameDto gameNameData = restTemplate.getForObject(url, GameNameDto.class);
-        if (gameNameData != null) {
-            summoner.setGameName(gameNameData.getGameName());
-            summoner.setTagLine(gameNameData.getTagLine());
+            return maintenances.size() + incidents.size();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
         }
     }
 
-    private void addPuuid(Summoner summoner) {
-        String url = puuidByTag + summoner.getGameName() + "/" + summoner.getTagLine() + getApiUrl();
-        Summoner gameNameData = restTemplate.getForObject(url, Summoner.class);
-        if (gameNameData != null) {
-            summoner.setPuuid(gameNameData.getPuuid());
-            summoner.setGameName(gameNameData.getGameName());
-            summoner.setTagLine(gameNameData.getTagLine());
+    //VIEW FUNCTIONS END
+
+    //UPDATE FUNCTIONS START
+    public boolean updateSummoners() {
+        LocalDateTime lastUpdatedTime = getTime();
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        if (ChronoUnit.MINUTES.between(lastUpdatedTime, currentTime) < 2) {
+            return false;
         }
+
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners) {
+            try {
+                updateGameName(summoner, summoner.getPuuid());
+                updateSummonerNameIcon(summoner, summoner.getPuuid());
+                updateRankWinLoss(summoner, summoner.getSummonerId());
+                if (updateSummoner(summoner)){
+                    logger.info("Updated summoner: " + summoner.getGameName());
+                } else {
+                    logger.error("Could not update " + summoner.getGameName());
+                    return false;
+                }
+            } catch (Exception e) {
+                logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
+                return false;
+            }
+        }
+
+        String newTimeSql = "UPDATE Info SET Time = ?";
+        try {
+            db.update(newTimeSql, LocalDateTime.now());
+        } catch (Exception e) {
+            logger.error("Could not save new Time", e);
+        }
+
+        return true;
     }
 
     private void updateSummonerNameIcon(Summoner summoner, String summonerName) {
@@ -197,8 +188,30 @@ public class SummonerRepository {
         }
     }
 
+    private void updateGameName(Summoner summoner, String puuid) {
+        String url = gameName + puuid + getApiUrl();
+        GameNameDto gameNameData = restTemplate.getForObject(url, GameNameDto.class);
+        if (gameNameData != null) {
+            summoner.setGameName(gameNameData.getGameName());
+            summoner.setTagLine(gameNameData.getTagLine());
+        }
+    }
 
-    private boolean saveSummoner(Summoner summoner) {
+    public boolean updateChampionMastery(String patchVersion){
+        List<SummonerDto> summoners = getAllSummonersView();
+        for (SummonerDto summoner : summoners) {
+            if (setMastery(patchVersion, summoner)) return false;
+        }
+        return true;
+    }
+
+
+    public void updateChampionForSummoner(String name, String tag, String patchVersion){
+        SummonerDto summoner = getSummoners(name, tag);
+        setMastery(patchVersion, summoner);
+    }
+
+    private boolean updateSummoner(Summoner summoner) {
         String sql = "UPDATE Summoner SET gameName=?, tagLine=?, summonerId=?, summonerName=?, rank=?, tier=?, lp=?, summonerIcon=?, wins=?, losses=?, hotStreak=? WHERE puuid=?";
 
         try {
@@ -222,7 +235,84 @@ public class SummonerRepository {
         }
     }
 
-    private boolean insertSummoner(Summoner summoner) {
+    public boolean updateMastery(SummonerDto summoner) {
+        String sql = "UPDATE Summoner SET masteryPoints=?, championMastery=?, championImages=? WHERE gameName=? AND tagLine=?";
+        try {
+            String championMasteryString = String.join(",", summoner.getChampionMastery());
+            String championImagesString = String.join(",", summoner.getChampionImages());
+            String masteryPointsString = String.join(",", summoner.getMasteryPoints());
+            db.update(sql,
+                    masteryPointsString,
+                    championMasteryString,
+                    championImagesString,
+                    summoner.getGameName(),
+                    summoner.getTagLine());
+            return true;
+        } catch (Exception e) {
+            logger.error("Error updating summoner: " + e);
+            return false;
+        }
+    }
+
+    //UPDATE FUNCTIONS END
+
+
+    //SET FUNCTIONS START
+    private boolean setMastery(String patchVersion, SummonerDto summoner) {
+        try {
+            String[][] mastery;
+            mastery=setChampionMastery(summoner.getGameName(), summoner.getTagLine(), patchVersion);
+            summoner.setMasteryPoints(mastery[2]);
+            summoner.setChampionMastery(mastery[1]);
+            summoner.setChampionImages(mastery[0]);
+            if (updateMastery(summoner)){
+                logger.info("Updated summoner: " + summoner.getGameName());
+            } else {
+                logger.error("Could not update " + summoner.getGameName());
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
+            return true;
+        }
+        return false;
+    }
+
+    public String[][] setChampionMastery(String name, String tag, String patchVersion){
+        try {
+            ChampionMastery[] championMasteries = getChampionMasteries(name, tag);
+            JSONObject championsData = getChampionData(patchVersion);
+            int[] topChampionIds = getTopChampionIds(championMasteries);
+            String[] championNames = new String[3];
+            String[] championImages = new String[3];
+            String[] masteryPoints = new String[3];
+
+            for (int i = 0; i < 3; i++) {
+                processChampionData(topChampionIds[i], championsData, championNames, championImages, masteryPoints, championMasteries, i);
+            }
+
+            return generateResult(championImages, championNames, masteryPoints);
+        } catch (Exception e) {
+            logger.error("Error in setChampionMastery: ", e);
+            return new String[2][3];
+        }
+    }
+
+    private void setPuuid(Summoner summoner) {
+        String url = puuidByTag + summoner.getGameName() + "/" + summoner.getTagLine() + getApiUrl();
+        Summoner gameNameData = restTemplate.getForObject(url, Summoner.class);
+        if (gameNameData != null) {
+            summoner.setPuuid(gameNameData.getPuuid());
+            summoner.setGameName(gameNameData.getGameName());
+            summoner.setTagLine(gameNameData.getTagLine());
+        }
+    }
+
+
+    //SET FUNCTIONS END
+
+    //ADD FUNCTIONS START
+    private boolean addSummoner(Summoner summoner) {
         String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             db.update(sql,
@@ -245,39 +335,7 @@ public class SummonerRepository {
         }
     }
 
-    public boolean removeSummoner(String gameName, String tagLine) {
-        //if (!(getVerify().equals(password))) return;
-        String sql = "DELETE FROM Summoner WHERE gameName=? AND tagLine=?";
-        try {
-            db.update(sql, gameName, tagLine);
-            return true;
-        } catch (Exception e) {
-            logger.error("Could not delete " + gameName + "#" + tagLine);
-            return false;
-        }
-    }
-
-    public int serviceStatus() {
-        try {
-            String url = "https://euw1.api.riotgames.com/lol/status/v4/platform-data" + getApiUrl();
-            RestTemplate restTemplate = new RestTemplate();
-
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(response.getBody());
-
-            JsonNode maintenances = root.path("maintenances");
-            JsonNode incidents = root.path("incidents");
-
-            return maintenances.size() + incidents.size();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public boolean addSummoner(String name, String tag) {
+    public boolean addGameNameTag(String name, String tag) {
         //if (!(getVerify().equals(password))) return;
         Summoner summoner = new Summoner();
         summoner.setTagLine(tag);
@@ -292,7 +350,33 @@ public class SummonerRepository {
 
     }
 
-    public SummonerDto searchSummoner(String name, String tag) {
+    //ADD FUNCTIONS END
+
+    //GET FUNCTIONS START
+    public ChampionMastery[] getChampionMasteries(String name, String tag) {
+        GameNameDto summonerPuuid = restTemplate.getForObject(puuidByTag + name + "/" + tag + getApiUrl(), GameNameDto.class);
+        String MasteryChampions = "https://euw1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/"
+                + summonerPuuid.getPuuid() + getApiUrl();
+        return restTemplate.getForObject(MasteryChampions, ChampionMastery[].class);
+    }
+
+    public JSONObject getChampionData(String patchVersion) throws JSONException {
+        String IdToChampUrl = "https://ddragon.leagueoflegends.com/cdn/" + patchVersion + "/data/en_US/champion.json";
+        ResponseEntity<String> response = restTemplate.getForEntity(IdToChampUrl, String.class);
+        return new JSONObject(response.getBody()).getJSONObject("data");
+    }
+
+    public int[] getTopChampionIds(ChampionMastery[] championMasteries) {
+        Arrays.sort(championMasteries, (a, b) -> Integer.compare(b.getChampionPoints(), a.getChampionPoints()));
+
+        int[] topChampionIds = new int[3];
+        for (int i = 0; i < 3; i++) {
+            topChampionIds[i] = championMasteries[i].getChampionId();
+        }
+        return topChampionIds;
+    }
+
+    public SummonerDto getSummoner(String name, String tag) {
         String url = puuidByTag + name + "/" + tag + getApiUrl();
         GameNameDto gameNameData = restTemplate.getForObject(url, GameNameDto.class);
 
@@ -307,39 +391,7 @@ public class SummonerRepository {
         return summoner;
     }
 
-    public boolean checkPassword(String inputPassword) {
-        BCrypt.Result result = BCrypt.verifyer().verify(inputPassword.toCharArray(), getPassword());
-        return result.verified;
-    }
-
-    public boolean saveMastery(SummonerDto summoner) {
-        String sql = "UPDATE Summoner SET masteryPoints=?, championMastery=?, championImages=? WHERE gameName=? AND tagLine=?";
-        try {
-            String championMasteryString = String.join(",", summoner.getChampionMastery());
-            String championImagesString = String.join(",", summoner.getChampionImages());
-            String masteryPointsString = String.join(",", summoner.getMasteryPoints());
-            db.update(sql,
-                    masteryPointsString,
-                    championMasteryString,
-                    championImagesString,
-                    summoner.getGameName(),
-                    summoner.getTagLine());
-            return true;
-        } catch (Exception e) {
-            logger.error("Error updating summoner: " + e);
-            return false;
-        }
-    }
-
-    public boolean updateChampionMastery(String patchVersion){
-        List<SummonerDto> summoners = getAllSummonersView();
-        for (SummonerDto summoner : summoners) {
-            if (setMastery(patchVersion, summoner)) return false;
-        }
-        return true;
-    }
-
-    public SummonerDto getSummoner(String name, String tag){
+    public SummonerDto getSummoners(String name, String tag){
         String sql = "SELECT * FROM frontendSummoner WHERE gameName=? AND tagLine=?";
         try {
             return db.queryForObject(sql, new BeanPropertyRowMapper<>(SummonerDto.class), name, tag);
@@ -350,80 +402,59 @@ public class SummonerRepository {
     }
 
 
-    public void updateChampionForSummoner(String name, String tag, String patchVersion){
-        SummonerDto summoner = getSummoner(name, tag);
-        setMastery(patchVersion, summoner);
-    }
-
-    private boolean setMastery(String patchVersion, SummonerDto summoner) {
-        try {
-            String[][] mastery;
-            mastery=setChampionMastery(summoner.getGameName(), summoner.getTagLine(), patchVersion);
-            summoner.setMasteryPoints(mastery[2]);
-            summoner.setChampionMastery(mastery[1]);
-            summoner.setChampionImages(mastery[0]);
-            if (saveMastery(summoner)){
-                logger.info("Updated summoner: " + summoner.getGameName());
-            } else {
-                logger.error("Could not update " + summoner.getGameName());
-                return true;
-            }
-        } catch (Exception e) {
-            logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
-            return true;
-        }
-        return false;
-    }
-
-    public String[][] setChampionMastery(String name, String tag, String patchVersion){
-        String IdToChampUrl = "https://ddragon.leagueoflegends.com/cdn/" + patchVersion + "/data/en_US/champion.json";
-        String [] championNames = new String[3];
-        String [] championImages = new String[3];
-        String [] masteryPoints = new String[3];
-        GameNameDto summonerPuuid = restTemplate.getForObject(puuidByTag + name + "/" + tag + getApiUrl(), GameNameDto.class);
-        String puuid = summonerPuuid.getPuuid();
-        String MasteryChampions = "https://euw1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/" + puuid + getApiUrl();
-        try {
-            ChampionMastery[] championMasteries = restTemplate.getForObject(MasteryChampions, ChampionMastery[].class);
-            Arrays.sort(championMasteries, (a, b) -> Integer.compare(b.getChampionPoints(), a.getChampionPoints()));
-
-            int[] topChampionIds = new int[3];
-            for (int i = 0; i < 3; i++) {
-                topChampionIds[i] = championMasteries[i].getChampionId();
-            }
-
+    //GET FUNCTIONS END
+    public void completeSummoner(Summoner summoner) {
             try {
-                ResponseEntity<String> response = restTemplate.getForEntity(IdToChampUrl, String.class);
-                JSONObject championsData = new JSONObject(response.getBody()).getJSONObject("data");
-
-                for (int i = 0; i < 3; i++) {
-                    int champId = topChampionIds[i];
-
-                    Iterator<String> keys = championsData.keys();
-                    while (keys.hasNext()) {
-                        String key = keys.next();
-                        JSONObject champion = championsData.getJSONObject(key);
-                        if (champion.getString("key").equals(String.valueOf(champId))) {
-                            championNames[i] = champion.getString("name");
-                            championImages[i] = champion.getJSONObject("image").getString("full");
-                            masteryPoints[i] = String.valueOf(championMasteries[i].getChampionPoints());
-                            break;
-                        }
-                    }
+                setPuuid(summoner);
+                updateSummonerNameIcon(summoner, summoner.getPuuid());
+                updateRankWinLoss(summoner, summoner.getSummonerId());
+                if (addSummoner(summoner)){
+                    logger.info("Updated summoner: " + summoner.getGameName());
+                } else {
+                    logger.error("Could not update " + summoner.getGameName());
                 }
-            }catch (Exception e){
-                logger.error("Error" + e);
+            } catch (Exception e) {
+                logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
             }
+    }
 
-            String[][] result = new String[3][3];
-            result[0]=championImages;
-            result[1]=championNames;
-            result[2]=masteryPoints;
-            return result;
+    public boolean removeSummoner(String gameName, String tagLine) {
+        //if (!(getVerify().equals(password))) return;
+        String sql = "DELETE FROM Summoner WHERE gameName=? AND tagLine=?";
+        try {
+            db.update(sql, gameName, tagLine);
+            return true;
         } catch (Exception e) {
-            logger.error("Error in setChampionMastery: ", e);
-            return new String[2][3];
+            logger.error("Could not delete " + gameName + "#" + tagLine);
+            return false;
         }
+    }
+
+    public boolean checkPassword(String inputPassword) {
+        BCrypt.Result result = BCrypt.verifyer().verify(inputPassword.toCharArray(), getPassword());
+        return result.verified;
+    }
+
+    public void processChampionData(int champId, JSONObject championsData, String[] championNames, String[] championImages, String[] masteryPoints, ChampionMastery[] championMasteries, int i) throws JSONException {
+        Iterator<String> keys = championsData.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            JSONObject champion = championsData.getJSONObject(key);
+            if (champion.getString("key").equals(String.valueOf(champId))) {
+                championNames[i] = champion.getString("name");
+                championImages[i] = champion.getJSONObject("image").getString("full");
+                masteryPoints[i] = String.valueOf(championMasteries[i].getChampionPoints());
+                break;
+            }
+        }
+    }
+
+    public String[][] generateResult(String[] championImages, String[] championNames, String[] masteryPoints) {
+        String[][] result = new String[3][3];
+        result[0] = championImages;
+        result[1] = championNames;
+        result[2] = masteryPoints;
+        return result;
     }
 
 }

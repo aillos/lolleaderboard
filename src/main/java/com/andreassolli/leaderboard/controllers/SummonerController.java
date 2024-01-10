@@ -41,7 +41,7 @@ public class SummonerController {
 
     @GetMapping("/api/add/{name}/{tag}")
     public boolean add(@PathVariable String name, @PathVariable String tag) {
-        return repo.addSummoner(name, tag);
+        return repo.addGameNameTag(name, tag);
     }
 
     @GetMapping("/api/remove/{name}/{tag}")
@@ -51,7 +51,7 @@ public class SummonerController {
 
     @GetMapping("/api/search/{name}/{tag}")
     public SummonerDto search(@PathVariable String name, @PathVariable String tag){
-        return repo.searchSummoner(name, tag);
+        return repo.getSummoner(name, tag);
     }
 
     @GetMapping("/api/mastery/{name}/{tag}/{patch}")

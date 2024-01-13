@@ -1,5 +1,6 @@
 package com.andreassolli.leaderboard.controllers;
 
+import com.andreassolli.leaderboard.models.Summoner;
 import com.andreassolli.leaderboard.models.SummonerDto;
 import com.andreassolli.leaderboard.repositories.SummonerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,4 +65,9 @@ public class SummonerController {
         return repo.updateChampionMastery(patch);
     }
 
+
+    @GetMapping("/api/scrape")
+    public List<Summoner> scrape(){
+            return repo.updateOpgg();
+    }
 }

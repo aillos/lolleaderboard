@@ -1,11 +1,19 @@
 package com.andreassolli.leaderboard.repositories;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.andreassolli.leaderboard.models.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +24,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -313,7 +322,7 @@ public class SummonerRepository {
 
     //ADD FUNCTIONS START
     private boolean addSummoner(Summoner summoner) {
-        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid, opgg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             db.update(sql,
                     summoner.getGameName(),
@@ -327,7 +336,8 @@ public class SummonerRepository {
                     summoner.getWins(),
                     summoner.getLosses(),
                     summoner.getHotStreak(),
-                    summoner.getPuuid());
+                    summoner.getPuuid(),
+                    addOpgg(summoner));
             return true;
         } catch (Exception e) {
             logger.error("Error inserting summoner: " + e);
@@ -456,5 +466,51 @@ public class SummonerRepository {
         result[2] = masteryPoints;
         return result;
     }
+
+    public List<Summoner> updateOpgg(){
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners){
+            String sql = "UPDATE Summoner SET opgg = ? WHERE gameName = ? AND tagLine = ?";
+            try {
+                db.update(sql,
+                        addOpgg(summoner),
+                        summoner.getGameName(),
+                        summoner.getTagLine());
+            } catch (Exception e){
+                logger.error("Could not update " + summoner.getGameName());
+            }
+        }
+        return summoners;
+    }
+
+    public String addOpgg(Summoner summoner) {
+        String url = "https://www.op.gg/multisearch/euw?summoners=" + summoner.getGameName() + "%23" + summoner.getTagLine();
+        String summonerId = null;
+        try {
+            Document doc = Jsoup.connect(url).get();
+            Element scriptElement = doc.selectFirst("#__NEXT_DATA__");
+            if (scriptElement != null) {
+                String scriptData = scriptElement.html();
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(scriptData, JsonObject.class);
+                JsonArray summonersArray = jsonObject.getAsJsonObject("props")
+                        .getAsJsonObject("pageProps")
+                        .getAsJsonArray("summoners");
+
+                for (JsonElement summonerElement : summonersArray) {
+                    JsonObject summonerObject = summonerElement.getAsJsonObject();
+                    summonerId = summonerObject.get("summoner_id").getAsString();
+                }
+            } else {
+                System.out.println("Element not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return summonerId;
+
+    }
+
 
 }

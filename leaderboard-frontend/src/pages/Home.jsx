@@ -175,7 +175,7 @@ export const Home = () => {
     };
 
     const games = (wins, losses) =>{
-        return wins+losses;
+        return Number(wins)+Number(losses);
     }
 
     const formatNumberWithSpaces = (number) => {
@@ -246,7 +246,7 @@ export const Home = () => {
                                 placement="bottom"
                                 overlay={
                                     <Tooltip id={`tooltip-bottom2`}>
-                                        S13: {summoner.prevRank}
+                                        Previous: <b>{summoner.prevRank}</b>
                                     </Tooltip>
                                 }
                             >
@@ -264,7 +264,8 @@ export const Home = () => {
                                 overlay={
                                     <Tooltip
                                         id={summoner.mostPlayedKDA[0] === "0" ? "tooltip-invis" :`tooltip-top`}>
-                                        {summoner.mostPlayedName[0]} <br />
+                                        <b>{summoner.mostPlayedName[0]} </b> <br />
+                                        Games: <b>{games(summoner.mostPlayedWR[0], summoner.mostPlayedWR[1])}</b>  <br/>
                                         Avg: <b>{summoner.mostPlayedKDA[0]}</b> <br />
                                         WR: <b> {winrate(summoner.mostPlayedWR[0], summoner.mostPlayedWR[1])} </b>
                                     </Tooltip>
@@ -280,7 +281,8 @@ export const Home = () => {
                                     overlay={
                                         <Tooltip
                                             id={summoner.mostPlayedKDA[2] === "0" ? "tooltip-invis" :`tooltip-top`}>
-                                            {summoner.mostPlayedName[2]} <br />
+                                            <b>{summoner.mostPlayedName[2]} </b> <br />
+                                            Games: <b>{games(summoner.mostPlayedWR[4], summoner.mostPlayedWR[5])}</b>  <br/>
                                             Avg: <b>{summoner.mostPlayedKDA[2]}</b> <br />
                                             WR: <b> {winrate(summoner.mostPlayedWR[4], summoner.mostPlayedWR[5])} </b>
 
@@ -296,7 +298,8 @@ export const Home = () => {
                                     overlay={
                                         <Tooltip
                                             id={summoner.mostPlayedKDA[1] === "0" ? "tooltip-invis" :`tooltip-top`}>
-                                            {summoner.mostPlayedName[1]} <br />
+                                            <b>{summoner.mostPlayedName[1]} </b> <br />
+                                            Games: <b>{games(summoner.mostPlayedWR[2], summoner.mostPlayedWR[3])}</b>  <br/>
                                             Avg: <b>{summoner.mostPlayedKDA[1]}</b> <br />
                                             WR: <b> {winrate(summoner.mostPlayedWR[2], summoner.mostPlayedWR[3])} </b>
                                         </Tooltip>

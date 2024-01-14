@@ -37,7 +37,7 @@ public class SummonerController {
 
     @GetMapping("/api/update")
     public boolean update() {
-        return repo.updateSummoners("14.1.1");
+        return repo.updateSummoners();
     }
 
     @GetMapping("/api/add/{name}/{tag}")
@@ -74,5 +74,10 @@ public class SummonerController {
     @GetMapping("/api/season")
     public void updateSeason(){
         repo.addSeasonId();
+    }
+
+    @GetMapping("/api/previous")
+    public void updatePrevious(){
+        repo.updatePrevious();
     }
 }

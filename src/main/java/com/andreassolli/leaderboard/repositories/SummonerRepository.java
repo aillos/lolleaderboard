@@ -32,11 +32,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
@@ -129,7 +126,7 @@ public class SummonerRepository {
     //VIEW FUNCTIONS END
 
     //UPDATE FUNCTIONS START
-    public boolean updateSummoners(String patchVersion) {
+    public boolean updateSummoners() {
         LocalDateTime lastUpdatedTime = getTime();
         LocalDateTime currentTime = LocalDateTime.now();
 
@@ -143,7 +140,7 @@ public class SummonerRepository {
                 updateGameName(summoner, summoner.getPuuid());
                 updateSummonerNameIcon(summoner, summoner.getPuuid());
                 updateRankWinLoss(summoner, summoner.getSummonerId());
-                if (updateSummoner(summoner, patchVersion)){
+                if (updateSummoner(summoner)){
                     logger.info("Updated summoner: " + summoner.getGameName());
                 } else {
                     logger.error("Could not update " + summoner.getGameName());
@@ -226,10 +223,10 @@ public class SummonerRepository {
         setMastery(patchVersion, summoner);
     }
 
-    private boolean updateSummoner(Summoner summoner, String patchVersion) {
+    private boolean updateSummoner(Summoner summoner) {
         String sql = "UPDATE Summoner SET gameName=?, tagLine=?, summonerId=?, summonerName=?, rank=?, tier=?, lp=?, summonerIcon=?, wins=?, losses=?, hotStreak=?, mostPlayedChampion=?, mostPlayedKDA=?, mostPlayedWR=?, mostPlayedName=?, mostPlayedImage=? WHERE puuid=?";
         String[][] opgg = getMostPlayed(summoner.getOpgg());
-        String[][] mostPlayedNamesImages = getChampionNamesAndImages(opgg, patchVersion);
+        String[][] mostPlayedNamesImages = getChampionNamesAndImages(opgg, getPatchVersion());
         try {
             db.update(sql,
                     summoner.getGameName(),
@@ -358,9 +355,10 @@ public class SummonerRepository {
 
     //ADD FUNCTIONS START
     private boolean addSummoner(Summoner summoner) {
-        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid, opgg, mostPlayedChampion, mostPlayedKDA, mostPlayedWR, mostPlayedName, mostPlayedImage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid, opgg, mostPlayedChampion, mostPlayedKDA, mostPlayedWR, mostPlayedName, mostPlayedImage, prevRank) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String[][] opgg = getMostPlayed(summoner.getOpgg());
         String[][] mostPlayedNamesImages = getChampionNamesAndImages(opgg, getPatchVersion());
+        String prevSeason = getPreviousSeason(summoner);
         try {
             db.update(sql,
                     summoner.getGameName(),
@@ -380,6 +378,7 @@ public class SummonerRepository {
                     intoString(opgg[2]),
                     intoString(mostPlayedNamesImages[0]),
                     intoString(mostPlayedNamesImages[1]),
+                    prevSeason,
                     addOpgg(summoner));
             return true;
         } catch (Exception e) {
@@ -526,6 +525,22 @@ public class SummonerRepository {
         return summoners;
     }
 
+    public List<Summoner> updatePrevious() {
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners) {
+            String sql = "UPDATE Summoner SET prevRank = ? WHERE gameName = ? AND tagLine = ?";
+            try {
+                db.update(sql,
+                        getPreviousSeason(summoner),
+                        summoner.getGameName(),
+                        summoner.getTagLine());
+            } catch (Exception e) {
+                logger.error("Could not update " + summoner.getGameName());
+            }
+        }
+        return summoners;
+    }
+
     public void addSeasonId(){
         String sql = "UPDATE Info SET seasonsId=? WHERE Type=?";
         try {
@@ -573,6 +588,7 @@ public class SummonerRepository {
     public String addOpgg(Summoner summoner) {
         String url = "https://www.op.gg/multisearch/euw?summoners=" + summoner.getGameName() + "%23" + summoner.getTagLine();
         String summonerId = null;
+
         try {
             Document doc = Jsoup.connect(url).get();
             Element scriptElement = doc.selectFirst("#__NEXT_DATA__");
@@ -585,6 +601,7 @@ public class SummonerRepository {
                         .getAsJsonArray("summoners");
 
 
+
                 for (JsonElement summonerElement : summonersArray) {
 
                     JsonObject summonerObject = summonerElement.getAsJsonObject();
@@ -593,12 +610,46 @@ public class SummonerRepository {
             } else {
                 System.out.println("Element not found");
             }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return summonerId;
 
+    }
+
+    public String getPreviousSeason(Summoner summoner) {
+        String rankUrl = "https://op.gg/api/v1.0/internal/bypass/summoners/euw/" + summoner.getOpgg() + "/summary";
+
+        String division = null;
+        String tier = null;
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet(rankUrl);
+            String json = EntityUtils.toString(httpClient.execute(request).getEntity());
+
+            JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+            JsonObject dataObject = jsonObject.getAsJsonObject("data");
+            if (dataObject != null) {
+                JsonObject summonerObject = dataObject.getAsJsonObject("summoner");
+                if (summonerObject != null) {
+                    JsonArray previousSeasons = summonerObject.getAsJsonArray("previous_seasons");
+                    if (previousSeasons != null && previousSeasons.size() > 0) {
+                        JsonObject firstSeason = previousSeasons.get(0).getAsJsonObject();
+                        JsonObject tierInfo = firstSeason.getAsJsonObject("tier_info");
+                        if (tierInfo != null) {
+                            tier = tierInfo.get("tier").getAsString();
+                            division = tierInfo.get("division").getAsString();
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tier + " " + division;
     }
 
     public String[][] getMostPlayed(String id) {
@@ -616,6 +667,7 @@ public class SummonerRepository {
 
             JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
             JsonElement dataElement = jsonObject.get("data");
+
 
             if (dataElement != null && dataElement.isJsonObject()) {
                 JsonObject dataObject = dataElement.getAsJsonObject();

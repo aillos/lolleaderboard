@@ -22,6 +22,9 @@ export const Home = () => {
     };
 
     const winrate = (wins, losses) => {
+        wins = Number(wins) ?? 0;
+        losses = Number(losses) ?? 0;
+
         if (wins + losses === 0) return '0%';
         return `${((wins / (wins + losses)) * 100).toFixed(1)}%`;
     };
@@ -93,7 +96,6 @@ export const Home = () => {
             const summoners = response.data;
             assignPositions(summoners);
             setSummoners(summoners);
-            console.log(summoners);
             setLoading(false);
             await lastTimeUpdated();
         } catch (error) {
@@ -148,8 +150,8 @@ export const Home = () => {
 
     const getPlacement = (index) => {
         let color = 'gray';
-        let icon;
-        let icon2;
+        let icon = null;
+        let icon2 = null;
         let medal;
 
         if (index === 0) {
@@ -201,10 +203,12 @@ export const Home = () => {
         </OverlayTrigger>
     );
 
+
+
     const renderSummoner = (summoners, winrate, patchVersion) => (
 
         <div className="player-cards-container">
-            {summoners.map((summoner, index) => (
+            {summoners.map((summoner) => (
                 <div className="player-card" key={summoner.gameName + summoner.tagLine}>
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">
@@ -259,14 +263,15 @@ export const Home = () => {
                                 placement="top"
                                 overlay={
                                     <Tooltip
-                                        id={`tooltip-top`}>
-                                        {summoner.championMastery[0]}<br/>
-                                        {formatNumberWithSpaces(summoner.masteryPoints[0])} points
+                                        id={summoner.mostPlayedKDA[0] === "0" ? "tooltip-invis" :`tooltip-top`}>
+                                        {summoner.mostPlayedName[0]} <br />
+                                        Avg: <b>{summoner.mostPlayedKDA[0]}</b> <br />
+                                        WR: <b> {winrate(summoner.mostPlayedWR[0], summoner.mostPlayedWR[1])} </b>
                                     </Tooltip>
                                 }
                             >
                             <div className="image-container2">
-                            <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championImages[0]}`} alt={`${summoner.championImages[0]} champion`} />
+                                <img src={summoner.mostPlayedKDA[0] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImage[0]}`} alt={`${summoner.mostPlayedName[0]} champion`} />
                             </div>
                             </OverlayTrigger>
                             <div className={"image-bottom"}>
@@ -274,28 +279,31 @@ export const Home = () => {
                                     placement="top"
                                     overlay={
                                         <Tooltip
-                                            id={`tooltip-top`}>
-                                            {summoner.championMastery[2]}<br/>
-                                            {formatNumberWithSpaces(summoner.masteryPoints[2])} points
+                                            id={summoner.mostPlayedKDA[2] === "0" ? "tooltip-invis" :`tooltip-top`}>
+                                            {summoner.mostPlayedName[2]} <br />
+                                            Avg: <b>{summoner.mostPlayedKDA[2]}</b> <br />
+                                            WR: <b> {winrate(summoner.mostPlayedWR[4], summoner.mostPlayedWR[5])} </b>
+
                                         </Tooltip>
                                     }
                                 >
                             <div className="image-container">
-                                <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championImages[2]}`} alt={`${summoner.championImages[2]} champion`} />
+                                <img src={summoner.mostPlayedKDA[2] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImage[2]}`} alt={`${summoner.mostPlayedName[2]} champion`} />
                             </div>
                                 </OverlayTrigger>
                                 <OverlayTrigger
                                     placement="top"
                                     overlay={
                                         <Tooltip
-                                            id={`tooltip-top`}>
-                                            {summoner.championMastery[1]} <br/>
-                                            {formatNumberWithSpaces(summoner.masteryPoints[1])} points
+                                            id={summoner.mostPlayedKDA[1] === "0" ? "tooltip-invis" :`tooltip-top`}>
+                                            {summoner.mostPlayedName[1]} <br />
+                                            Avg: <b>{summoner.mostPlayedKDA[1]}</b> <br />
+                                            WR: <b> {winrate(summoner.mostPlayedWR[2], summoner.mostPlayedWR[3])} </b>
                                         </Tooltip>
                                     }
                                 >
                             <div className="image-container1">
-                                <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.championImages[1]}`} alt={`${summoner.championImages[1]} champion`} />
+                                <img src={summoner.mostPlayedKDA[1] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImage[1]}`} alt={`${summoner.mostPlayedName[1]} champion`} />
                             </div>
                                 </OverlayTrigger>
                             </div>

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCross, faGlobe, faSignal, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {faSignal, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {DarkModeToggle} from "./theme/ColorToggle.jsx";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 

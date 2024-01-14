@@ -463,6 +463,18 @@ h2{
   color: var(--color-foreground);
 }
 
+#tooltip-invis .tooltip-arrow::before {
+  border-top-color: transparent;
+}
+
+#tooltip-invis > .tooltip-inner {
+  padding:5px;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: transparent;
+  color: transparent;
+}
+
 .placementText{
   font-weight: bold;
   margin-top:7px;

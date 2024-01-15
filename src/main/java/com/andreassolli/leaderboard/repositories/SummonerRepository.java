@@ -1,11 +1,20 @@
 package com.andreassolli.leaderboard.repositories;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.andreassolli.leaderboard.models.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,13 +25,16 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -212,8 +224,9 @@ public class SummonerRepository {
     }
 
     private boolean updateSummoner(Summoner summoner) {
-        String sql = "UPDATE Summoner SET gameName=?, tagLine=?, summonerId=?, summonerName=?, rank=?, tier=?, lp=?, summonerIcon=?, wins=?, losses=?, hotStreak=? WHERE puuid=?";
-
+        String sql = "UPDATE Summoner SET gameName=?, tagLine=?, summonerId=?, summonerName=?, rank=?, tier=?, lp=?, summonerIcon=?, wins=?, losses=?, hotStreak=?, mostPlayedChampion=?, mostPlayedKDA=?, mostPlayedWR=?, mostPlayedName=?, mostPlayedImage=? WHERE puuid=?";
+        String[][] opgg = getMostPlayed(summoner.getOpgg());
+        String[][] mostPlayedNamesImages = getChampionNamesAndImages(opgg, getPatchVersion());
         try {
             db.update(sql,
                     summoner.getGameName(),
@@ -227,6 +240,11 @@ public class SummonerRepository {
                     summoner.getWins(),
                     summoner.getLosses(),
                     summoner.getHotStreak(),
+                    intoString(opgg[0]),
+                    intoString(opgg[1]),
+                    intoString(opgg[2]),
+                    intoString(mostPlayedNamesImages[0]),
+                    intoString(mostPlayedNamesImages[1]),
                     summoner.getPuuid());
             return true;
         } catch (Exception e) {
@@ -311,9 +329,36 @@ public class SummonerRepository {
 
     //SET FUNCTIONS END
 
+    public String getPatchVersion() {
+        String urlString = "https://ddragon.leagueoflegends.com/realms/euw.json";
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder content = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+            connection.disconnect();
+
+            JSONObject json = new JSONObject(content.toString());
+            return json.getString("v");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     //ADD FUNCTIONS START
     private boolean addSummoner(Summoner summoner) {
-        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid, opgg, mostPlayedChampion, mostPlayedKDA, mostPlayedWR, mostPlayedName, mostPlayedImage, prevRank) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String[][] opgg = getMostPlayed(summoner.getOpgg());
+        String[][] mostPlayedNamesImages = getChampionNamesAndImages(opgg, getPatchVersion());
+        String prevSeason = getPreviousSeason(summoner);
         try {
             db.update(sql,
                     summoner.getGameName(),
@@ -327,7 +372,14 @@ public class SummonerRepository {
                     summoner.getWins(),
                     summoner.getLosses(),
                     summoner.getHotStreak(),
-                    summoner.getPuuid());
+                    summoner.getPuuid(),
+                    intoString(opgg[0]),
+                    intoString(opgg[1]),
+                    intoString(opgg[2]),
+                    intoString(mostPlayedNamesImages[0]),
+                    intoString(mostPlayedNamesImages[1]),
+                    prevSeason,
+                    addOpgg(summoner));
             return true;
         } catch (Exception e) {
             logger.error("Error inserting summoner: " + e);
@@ -456,5 +508,228 @@ public class SummonerRepository {
         result[2] = masteryPoints;
         return result;
     }
+
+    public List<Summoner> updateOpgg(){
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners){
+            String sql = "UPDATE Summoner SET opgg = ? WHERE gameName = ? AND tagLine = ?";
+            try {
+                db.update(sql,
+                        addOpgg(summoner),
+                        summoner.getGameName(),
+                        summoner.getTagLine());
+            } catch (Exception e){
+                logger.error("Could not update " + summoner.getGameName());
+            }
+        }
+        return summoners;
+    }
+
+    public List<Summoner> updatePrevious() {
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners) {
+            String sql = "UPDATE Summoner SET prevRank = ? WHERE gameName = ? AND tagLine = ?";
+            try {
+                db.update(sql,
+                        getPreviousSeason(summoner),
+                        summoner.getGameName(),
+                        summoner.getTagLine());
+            } catch (Exception e) {
+                logger.error("Could not update " + summoner.getGameName());
+            }
+        }
+        return summoners;
+    }
+
+    public void addSeasonId(){
+        String sql = "UPDATE Info SET seasonsId=? WHERE Type=?";
+        try {
+            db.update(sql,
+                    SeasonId(),
+                    "Rank");
+        } catch (Exception e){
+            logger.error("Could not update seasonsId");
+        }
+    }
+
+    public String getSeasonId(){
+        String sql = "SELECT seasonsId FROM Info";
+        return db.queryForObject(sql, String.class);
+    }
+
+    public int SeasonId() {
+        String url = "https://www.op.gg/multisearch/na?summoners=phreak%23Puns";
+        try {
+            Document doc = Jsoup.connect(url).get();
+            Element scriptElement = doc.selectFirst("#__NEXT_DATA__");
+            if (scriptElement != null) {
+                String scriptData = scriptElement.html();
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(scriptData, JsonObject.class);
+
+                JsonObject seasonObject = jsonObject.getAsJsonObject("props")
+                        .getAsJsonObject("pageProps")
+                        .getAsJsonObject("seasonsById");
+
+                int lastId = -1;
+                for (String key : seasonObject.keySet()) {
+                    JsonObject innerObject = seasonObject.getAsJsonObject(key);
+                    lastId = innerObject.get("id").getAsInt();
+                }
+
+                return lastId;
+            }
+        } catch (Exception e) {
+            return 0;
+        }
+        return 0;
+    }
+
+    public String addOpgg(Summoner summoner) {
+        String url = "https://www.op.gg/multisearch/euw?summoners=" + summoner.getGameName() + "%23" + summoner.getTagLine();
+        String summonerId = null;
+
+        try {
+            Document doc = Jsoup.connect(url).get();
+            Element scriptElement = doc.selectFirst("#__NEXT_DATA__");
+            if (scriptElement != null) {
+                String scriptData = scriptElement.html();
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(scriptData, JsonObject.class);
+                JsonArray summonersArray = jsonObject.getAsJsonObject("props")
+                        .getAsJsonObject("pageProps")
+                        .getAsJsonArray("summoners");
+
+
+
+                for (JsonElement summonerElement : summonersArray) {
+
+                    JsonObject summonerObject = summonerElement.getAsJsonObject();
+                    summonerId = summonerObject.get("summoner_id").getAsString();
+                }
+            } else {
+                System.out.println("Element not found");
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return summonerId;
+
+    }
+
+    public String getPreviousSeason(Summoner summoner) {
+        String rankUrl = "https://op.gg/api/v1.0/internal/bypass/summoners/euw/" + summoner.getOpgg() + "/summary";
+
+        String division = null;
+        String tier = null;
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet(rankUrl);
+            String json = EntityUtils.toString(httpClient.execute(request).getEntity());
+
+            JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+            JsonObject dataObject = jsonObject.getAsJsonObject("data");
+            if (dataObject != null) {
+                JsonObject summonerObject = dataObject.getAsJsonObject("summoner");
+                if (summonerObject != null) {
+                    JsonArray previousSeasons = summonerObject.getAsJsonArray("previous_seasons");
+                    if (previousSeasons != null && previousSeasons.size() > 0) {
+                        JsonObject firstSeason = previousSeasons.get(0).getAsJsonObject();
+                        JsonObject tierInfo = firstSeason.getAsJsonObject("tier_info");
+                        if (tierInfo != null) {
+                            tier = tierInfo.get("tier").getAsString();
+                            division = tierInfo.get("division").getAsString();
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tier + " " + division;
+    }
+
+    public String[][] getMostPlayed(String id) {
+        String[][] stats = new String[4][3];
+        for (int i = 0; i < 3; i++) {
+            stats[0][i] = "0";
+            stats[1][i] = "0";
+            stats[2][i] = "0";
+        }
+
+        String url = "https://op.gg/api/v1.0/internal/bypass/summoners/euw/" + id + "/most-champions/rank?game_type=RANKED&season_id=" + getSeasonId();
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet(url);
+            String json = EntityUtils.toString(httpClient.execute(request).getEntity());
+
+            JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+            JsonElement dataElement = jsonObject.get("data");
+
+
+            if (dataElement != null && dataElement.isJsonObject()) {
+                JsonObject dataObject = dataElement.getAsJsonObject();
+                JsonArray championStats = dataObject.getAsJsonArray("champion_stats");
+
+                if (championStats != null && championStats.size() > 0) {
+                    for (int i = 0; i < Math.min(3, championStats.size()); i++) {
+                        JsonObject champion = championStats.get(i).getAsJsonObject();
+                        stats[0][i] = champion.get("id").getAsString();
+                        int games = champion.get("play").getAsInt();
+                        int kills = champion.get("kill").getAsInt();
+                        int deaths = champion.get("death").getAsInt();
+                        int assists = champion.get("assist").getAsInt();
+                        int avgKills = kills/games;
+                        int avgDeaths = deaths/games;
+                        int avgAssists = assists/games;
+                        stats[1][i] =  avgKills + "/" + avgDeaths + "/" + avgAssists;
+                        stats[2][i] = champion.get("win") + ", " + champion.get("lose");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stats;
+    }
+
+    public String[][] getChampionNamesAndImages(String[][] championIds, String patchVersion) {
+        String[][] namesAndImages = new String[2][3];
+        try {
+            JSONObject championsData = getChampionData(patchVersion);
+            for (int i = 0; i < championIds[0].length; i++) {
+                int champId = Integer.parseInt(championIds[0][i]);
+                String[] nameAndImage = getChampionNameAndImage(champId, championsData);
+                namesAndImages[0][i] = nameAndImage[0];
+                namesAndImages[1][i] = nameAndImage[1];
+            }
+        } catch (JSONException e) {
+            logger.error("Error in getChampionNamesAndImages: ", e);
+        }
+
+        return namesAndImages;
+    }
+
+    private String[] getChampionNameAndImage(int champId, JSONObject championsData) throws JSONException {
+        Iterator<String> keys = championsData.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            JSONObject champion = championsData.getJSONObject(key);
+            if (champion.getString("key").equals(String.valueOf(champId))) {
+                String name = champion.getString("name");
+                String image = champion.getJSONObject("image").getString("full");
+                return new String[]{name, image};
+            }
+        }
+        return new String[]{"Unknown", "Unknown"};
+    }
+
+    public String intoString(String[] array) {
+        return String.join(",", array);
+    }
+
+
 
 }

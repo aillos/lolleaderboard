@@ -22,7 +22,17 @@ public class SummonerDto {
 
     private String prevRank;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank) {
+    private String[] mostPlayedName;
+
+    private String[] mostPlayedChampion;
+
+    private String[] mostPlayedImage;
+
+    private String[] mostPlayedKDA;
+
+    private String[] mostPlayedWR;
+
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -38,11 +48,55 @@ public class SummonerDto {
         this.masteryPoints=masteryPoints;
         this.hotStreak=hotStreak;
         this.prevRank=prevRank;
+        this.mostPlayedChampion=mostPlayedChampion;
+        this.mostPlayedImage=mostPlayedImage;
+        this.mostPlayedKDA=mostPlayedKDA;
+        this.mostPlayedWR=mostPlayedWR;
+        this.mostPlayedName=mostPlayedName;
     }
 
     public SummonerDto() {
     }
 
+    public String[] getMostPlayedName() {
+        return mostPlayedName;
+    }
+
+    public void setMostPlayedName(String[] mostPlayedName) {
+        this.mostPlayedName = mostPlayedName;
+    }
+
+    public String[] getMostPlayedChampion() {
+        return mostPlayedChampion;
+    }
+
+    public void setMostPlayedChampion(String[] mostPlayedChampion) {
+        this.mostPlayedChampion = mostPlayedChampion;
+    }
+
+    public String[] getMostPlayedImage() {
+        return mostPlayedImage;
+    }
+
+    public void setMostPlayedImage(String[] mostPlayedImage) {
+        this.mostPlayedImage = mostPlayedImage;
+    }
+
+    public String[] getMostPlayedKDA() {
+        return mostPlayedKDA;
+    }
+
+    public void setMostPlayedKDA(String[] mostPlayedKDA) {
+        this.mostPlayedKDA = mostPlayedKDA;
+    }
+
+    public String[] getMostPlayedWR() {
+        return mostPlayedWR;
+    }
+
+    public void setMostPlayedWR(String[] mostPlayedWR) {
+        this.mostPlayedWR = mostPlayedWR;
+    }
     public String getPrevRank() {
         return prevRank;
     }

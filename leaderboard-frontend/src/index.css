@@ -3,7 +3,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
+
   color: rgba(255, 255, 255, 0.87);
 
   font-synthesis: none;
@@ -39,14 +39,14 @@ body {
   place-items: center;
   min-width: 320px;
   height: 100%;
-  --color-background: #FDF7E4;
+  --color-background: #f0f4ef;
   --color-foreground: #383737;
-  --color-accent: #d3c3a6;
-  --color-accent-border: #c1b193;
-  --color-accent-hover: #e0d0b3;
-  background-color: #FDF7E4;
+  --color-accent: #344966;
+  --color-accent-border: #344966;
+  --color-accent-hover: #344966;
+  background-color: #f0f4ef;
   color: var(--color-foreground);
-  --color-text: #181818;
+  --color-text: #fcf9f9;
 }
 body.dark {
   margin: 0;
@@ -362,6 +362,7 @@ h2{
   align-items: center;
   justify-content: space-between;
   height:30px;
+  color: var(--color-foreground);
 }
 
 .patchHeader{
@@ -412,6 +413,7 @@ h2{
   justify-content: center;
   margin:auto;
   font-size: 16px;
+  color: var(--color-foreground);
 }
 
 .lastUpdated > p{
@@ -426,7 +428,7 @@ h2{
   padding:5px;
   border-radius: 5px;
   background-color: var(--color-accent-border);
-  color: var(--color-foreground);
+  color: var(--color-text);
 }
 
 #tooltip-bottom2 .tooltip-arrow::before {
@@ -476,6 +478,7 @@ h2{
   align-items: center;
   justify-content: center;
   height:30px;
+  color: var(--color-foreground);
 }
 
 .techstackFooter{

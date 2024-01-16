@@ -135,7 +135,6 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
   }
   a:hover {
     color: #747bff;
@@ -154,6 +153,8 @@ button:focus-visible {
 .read-the-docs {
   color: #888;
 }
+
+
 
 .playerCard{
   border:1px solid var(--color-foreground);
@@ -598,7 +599,7 @@ h2{
 }
 
 .rankAndName{
-  height:50px;
+  height:100%;
   width:300px;
   margin: 17px auto auto;
   text-align: center;
@@ -707,4 +708,97 @@ h2{
 
 .nameAndStreak > h2{
   font-size:24px;
+}
+
+@media only screen and (max-width: 450px) {
+  .playerCard{
+    width:300px;
+  }
+
+  .player-cards-container {
+    width:340px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .player-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin:auto;
+  }
+
+  .player-avatar{
+    width:60px;
+  }
+
+  .header{
+    width:330px;
+    font-size: 14px;
+  }
+
+  .footer{
+    width:300px;
+  }
+  .rankAndName{
+    margin-top:5px;
+    width:150px;
+    font-size: 12px;
+    align-items: center;
+  }
+
+  .rankAndName > p{
+    margin-bottom:20px;
+  }
+
+  .rankAndName > h2{
+    font-size: 18px;
+    margin-bottom: -10px;
+  }
+
+  .image-container {
+    width: 17px;
+    height: 17px;
+  }
+
+  .image-container1 {
+    width: 25px;
+    height: 25px;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+
+  .image-container2 {
+    width: 32px;
+    height: 32px;
+  }
+  .image-bottom{
+    margin-top:5px;
+    display: flex;
+    width:50px;
+  }
+
+  .winsLosses{
+    width:50px;
+  }
+
+  .rankingIcon{
+    height:40px;
+    width:40px;
+  }
+
+  .placementCircle{
+    height:18px;
+    width:18px;
+  }
+
+  .player-info{
+    width:100%;
+  }
+
+  .winRate{
+    font-size:10px;
+  }
+
 }

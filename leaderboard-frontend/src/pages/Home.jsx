@@ -115,7 +115,7 @@ export const Home = () => {
     };
 
     const updateButton = (
-        <div className="button updateB" onClick={update}>
+        <div className="button updateB mobileButton" onClick={update}>
             <FontAwesomeIcon icon={faRefresh} />
             Update
         </div>

@@ -772,7 +772,7 @@ h2{
     width:130px;
     font-size: 10px;
     align-items: center;
-    margin-left:-20px;
+    margin-left:-15px;
   }
 
   .nameAndStreak{
@@ -795,7 +795,7 @@ h2{
 
   .streak{
     font-size: 16px;
-    margin-top:0;
+    margin-top:-3px;
 
   }
 

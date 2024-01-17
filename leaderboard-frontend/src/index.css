@@ -719,6 +719,7 @@ h2{
     justify-content: center;
     align-items: center;
     justify-self: center;
+    margin-bottom: 40px;
   }
 
   .player-avatar img {
@@ -743,6 +744,28 @@ h2{
   .footer{
     width:300px;
     font-size: 10px;
+    margin: auto;
+    display: unset;
+  }
+
+  .techstackFooter{
+    display: flex;
+    width:100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+  .socialsFooter{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width:100%;
+    cursor:pointer;
+  }
+
+  .copyrightFooter{
+    width:100%;
   }
   .rankAndName{
     margin-top:0;

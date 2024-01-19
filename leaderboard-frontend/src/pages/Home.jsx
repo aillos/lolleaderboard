@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
-import {
-    faCircle, faFire,
-    faMedal, faRefresh,
-    faUserPlus
-} from "@fortawesome/free-solid-svg-icons";
+import {faCircle, faFire, faMedal, faRefresh, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Footer} from "../Footer";
 import {useNavigate} from "react-router-dom";
@@ -93,9 +89,11 @@ export const Home = () => {
     const populateSummoners = async () => {
         try {
             const response = await axios.get('api/getAll');
-            const summoners = response.data;
+            let summoners = response.data;
+            await axios.get('api/isLive');
             assignPositions(summoners);
             setSummoners(summoners);
+
             setLoading(false);
             await lastTimeUpdated();
         } catch (error) {
@@ -203,13 +201,17 @@ export const Home = () => {
         </OverlayTrigger>
     );
 
+    const liveBorderStyle = { border: '3px solid green' };
 
 
     const renderSummoner = (summoners, winrate, patchVersion) => (
 
-        <div className="player-cards-container">
+    <div className="player-cards-container">
             {summoners.map((summoner) => (
-                <div className="player-card" key={summoner.gameName + summoner.tagLine}>
+                <div className="player-card"
+                     key={summoner.gameName + summoner.tagLine}
+                     style={summoner.isLive ? liveBorderStyle : {}}
+                >
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">
                                     <FontAwesomeIcon

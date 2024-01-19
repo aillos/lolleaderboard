@@ -29,8 +29,10 @@ public class Summoner {
 
     private String[] mostPlayedWR;
 
+    private String isLive;
 
-    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String opgg, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR) {
+
+    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String opgg, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -51,9 +53,18 @@ public class Summoner {
         this.mostPlayedKDA=mostPlayedKDA;
         this.mostPlayedWR=mostPlayedWR;
         this.opgg=opgg;
+        this.isLive=isLive;
     }
 
     public Summoner() {
+    }
+
+    public String getIsLive() {
+        return isLive;
+    }
+
+    public void setIsLive(String isLive) {
+        this.isLive = isLive;
     }
 
     public String[] getMostPlayedChampion() {

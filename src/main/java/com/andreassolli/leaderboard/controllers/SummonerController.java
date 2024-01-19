@@ -6,12 +6,14 @@ import com.andreassolli.leaderboard.repositories.SummonerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class SummonerController {
 
     private SummonerRepository repo;
@@ -20,64 +22,47 @@ public class SummonerController {
         this.repo = summonerRepository;
     }
 
-    @GetMapping("/api/service")
+    @GetMapping("/service")
     public int serviceStatus(){
         return repo.serviceStatus();
     }
 
-    @GetMapping("api/time")
+    @GetMapping("/time")
     public LocalDateTime getTime(){
         return repo.getTime();
     }
 
-    @GetMapping("/api/getAll")
+    @GetMapping("/getAll")
     public List<SummonerDto> getAll() {
         return repo.getAllSummonersView();
     }
 
-    @GetMapping("/api/update")
+    @GetMapping("/update")
     public boolean update() {
         return repo.updateSummoners();
     }
 
-    @GetMapping("/api/add/{name}/{tag}")
-    public boolean add(@PathVariable String name, @PathVariable String tag) {
-        return repo.addGameNameTag(name, tag);
-    }
-
-    @GetMapping("/api/remove/{name}/{tag}")
-    public boolean remove(@PathVariable String name, @PathVariable String tag) {
-        return repo.removeSummoner(name, tag);
-    }
-
-    @GetMapping("/api/search/{name}/{tag}")
-    public SummonerDto search(@PathVariable String name, @PathVariable String tag){
-        return repo.getSummoner(name, tag);
-    }
-
-    @GetMapping("/api/mastery/{name}/{tag}/{patch}")
-    public void championMaster(@PathVariable String name, @PathVariable String tag, @PathVariable String patch){
-        repo.updateChampionForSummoner(name, tag, patch);
-    }
-
-    @GetMapping("/api/updateMastery/{patch}")
+    @GetMapping("/updateMastery/{patch}")
     public boolean updateMastery(@PathVariable String patch){
         return repo.updateChampionMastery(patch);
     }
 
 
-    @GetMapping("/api/scrape")
+    @GetMapping("/scrape")
     public List<Summoner> scrape(){
             return repo.updateOpgg();
     }
 
-    @GetMapping("/api/season")
+    @GetMapping("/season")
     public void updateSeason(){
         repo.addSeasonId();
     }
 
-    @GetMapping("/api/previous")
+    @GetMapping("/previous")
     public void updatePrevious(){
         repo.updatePrevious();
     }
+
+    @GetMapping("/isLive")
+    public void isLive() { repo.isLive(); }
 }

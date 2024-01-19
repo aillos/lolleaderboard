@@ -1,4 +1,4 @@
-package com.andreassolli.leaderboard.repositories;
+package com.andreassolli.leaderboard.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;

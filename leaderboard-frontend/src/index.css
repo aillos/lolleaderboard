@@ -200,9 +200,11 @@ button:focus-visible {
 .tagLineInput{
   width: 50px;
   height:28px;
+  color: white;
 }
 
 .gameNameInput{
+  color: white;
   width:150px;
   height:28px;
 }

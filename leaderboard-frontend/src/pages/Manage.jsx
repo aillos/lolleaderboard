@@ -80,7 +80,7 @@ export const Manage = () => {
 
     const searchForPlayer = async (name, tag) => {
         try {
-            const response = await axios.get(`/api/search/${name}/${tag}`);
+            const response = await axios.get(`/manage/search/${name}/${tag}`);
             setSummoner(response.data);
             setResponseText("");
         } catch (error) {
@@ -91,7 +91,7 @@ export const Manage = () => {
 
     const removeSummoner = async (name, tag) => {
         try {
-            const response = await axios.get(`/api/remove/${name}/${tag}`);
+            const response = await axios.get(`/manage/remove/${name}/${tag}`);
             if (response.data === true) {
                 setResponseText("Successfully removed " + name + "#" + tag);
             } else {
@@ -105,10 +105,10 @@ export const Manage = () => {
 
     const addSummoner = async (name, tag) => {
         try {
-            const response = await axios.get(`/api/add/${name}/${tag}`);
+            const response = await axios.get(`/manage/add/${name}/${tag}`);
             if (response.data === true) {
                 setResponseText("Successfully added " + name + "#" + tag);
-                await axios.get(`/api/mastery/${name}/${tag}/${patchVersion}`);
+                await axios.get(`/manage/mastery/${name}/${tag}/${patchVersion}`);
             } else {
                 setResponseText("Failed to add " + name + "#" + tag);
             }

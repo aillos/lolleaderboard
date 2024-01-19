@@ -32,7 +32,9 @@ public class SummonerDto {
 
     private String[] mostPlayedWR;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR) {
+    private String isLive;
+
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -53,9 +55,18 @@ public class SummonerDto {
         this.mostPlayedKDA=mostPlayedKDA;
         this.mostPlayedWR=mostPlayedWR;
         this.mostPlayedName=mostPlayedName;
+        this.isLive=isLive;
     }
 
     public SummonerDto() {
+    }
+
+    public String getIsLive() {
+        return isLive;
+    }
+
+    public void setIsLive(String isLive) {
+        this.isLive = isLive;
     }
 
     public String[] getMostPlayedName() {

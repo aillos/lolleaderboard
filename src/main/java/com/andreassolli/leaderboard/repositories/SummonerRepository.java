@@ -1,6 +1,8 @@
 package com.andreassolli.leaderboard.repositories;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import com.andreassolli.leaderboard.models.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +20,7 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -94,6 +97,21 @@ public class SummonerRepository {
             return db.query(sql, rs -> {
                 if (rs.next()) {
                     return rs.getTimestamp("Time").toLocalDateTime();
+                }
+                return LocalDateTime.now();
+            });
+        } catch (Exception e) {
+            logger.error("Could not fetch Time", e);
+            return LocalDateTime.now();
+        }
+    }
+
+    public LocalDateTime getLiveTime() {
+        String sql = "SELECT liveTime FROM Info";
+        try {
+            return db.query(sql, rs -> {
+                if (rs.next()) {
+                    return rs.getTimestamp("liveTime").toLocalDateTime();
                 }
                 return LocalDateTime.now();
             });
@@ -660,7 +678,7 @@ public class SummonerRepository {
             stats[2][i] = "0";
         }
 
-        String url = "https://op.gg/api/v1.0/internal/bypass/summoners/euw/" + id + "/most-champions/rank?game_type=RANKED&season_id=" + getSeasonId();
+        String url = "https://op.gg/api/v1.0/internal/bypass/summoners/euw/" + id + "/most-champions/rank?game_type=SOLORANKED&season_id=" + getSeasonId();
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(url);
             String json = EntityUtils.toString(httpClient.execute(request).getEntity());
@@ -729,6 +747,56 @@ public class SummonerRepository {
     public String intoString(String[] array) {
         return String.join(",", array);
     }
+
+    public String getSummonerId(String name, String tag){
+        String sql = "SELECT summonerId FROM Summoner WHERE gameName=? AND tagLine=?";
+        return db.queryForObject(sql, String.class, name, tag);
+    }
+
+    public String checkLive(String name, String tag) {
+        String summonerId = getSummonerId(name, tag);
+        String url = "https://euw1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/" + summonerId + getApiUrl();
+
+        try {
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            return String.valueOf(response.getStatusCode() == HttpStatus.OK);
+        } catch (HttpClientErrorException.NotFound e) {
+            return "false";
+        } catch (RestClientException e) {
+            logger.error("Error in checkLive: ", e);
+            return "false";
+        }
+    }
+
+
+    public void isLive(){
+        LocalDateTime lastUpdatedTime = getLiveTime();
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        if (ChronoUnit.MINUTES.between(lastUpdatedTime, currentTime) < 3) {
+            return;
+        }
+
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners) {
+            updateLive(checkLive(summoner.getGameName(), summoner.getTagLine()), summoner.getGameName(), summoner.getTagLine());
+        }
+
+        String newTimeSql = "UPDATE Info SET liveTime = ?";
+        try {
+            db.update(newTimeSql, LocalDateTime.now());
+        } catch (Exception e) {
+            logger.error("Could not save new Time", e);
+        }
+    }
+
+    public void updateLive(String live, String name, String tag){
+        String sql = "UPDATE Summoner SET isLive=? WHERE gameName=? AND tagLine=?";
+
+        db.update(sql, live, name, tag);
+    }
+
+
 
 
 

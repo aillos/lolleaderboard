@@ -201,7 +201,7 @@ export const Home = () => {
         </OverlayTrigger>
     );
 
-    const liveBorderStyle = { border: '3px solid green' };
+    const liveBorderStyle = { border: '1px solid green' };
 
 
     const renderSummoner = (summoners, winrate, patchVersion) => (
@@ -210,7 +210,7 @@ export const Home = () => {
             {summoners.map((summoner) => (
                 <div className="player-card"
                      key={summoner.gameName + summoner.tagLine}
-                     style={summoner.isLive ? liveBorderStyle : {}}
+                     style={summoner.isLive==="true" ? liveBorderStyle : {border: '1px solid transparent'}}
                 >
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">

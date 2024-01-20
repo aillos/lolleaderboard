@@ -1,6 +1,6 @@
 package com.andreassolli.leaderboard.service;
 
-import com.andreassolli.leaderboard.models.UserInfo;
+import com.andreassolli.leaderboard.models.auth.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

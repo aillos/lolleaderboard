@@ -1,7 +1,7 @@
 package com.andreassolli.leaderboard.controllers;
 
-import com.andreassolli.leaderboard.models.AuthRequest;
-import com.andreassolli.leaderboard.models.UserInfo;
+import com.andreassolli.leaderboard.models.auth.AuthRequest;
+import com.andreassolli.leaderboard.models.auth.UserInfo;
 import com.andreassolli.leaderboard.service.JwtService;
 import com.andreassolli.leaderboard.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;

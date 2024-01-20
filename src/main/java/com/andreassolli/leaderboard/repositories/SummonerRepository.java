@@ -1,9 +1,7 @@
 package com.andreassolli.leaderboard.repositories;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
+import com.andreassolli.leaderboard.models.live.*;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import com.andreassolli.leaderboard.models.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +28,6 @@ import org.springframework.web.client.RestTemplate;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;

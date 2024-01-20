@@ -1,4 +1,4 @@
-package com.andreassolli.leaderboard.models;
+package com.andreassolli.leaderboard.models.auth;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

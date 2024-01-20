@@ -1,4 +1,4 @@
-package com.andreassolli.leaderboard.models;
+package com.andreassolli.leaderboard.models.live;
 
 public class Observer {
     private String encryptionKey;

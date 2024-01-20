@@ -1,6 +1,6 @@
 package com.andreassolli.leaderboard.service;
 
-import com.andreassolli.leaderboard.models.UserInfo;
+import com.andreassolli.leaderboard.models.auth.UserInfo;
 import com.andreassolli.leaderboard.repositories.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

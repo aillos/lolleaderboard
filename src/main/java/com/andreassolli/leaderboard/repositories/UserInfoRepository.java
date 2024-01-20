@@ -1,6 +1,6 @@
 package com.andreassolli.leaderboard.repositories;
 
-import com.andreassolli.leaderboard.models.UserInfo;
+import com.andreassolli.leaderboard.models.auth.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

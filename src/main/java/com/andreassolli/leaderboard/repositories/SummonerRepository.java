@@ -1,6 +1,7 @@
 package com.andreassolli.leaderboard.repositories;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import com.andreassolli.leaderboard.models.*;
@@ -753,18 +754,135 @@ public class SummonerRepository {
         return db.queryForObject(sql, String.class, name, tag);
     }
 
-    public String checkLive(String name, String tag) {
-        String summonerId = getSummonerId(name, tag);
-        String url = "https://euw1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/" + summonerId + getApiUrl();
-
+    public Summoner checkLive(Summoner summoner) {;
+        String url = "https://euw1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/" + summoner.getSummonerId() + getApiUrl();
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-            return String.valueOf(response.getStatusCode() == HttpStatus.OK);
-        } catch (HttpClientErrorException.NotFound e) {
-            return "false";
-        } catch (RestClientException e) {
-            logger.error("Error in checkLive: ", e);
-            return "false";
+            if (response.getStatusCode() == HttpStatus.OK) {
+                LiveGame liveGame = objectMapper.readValue(response.getBody(), LiveGame.class);
+                summoner.setLiveData(objectMapper.writeValueAsString(convertToLiveGameDto(liveGame)));
+
+                summoner.setIsLive("true");
+            } else {
+                summoner.setIsLive("false");
+            }
+        } catch (Exception e) {
+            summoner.setIsLive("false");
+        }
+
+        return summoner;
+    }
+
+    public Queues getQueueById(long queueId) {
+        List<Queues> queuesList = fetchQueues();
+        if (queuesList != null) {
+            Optional<Queues> matchingQueue = queuesList.stream()
+                    .filter(queue -> queue.getQueueId() == queueId)
+                    .findFirst();
+
+            return matchingQueue.orElse(null);
+        }
+        return null;
+    }
+
+    public List<Queues> fetchQueues() {
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String url = "https://static.developer.riotgames.com/docs/lol/queues.json";
+            String jsonResponse = restTemplate.getForObject(url, String.class);
+            return objectMapper.readValue(jsonResponse, new TypeReference<>() {
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    private LiveGameDto convertToLiveGameDto(LiveGame liveGame) {
+        try {
+            JSONObject championsData = getChampionData(getPatchVersion());
+
+            List<ParticipantDto> participantDtos = liveGame.getParticipants().stream()
+                    .map(participant -> convertToParticipantDto(participant, championsData))
+                    .collect(Collectors.toList());
+
+            // Additional logic might be needed here for bannedChampions if you want to include names and images
+            List<String[]> bannedChampions = liveGame.getBannedChampions().stream()
+                    .map(banned -> {
+                        try {
+                            String [] champion = getChampionNameAndImage((int) banned.getChampionId(), championsData);
+                            return new String[]{String.valueOf(banned.getPickTurn()), String.valueOf(banned.getTeamId()), champion[0], champion[1]};
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    })
+                    .collect(Collectors.toList());
+
+            Queues queue = getQueueById(liveGame.getGameQueueConfigId());
+            return new LiveGameDto(
+                    liveGame.getGameStartTime(),
+                    queue.getMap(),
+                    queue.getDescription(),
+                    liveGame.getGameLength(),
+                    bannedChampions,
+                    participantDtos
+            );
+        } catch (Exception e) {
+            logger.error("Error in convertToLiveGameDto: ", e);
+            return null;
+        }
+    }
+
+    public SummonerSpell getSpellImageById(String spellId) {
+        String summonerSpellUrl = "https://ddragon.leagueoflegends.com/cdn/14.1.1/data/en_US/summoner.json";
+
+        try {
+            ResponseEntity<String> response = restTemplate.getForEntity(summonerSpellUrl, String.class);
+            JSONObject json = new JSONObject(response.getBody());
+            JSONObject data = json.getJSONObject("data");
+
+            Iterator<String> keys = data.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                JSONObject spell = data.getJSONObject(key);
+                if (spell.getString("key").equals(spellId)) {
+                    String name = spell.getString("name");
+                    String image = spell.getJSONObject("image").getString("full");
+                    return new SummonerSpell(spellId, name, image);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching summoner spell data: ", e);
+        }
+        return null;
+    }
+
+
+    private ParticipantDto convertToParticipantDto(Participant participant, JSONObject championsData) {
+        try {
+            String[] championData = getChampionNameAndImage((int) participant.getChampionId(), championsData);
+            String championName = championData[0];
+            String championImage = championData[1];
+            SummonerSpell spell1 = getSpellImageById(participant.getSpell1Id()); // Implement this
+            SummonerSpell spell2 = getSpellImageById(participant.getSpell2Id()); // Implement this
+
+            return new ParticipantDto(
+                    championName,
+                    championImage,
+                    participant.getPerks(),
+                    participant.isBot(),
+                    participant.getTeamId(),
+                    participant.getSummonerName(),
+                    spell1,
+                    spell2
+            );
+        } catch (JSONException e) {
+            logger.error("Error in convertToParticipantDto: ", e);
+            return null;
         }
     }
 
@@ -779,7 +897,8 @@ public class SummonerRepository {
 
         List<Summoner> summoners = getAllSummoners();
         for (Summoner summoner : summoners) {
-            updateLive(checkLive(summoner.getGameName(), summoner.getTagLine()), summoner.getGameName(), summoner.getTagLine());
+            summoner=checkLive(summoner);
+            updateLive(summoner);
         }
 
         String newTimeSql = "UPDATE Info SET liveTime = ?";
@@ -790,10 +909,10 @@ public class SummonerRepository {
         }
     }
 
-    public void updateLive(String live, String name, String tag){
-        String sql = "UPDATE Summoner SET isLive=? WHERE gameName=? AND tagLine=?";
+    public void updateLive(Summoner summoner){
+        String sql = "UPDATE Summoner SET isLive=?, liveData=? WHERE gameName=? AND tagLine=?";
 
-        db.update(sql, live, name, tag);
+        db.update(sql, summoner.getIsLive(), summoner.getLiveData(), summoner.getGameName(), summoner.getTagLine());
     }
 
 

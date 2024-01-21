@@ -434,6 +434,17 @@ h2{
   color: var(--color-text);
 }
 
+#tooltip-top2 .tooltip-arrow::before {
+  border-top-color: var(--color-accent-border);
+}
+
+#tooltip-top2 > .tooltip-inner {
+  padding:5px;
+  border-radius: 5px;
+  background-color: var(--color-accent-border);
+  color: var(--color-text);
+}
+
 #tooltip-bottom2 .tooltip-arrow::before {
   border-bottom-color: var(--color-background);
 }
@@ -931,4 +942,52 @@ h2{
   }
 
 
+}
+
+.rankedtoggle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rankedText{
+  margin-left:5px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.fa-users,
+.fa-user {
+  font-size:14px;
+  margin-top: -2px;
+  margin-left:-2px;
+}
+
+.fa-user{
+  color: #302c3d;
+}
+
+.fa-users{
+  color: #d4d9d6;
+}
+
+.react-toggle--checked .react-toggle-track {
+  background-color: #ffffff;
+}
+
+.button-toggled:active,
+.button-toggled:focus {
+  background-color: #3f3d46;
+}
+
+.button-toggled:hover {
+  background-color: #3f3d46;
+}
+
+.react-toggle-track-check {
+  color: #ffffff;
+}
+
+.react-toggle--checked .react-toggle-thumb {
+  border-color: #302c3d;
 }

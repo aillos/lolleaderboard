@@ -1,10 +1,20 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
-import {faCircle, faFire, faMedal, faRefresh, faUserPlus} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCircle,
+    faFire,
+    faMedal,
+    faMoon,
+    faRefresh,
+    faSun, faUser,
+    faUserPlus,
+    faUsers
+} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Footer} from "../Footer";
 import {useNavigate} from "react-router-dom";
+import Toggle from "react-toggle";
 
 export const Home = () => {
     const [patchVersion, setPatchVersion] = useState(null);
@@ -13,8 +23,17 @@ export const Home = () => {
     const [timeUpdated, setTimeUpdated] = useState("");
     const [updateTime, setUpdateTime] = useState("");
     const navigate = useNavigate();
+    const [sortFlexPoints, setSortFlexPoints] = useState(false);
     const goToContact = () => {
         navigate('/contact');
+    };
+
+    const toggleSort = () => {
+        setSortFlexPoints(prevSortFlexPoints => {
+            const newSortFlexPoints = !prevSortFlexPoints;
+            populateSummoners(newSortFlexPoints);
+            return newSortFlexPoints;
+        });
     };
 
     const winrate = (wins, losses) => {
@@ -86,12 +105,38 @@ export const Home = () => {
         });
     };
 
-    const populateSummoners = async () => {
+    const assignFlexPositions = (summoners) => {
+        let currentPosition = 1;
+        let skipCount = 1;
+        let flexPoints = null;
+        summoners.forEach((summoner, index) => {
+            if (index === 0) {
+                summoner.position = currentPosition;
+            } else {
+                if (summoner.flexPoints === flexPoints) {
+                    summoner.position = currentPosition;
+                    skipCount++;
+                } else {
+                    currentPosition += skipCount;
+                    summoner.position = currentPosition;
+                    skipCount = 1;
+                }
+            }
+            flexPoints = summoner.flexPoints;
+        });
+    };
+
+    const populateSummoners = async (sortFlexPoints) => {
         try {
             const response = await axios.get('api/getAll');
             let summoners = response.data;
             await axios.get('api/isLive');
-            assignPositions(summoners);
+            if (sortFlexPoints) {
+                summoners.sort((a, b) => b.flexPoints - a.flexPoints);
+                assignFlexPositions(summoners);
+            } else {
+                assignPositions(summoners);
+            }
             setSummoners(summoners);
             setLoading(false);
             await lastTimeUpdated();
@@ -339,6 +384,142 @@ export const Home = () => {
         </div>
     );
 
+    const renderFlexSummoner = (summoners, winrate, patchVersion) => (
+
+        <div className="player-cards-container">
+            {summoners.map((summoner) => (
+                <div className="player-card"
+                     key={summoner.gameName + summoner.tagLine}
+                     style={summoner.isLive==="true" ? liveBorderStyle : {border: '1px solid transparent'}}
+                >
+                    <div className="player-rank">
+                            <span className="fa-layers fa-fw">
+                                    <FontAwesomeIcon
+                                        icon={getPlacement(summoner.position - 1).icon}
+                                        style={{ color: getPlacement(summoner.position - 1).color }}
+                                        className={"rankingIcon"}
+                                        transform={"down-1"}
+                                    />
+                                    <FontAwesomeIcon icon={getPlacement(summoner.position - 1).icon2} transform={"down-8 right-10"} className={"placementCircle"} color={getPlacement(summoner.position - 1).color}/>
+                                <span className="fa-layers-text placementText" style={{color: getPlacement(summoner.position - 1).medal}} >{summoner.position}</span>
+                            </span>
+                    </div>
+                    <div className="player-avatar">
+                        <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt={`${summoner.gameName} avatar`} />
+                    </div>
+                    <div className="player-info">
+                        <div className={"rankAndName"}>
+                            <div className="nameAndStreak">
+                                {hotstreak(summoner.hotStreak) ? streak : ""}
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                        <Tooltip id={`tooltip-top`}>
+                                            {summoner.gameName} #{summoner.tagLine}
+                                        </Tooltip>
+                                    }
+                                >
+                                    <h2 className="summoner-name">
+                                        {summoner.gameName}
+                                    </h2>
+                                </OverlayTrigger>
+                            </div>
+                            <OverlayTrigger
+                                placement="bottom"
+                                overlay={
+                                    <Tooltip id={`tooltip-bottom2`}>
+                                        Previous: <b>{summoner.prevRank}</b>
+                                    </Tooltip>
+                                }
+                            >
+                                <div>
+                                <span style={{ color: getRankColor(summoner.flexTier), fontWeight: "bold"}}>
+                                    {summoner.flexTier} {summoner.flexRank}
+                                </span>
+                                    <span> {summoner.flexLp} LP</span>
+                                </div>
+                            </OverlayTrigger>
+                        </div>
+                        <div className={"winsLosses"}>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                    <Tooltip
+                                        id={summoner.mostPlayedKDA[0] === "0" ? "tooltip-invis" :`tooltip-top`}>
+                                        <b>{summoner.mostPlayedName[0]} </b> <br />
+                                        Games: <b>{games(summoner.mostPlayedWR[0], summoner.mostPlayedWR[1])}</b>  <br/>
+                                        Avg: <b>{summoner.mostPlayedKDA[0]}</b> <br />
+                                        WR: <b> {winrate(summoner.mostPlayedWR[0], summoner.mostPlayedWR[1])} </b>
+                                    </Tooltip>
+                                }
+                            >
+                                <div className="image-container2">
+                                    <img src={summoner.mostPlayedKDA[0] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImage[0]}`} alt={`${summoner.mostPlayedName[0]} champion`} />
+                                </div>
+                            </OverlayTrigger>
+                            <div className={"image-bottom"}>
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                        <Tooltip
+                                            id={summoner.mostPlayedKDA[2] === "0" ? "tooltip-invis" :`tooltip-top`}>
+                                            <b>{summoner.mostPlayedName[2]} </b> <br />
+                                            Games: <b>{games(summoner.mostPlayedWR[4], summoner.mostPlayedWR[5])}</b>  <br/>
+                                            Avg: <b>{summoner.mostPlayedKDA[2]}</b> <br />
+                                            WR: <b> {winrate(summoner.mostPlayedWR[4], summoner.mostPlayedWR[5])} </b>
+
+                                        </Tooltip>
+                                    }
+                                >
+                                    <div className="image-container">
+                                        <img src={summoner.mostPlayedKDA[2] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImage[2]}`} alt={`${summoner.mostPlayedName[2]} champion`} />
+                                    </div>
+                                </OverlayTrigger>
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                        <Tooltip
+                                            id={summoner.mostPlayedKDA[1] === "0" ? "tooltip-invis" :`tooltip-top`}>
+                                            <b>{summoner.mostPlayedName[1]} </b> <br />
+                                            Games: <b>{games(summoner.mostPlayedWR[2], summoner.mostPlayedWR[3])}</b>  <br/>
+                                            Avg: <b>{summoner.mostPlayedKDA[1]}</b> <br />
+                                            WR: <b> {winrate(summoner.mostPlayedWR[2], summoner.mostPlayedWR[3])} </b>
+                                        </Tooltip>
+                                    }
+                                >
+                                    <div className="image-container1">
+                                        <img src={summoner.mostPlayedKDA[1] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImage[1]}`} alt={`${summoner.mostPlayedName[1]} champion`} />
+                                    </div>
+                                </OverlayTrigger>
+                            </div>
+                        </div>
+                        <OverlayTrigger
+                            placement="right"
+                            overlay={
+                                <Tooltip
+                                    id={`tooltip-right`}>
+                                    {summoner.flexWins} wins<br />
+                                    {summoner.flexLosses} losses<br />
+                                    {games(summoner.flexWins,summoner.flexLosses)} games<br />
+                                </Tooltip>
+                            }
+                        >
+                            <div className={"winRate"}>
+
+                                <div className={"winrate1"}>
+                                    <p> {winrate(summoner.flexWins, summoner.flexLosses)}</p>
+                                </div>
+                                <div className={"winrate2"}>
+                                    <p>WINRATE</p>
+                                </div>
+                            </div>
+                        </OverlayTrigger>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+
     const formatDateTime = (isoString) => {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const date = new Date(isoString);
@@ -351,15 +532,45 @@ export const Home = () => {
         return `${day}. ${month} ${year} at ${hours}:${minutes}`;
     };
 
-    let contents = renderSummoner(summoners, winrate, patchVersion);
+    const sortButton = (
+        <div className="button sortB" onClick={toggleSort}>
+            Sort by Flex Points
+        </div>
+    );
+
+    let currentRanked = (sortFlexPoints===true ? "Flex" : "Solo/Duo");
+    let switchRanked = (sortFlexPoints===true ? "Switch to Solo/Duo" : "Switch to Flex");
+    let contents = (sortFlexPoints===true ? renderFlexSummoner(summoners, winrate, patchVersion) : renderSummoner(summoners, winrate, patchVersion));
 
     return (
         <div>
             <div className={"updateSection"}>
-                <div className={"button updateB"} onClick={goToContact}>
-                    <FontAwesomeIcon icon={faUserPlus} />
-                    Add me
+
+                <div className={"rankedtoggle"}>
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={
+                            <Tooltip
+                                id={`tooltip-top2`}>
+                                {switchRanked}
+                            </Tooltip>
+                        }
+                    >
+                        <div>
+                <Toggle
+                    className=""
+                    checked={sortFlexPoints}
+                    onChange={toggleSort}
+                    aria-label="Ranked queue toggle"
+                    icons={{ unchecked: <FontAwesomeIcon icon={faUsers} className="toggle-icon fa-users" />,
+                        checked: <FontAwesomeIcon icon={faUser} className="toggle-icon fa-user" /> }}
+                />
+                        </div>
+                    </OverlayTrigger>
+                    <div className={"rankedText"}>{currentRanked}</div>
+
                 </div>
+
                 <div className={"lastUpdated"}>
                     <p>Last updated: {timeUpdated}</p>
                 </div>

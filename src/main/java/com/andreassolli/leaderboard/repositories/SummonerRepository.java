@@ -53,6 +53,9 @@ public class SummonerRepository {
     private String getApiUrl() {
         return "?api_key=" + riotKey;
     }
+
+    private final String patchVersion = getPatchVersion();
+
     String gameName = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/";
     String puuidByTag = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/";
     String summonerNameIcon = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/";
@@ -800,7 +803,7 @@ public class SummonerRepository {
 
     private LiveGameDto convertToLiveGameDto(LiveGame liveGame) {
         try {
-            JSONObject championsData = getChampionData(getPatchVersion());
+            JSONObject championsData = getChampionData(patchVersion);
 
             List<ParticipantDto> participantDtos = liveGame.getParticipants().stream()
                     .map(participant -> convertToParticipantDto(participant, championsData))
@@ -835,7 +838,7 @@ public class SummonerRepository {
     }
 
     public SummonerSpell getSpellImageById(String spellId) {
-        String summonerSpellUrl = "https://ddragon.leagueoflegends.com/cdn/14.1.1/data/en_US/summoner.json";
+        String summonerSpellUrl = "https://ddragon.leagueoflegends.com/cdn/" + patchVersion +"/data/en_US/summoner.json";
 
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(summonerSpellUrl, String.class);
@@ -864,8 +867,8 @@ public class SummonerRepository {
             String[] championData = getChampionNameAndImage((int) participant.getChampionId(), championsData);
             String championName = championData[0];
             String championImage = championData[1];
-            SummonerSpell spell1 = getSpellImageById(participant.getSpell1Id()); // Implement this
-            SummonerSpell spell2 = getSpellImageById(participant.getSpell2Id()); // Implement this
+            SummonerSpell spell1 = getSpellImageById(participant.getSpell1Id());
+            SummonerSpell spell2 = getSpellImageById(participant.getSpell2Id());
 
             return new ParticipantDto(
                     championName,

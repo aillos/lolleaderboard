@@ -1,5 +1,7 @@
 package com.andreassolli.leaderboard.models;
 
+import com.andreassolli.leaderboard.models.live.LiveGameDto;
+
 public class SummonerDto {
     private String gameName;
     private String tagLine;
@@ -34,7 +36,9 @@ public class SummonerDto {
 
     private String isLive;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive) {
+    private String liveData;
+
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -56,9 +60,18 @@ public class SummonerDto {
         this.mostPlayedWR=mostPlayedWR;
         this.mostPlayedName=mostPlayedName;
         this.isLive=isLive;
+        this.liveData=liveData;
     }
 
     public SummonerDto() {
+    }
+
+    public String getLiveData() {
+        return liveData;
+    }
+
+    public void setLiveData(String liveData) {
+        this.liveData = liveData;
     }
 
     public String getIsLive() {

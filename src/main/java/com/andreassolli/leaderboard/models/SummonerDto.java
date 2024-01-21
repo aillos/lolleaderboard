@@ -41,7 +41,16 @@ public class SummonerDto {
 
     private LiveGameDto liveGameDto;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, LiveGameDto liveGameDto) {
+    private String flexRank;
+
+    private String flexTier;
+    private int flexLp;
+    private int flexWins;
+    private int flexLosses;
+
+    private int flexHotStreak;
+
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, LiveGameDto liveGameDto, String flexRank, String flexTier, int flexLp, int flexWins, int flexLosses, int flexHotStreak) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -65,9 +74,63 @@ public class SummonerDto {
         this.isLive=isLive;
         this.liveData=liveData;
         this.liveGameDto=liveGameDto;
+        this.flexRank=flexRank;
+        this.flexTier=flexTier;
+        this.flexLp=flexLp;
+        this.flexWins=flexWins;
+        this.flexLosses=flexLosses;
+        this.flexHotStreak=flexHotStreak;
     }
 
     public SummonerDto() {
+    }
+
+    public String getFlexRank() {
+        return flexRank;
+    }
+
+    public void setFlexRank(String flexRank) {
+        this.flexRank = flexRank;
+    }
+
+    public String getFlexTier() {
+        return flexTier;
+    }
+
+    public void setFlexTier(String flexTier) {
+        this.flexTier = flexTier;
+    }
+
+    public int getFlexLp() {
+        return flexLp;
+    }
+
+    public void setFlexLp(int flexLp) {
+        this.flexLp = flexLp;
+    }
+
+    public int getFlexWins() {
+        return flexWins;
+    }
+
+    public void setFlexWins(int flexWins) {
+        this.flexWins = flexWins;
+    }
+
+    public int getFlexLosses() {
+        return flexLosses;
+    }
+
+    public void setFlexLosses(int flexLosses) {
+        this.flexLosses = flexLosses;
+    }
+
+    public int getFlexHotStreak() {
+        return flexHotStreak;
+    }
+
+    public void setFlexHotStreak(int flexHotStreak) {
+        this.flexHotStreak = flexHotStreak;
     }
 
     public LiveGameDto getLiveGameDto() {

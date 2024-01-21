@@ -70,10 +70,16 @@ public class SummonerRepository {
     //VIEW FUNCTIONS START
     public List<SummonerDto> getAllSummonersView() {
         String sql = "SELECT * FROM frontendSummoner ORDER BY dbo.rankToInt(CONCAT(rank, tier, lp)) DESC";
-
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return db.query(sql, new BeanPropertyRowMapper<>(SummonerDto.class));
-
+            List<SummonerDto> summoners = db.query(sql, new BeanPropertyRowMapper<>(SummonerDto.class));
+            for (SummonerDto summoner : summoners) {
+                if (summoner.getLiveData() != null){
+                    summoner.setLiveGameDto(objectMapper.readValue(summoner.getLiveData(), LiveGameDto.class));
+                    summoner.setLiveData(null);
+                }
+            }
+            return summoners;
         } catch (Exception e) {
             logger.error("Error in getting all summoners " + e);
             return null;
@@ -216,7 +222,29 @@ public class SummonerRepository {
                 summoner.setLp(0);
                 summoner.setHotStreak(0);
             }
+
+            Optional<RankWinLossDto> flexRankWinLoss = Arrays.stream(rankWinLossDataArray)
+                    .filter(dto -> "RANKED_FLEX_SR".equals(dto.getQueueType()))
+                    .findFirst();
+
+            if (flexRankWinLoss.isPresent()) {
+                RankWinLossDto dto = flexRankWinLoss.get();
+                summoner.setFlexHotStreak(dto.isHotStreak() ? 1 : 0);
+                summoner.setFlexLosses(dto.getLosses());
+                summoner.setFlexWins(dto.getWins());
+                summoner.setFlexRank(dto.getRank());
+                summoner.setFlexTier(dto.getTier());
+                summoner.setFlexLp(dto.getLeaguePoints());
+            } else {
+                summoner.setFlexLosses(0);
+                summoner.setFlexWins(0);
+                summoner.setFlexTier("UNRANKED");
+                summoner.setFlexRank("");
+                summoner.setFlexLp(0);
+                summoner.setFlexHotStreak(0);
+            }
         }
+
     }
 
     private void updateGameName(Summoner summoner, String puuid) {
@@ -469,6 +497,71 @@ public class SummonerRepository {
         } catch (Exception e) {
             logger.error("Error " + e);
             return null;
+        }
+    }
+
+    public boolean updateRankedSummoners(){
+        LocalDateTime lastUpdatedTime = getTime();
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        if (ChronoUnit.MINUTES.between(lastUpdatedTime, currentTime) < 2) {
+            return false;
+        }
+
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners) {
+            try {
+                updateGameName(summoner, summoner.getPuuid());
+                updateSummonerNameIcon(summoner, summoner.getPuuid());
+                updateRankWinLoss(summoner, summoner.getSummonerId());
+                if (updateRanked(summoner)){
+                    logger.info("Updated summoner: " + summoner.getGameName());
+                } else {
+                    logger.error("Could not update " + summoner.getGameName());
+                    return false;
+                }
+            } catch (Exception e) {
+                logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
+                return false;
+            }
+        }
+
+        String newTimeSql = "UPDATE Info SET Time = ?";
+        try {
+            db.update(newTimeSql, LocalDateTime.now());
+        } catch (Exception e) {
+            logger.error("Could not save new Time", e);
+        }
+
+        return true;
+    }
+
+    private boolean updateRanked(Summoner summoner) {
+        String sql = "UPDATE Summoner SET gameName=?, tagLine=?, summonerId=?, summonerName=?, rank=?, tier=?, lp=?, summonerIcon=?, wins=?, losses=?, hotStreak=?, flexLp=?, flexRank=?, flexTier=?, flexWins=?, flexLosses=?, flexHotStreak=? WHERE puuid=?";
+       try {
+            db.update(sql,
+                    summoner.getGameName(),
+                    summoner.getTagLine(),
+                    summoner.getSummonerId(),
+                    summoner.getSummonerName(),
+                    summoner.getRank(),
+                    summoner.getTier(),
+                    summoner.getLp(),
+                    summoner.getSummonerIcon(),
+                    summoner.getWins(),
+                    summoner.getLosses(),
+                    summoner.getHotStreak(),
+                    summoner.getFlexLp(),
+                    summoner.getFlexRank(),
+                    summoner.getFlexTier(),
+                    summoner.getFlexWins(),
+                    summoner.getFlexLosses(),
+                    summoner.getFlexHotStreak(),
+                    summoner.getPuuid());
+            return true;
+        } catch (Exception e) {
+            logger.error("Error saving summoner: " + e);
+            return false;
         }
     }
 

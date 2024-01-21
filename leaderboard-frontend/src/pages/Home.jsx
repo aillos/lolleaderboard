@@ -31,7 +31,7 @@ export const Home = () => {
 
 
         try {
-            const response = await axios.get('api/update');
+            const response = await axios.get('api/updateRanked');
             if (response.data === true) {
                 console.log("Update successful");
             } else {
@@ -93,7 +93,6 @@ export const Home = () => {
             await axios.get('api/isLive');
             assignPositions(summoners);
             setSummoners(summoners);
-
             setLoading(false);
             await lastTimeUpdated();
         } catch (error) {

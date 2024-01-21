@@ -1,5 +1,6 @@
 package com.andreassolli.leaderboard.models;
 
+import com.andreassolli.leaderboard.models.live.LiveGame;
 import com.andreassolli.leaderboard.models.live.LiveGameDto;
 
 public class SummonerDto {
@@ -38,7 +39,9 @@ public class SummonerDto {
 
     private String liveData;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData) {
+    private LiveGameDto liveGameDto;
+
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, LiveGameDto liveGameDto) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -61,9 +64,18 @@ public class SummonerDto {
         this.mostPlayedName=mostPlayedName;
         this.isLive=isLive;
         this.liveData=liveData;
+        this.liveGameDto=liveGameDto;
     }
 
     public SummonerDto() {
+    }
+
+    public LiveGameDto getLiveGameDto() {
+        return liveGameDto;
+    }
+
+    public void setLiveGameDto(LiveGameDto liveGameDto) {
+        this.liveGameDto = liveGameDto;
     }
 
     public String getLiveData() {

@@ -42,6 +42,11 @@ public class SummonerController {
         return repo.updateSummoners();
     }
 
+    @GetMapping("/updateRanked")
+    public boolean updateRanked() {
+        return repo.updateRankedSummoners();
+    }
+
     @GetMapping("/updateMastery/{patch}")
     public boolean updateMastery(@PathVariable String patch){
         return repo.updateChampionMastery(patch);

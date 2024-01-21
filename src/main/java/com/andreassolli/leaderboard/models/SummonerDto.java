@@ -50,7 +50,10 @@ public class SummonerDto {
 
     private int flexHotStreak;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, LiveGameDto liveGameDto, String flexRank, String flexTier, int flexLp, int flexWins, int flexLosses, int flexHotStreak) {
+    private int flexPoints;
+    private int points;
+
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, LiveGameDto liveGameDto, String flexRank, String flexTier, int flexLp, int flexWins, int flexLosses, int flexHotStreak, int flexPoints, int points) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -80,9 +83,27 @@ public class SummonerDto {
         this.flexWins=flexWins;
         this.flexLosses=flexLosses;
         this.flexHotStreak=flexHotStreak;
+        this.flexPoints=flexPoints;
+        this.points=points;
     }
 
     public SummonerDto() {
+    }
+
+    public int getFlexPoints() {
+        return flexPoints;
+    }
+
+    public void setFlexPoints(int flexPoints) {
+        this.flexPoints = flexPoints;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 
     public String getFlexRank() {

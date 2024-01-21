@@ -39,10 +39,12 @@ public class Summoner {
     private int flexLp;
     private int flexWins;
     private int flexLosses;
-
     private int flexHotStreak;
 
-    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String opgg, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, String flexRank, String flexTier, int flexLp, int flexWins, int flexLosses, int flexHotStreak) {
+    private int flexPoints;
+    private int points;
+
+    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String opgg, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, String flexRank, String flexTier, int flexLp, int flexWins, int flexLosses, int flexHotStreak, int flexPoints, int points) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -70,6 +72,25 @@ public class Summoner {
         this.flexLp=flexLp;
         this.flexWins=flexWins;
         this.flexLosses=flexLosses;
+        this.flexHotStreak=flexHotStreak;
+        this.flexPoints=flexPoints;
+        this.points=points;
+    }
+
+    public int getFlexPoints() {
+        return flexPoints;
+    }
+
+    public void setFlexPoints(int flexPoints) {
+        this.flexPoints = flexPoints;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 
     public int getFlexHotStreak() {

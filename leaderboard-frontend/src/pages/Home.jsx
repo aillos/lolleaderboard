@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import {
+    faBars,
     faCircle,
-    faFire,
+    faFire, faGear,
     faMedal,
     faMoon,
     faRefresh,
@@ -47,10 +48,11 @@ export const Home = () => {
     const update = async () => {
 
         setLoading(true);
+        let url = (sortFlexPoints===true ? "api/updateFlex" : "api/updateSolo");
 
 
         try {
-            const response = await axios.get('api/updateRanked');
+            const response = await axios.get(url);
             if (response.data === true) {
                 console.log("Update successful");
             } else {
@@ -69,6 +71,7 @@ export const Home = () => {
 
         await populateSummoners();
     };
+
 
     const lastTimeUpdated = async () => {
         try {
@@ -156,10 +159,13 @@ export const Home = () => {
         }
     };
 
+
+    let updateText = (sortFlexPoints===true ? "Update Flex" : "Update Solo");
+
     const updateButton = (
         <div className="button updateB mobileButton" onClick={update}>
             <FontAwesomeIcon icon={faRefresh} />
-            Update
+            {updateText}
         </div>
     );
 
@@ -410,7 +416,7 @@ export const Home = () => {
                     <div className="player-info">
                         <div className={"rankAndName"}>
                             <div className="nameAndStreak">
-                                {hotstreak(summoner.hotStreak) ? streak : ""}
+                                {hotstreak(summoner.flexHotStreak) ? streak : ""}
                                 <OverlayTrigger
                                     placement="top"
                                     overlay={
@@ -538,7 +544,7 @@ export const Home = () => {
         </div>
     );
 
-    let currentRanked = (sortFlexPoints===true ? "Flex" : "Solo/Duo");
+    let currentRanked = (sortFlexPoints===true ? "Flex Queue" : "Solo Queue");
     let switchRanked = (sortFlexPoints===true ? "Switch to Solo/Duo" : "Switch to Flex");
     let contents = (sortFlexPoints===true ? renderFlexSummoner(summoners, winrate, patchVersion) : renderSummoner(summoners, winrate, patchVersion));
 
@@ -570,13 +576,23 @@ export const Home = () => {
                     <div className={"rankedText"}>{currentRanked}</div>
 
                 </div>
-
-                <div className={"lastUpdated"}>
-                    <p>Last updated: {timeUpdated}</p>
-                </div>
+                <OverlayTrigger
+                    placement="top"
+                    overlay={
+                        <Tooltip
+                            id={`tooltip-top2`}>
+                            Updated: {timeUpdated}
+                        </Tooltip>
+                    }
+                >
                 <div className={"updateButton"}>
                     {loading ? loadingSpinner : updateButton}
                 </div>
+                </OverlayTrigger>
+                <div className={"moreOptions"}>
+                    More options <div className={"optionIcon"}><FontAwesomeIcon icon={faGear} className={""}/> </div>
+                </div>
+
             </div>
             {contents}
             <Footer />

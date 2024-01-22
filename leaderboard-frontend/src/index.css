@@ -328,8 +328,8 @@ h2{
   background-color: var(--color-accent-border);
   display:flex;
   gap:5px;
-  height:26px;
-  width:100px;
+  height:30px;
+  width:150px;
   font-size: 16px;
   font-weight: normal;
   color: var(--color-text);
@@ -404,8 +404,6 @@ h2{
 
 .updateButton .spinnerContainer{
   flex: 0 0 auto;
-  margin-left: auto;
-  margin-right:-10px;
 }
 
 .lastUpdated {
@@ -723,10 +721,75 @@ h2{
   font-size:24px;
 }
 
+.rankedtoggle{
+  margin-left:10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right:auto;
+  width:150px;
+}
+
+.rankedText{
+  margin-left:5px;
+  font-size: 16px;
+  margin-bottom:5px;
+}
+
+.fa-users,
+.fa-user {
+  font-size:14px;
+  margin-top: -2px;
+  margin-left:-2px;
+}
+
+.fa-user{
+  color: #302c3d;
+}
+
+.fa-users{
+  color: #d4d9d6;
+}
+
+.react-toggle--checked .react-toggle-track {
+  background-color: #ffffff;
+}
+
+.button-toggled:active,
+.button-toggled:focus {
+  background-color: #3f3d46;
+}
+
+.button-toggled:hover {
+  background-color: #3f3d46;
+}
+
+.react-toggle-track-check {
+  color: #ffffff;
+}
+
+.react-toggle--checked .react-toggle-thumb {
+  border-color: #302c3d;
+}
+
+.moreOptions{
+  font-size: 16px;
+  margin-left:auto;
+  margin-right:10px;
+  width:150px;
+  display: flex;
+}
+
+.optionIcon {
+  font-size: 20px;
+  margin-left: 5px;
+  margin-top: -2px;
+}
+
 @media only screen and (max-width: 450px) {
 
   .player-cards-container {
-    margin-top:40px;
+    margin-top:45px;
     width:100%;
     display: flex;
     justify-content: center;
@@ -921,16 +984,12 @@ h2{
     width:300px;
     font-size: 12px;
     display: unset;
-  }
-
-  .lastUpdated{
-    font-size: 14px;
-    margin-top:60px;
-    margin-bottom:20px;
+    justify-content: center;
+    align-items: center;
   }
 
   .mobileButton{
-    margin-top:-85px;
+    margin-bottom:-70px;
   }
 
   .updateB{
@@ -941,53 +1000,21 @@ h2{
     height:35px;
   }
 
+  .rankedtoggle{
+    width:225px;
+    height:35px;
+    justify-content: center;
+    margin: auto auto 35px;
+  }
+
+  .moreOptions{
+    width:225px;
+    height:35px;
+    margin: auto;
+    justify-content: center;
+  }
+
 
 }
 
-.rankedtoggle{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.rankedText{
-  margin-left:5px;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.fa-users,
-.fa-user {
-  font-size:14px;
-  margin-top: -2px;
-  margin-left:-2px;
-}
-
-.fa-user{
-  color: #302c3d;
-}
-
-.fa-users{
-  color: #d4d9d6;
-}
-
-.react-toggle--checked .react-toggle-track {
-  background-color: #ffffff;
-}
-
-.button-toggled:active,
-.button-toggled:focus {
-  background-color: #3f3d46;
-}
-
-.button-toggled:hover {
-  background-color: #3f3d46;
-}
-
-.react-toggle-track-check {
-  color: #ffffff;
-}
-
-.react-toggle--checked .react-toggle-thumb {
-  border-color: #302c3d;
 }

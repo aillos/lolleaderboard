@@ -48,9 +48,7 @@ export const Home = () => {
     const update = async () => {
 
         setLoading(true);
-        let url = (sortFlexPoints===true ? "api/updateFlex" : "api/updateSolo");
-
-
+        const url = 'api/updateRanked';
         try {
             const response = await axios.get(url);
             if (response.data === true) {
@@ -165,7 +163,7 @@ export const Home = () => {
     const updateButton = (
         <div className="button updateB mobileButton" onClick={update}>
             <FontAwesomeIcon icon={faRefresh} />
-            {updateText}
+            Update Ranks
         </div>
     );
 

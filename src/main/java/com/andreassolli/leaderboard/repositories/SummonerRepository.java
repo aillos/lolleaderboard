@@ -272,7 +272,7 @@ public class SummonerRepository {
 
     private boolean updateSummoner(Summoner summoner) {
         String sql = "UPDATE Summoner SET gameName=?, tagLine=?, summonerId=?, summonerName=?, rank=?, tier=?, lp=?, summonerIcon=?, wins=?, losses=?, hotStreak=?, mostPlayedChampion=?, mostPlayedKDA=?, mostPlayedWR=?, mostPlayedName=?, mostPlayedImage=? WHERE puuid=?";
-        String[][] opgg = getMostPlayed(summoner.getOpgg());
+        String[][] opgg = getMostPlayed(summoner.getOpgg(), "SOLORANKED");
         String[][] mostPlayedNamesImages = getChampionNamesAndImages(opgg, getPatchVersion());
         try {
             db.update(sql,
@@ -403,7 +403,7 @@ public class SummonerRepository {
     //ADD FUNCTIONS START
     private boolean addSummoner(Summoner summoner) {
         String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid, opgg, mostPlayedChampion, mostPlayedKDA, mostPlayedWR, mostPlayedName, mostPlayedImage, prevRank) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String[][] opgg = getMostPlayed(summoner.getOpgg());
+        String[][] opgg = getMostPlayed(summoner.getOpgg(), "SOLORANKED");
         String[][] mostPlayedNamesImages = getChampionNamesAndImages(opgg, getPatchVersion());
         String prevSeason = getPreviousSeason(summoner);
         try {
@@ -536,6 +536,43 @@ public class SummonerRepository {
         return true;
     }
 
+    public boolean updateSoloqOpgg(){
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners){
+            String sql = "UPDATE Summoner SET mostPlayedChampion=?, mostPlayedKDA=?, mostPlayedWR=?, mostPlayedName=?, mostPlayedImage=? WHERE gameName = ? AND tagLine = ?";
+            String[][] opgg = getMostPlayed(summoner.getOpgg(), "SOLORANKED");
+            updateChampions(summoner, sql, opgg);
+        }
+        return true;
+    }
+
+    public boolean updateFlexOpgg(){
+        List<Summoner> summoners = getAllSummoners();
+        for (Summoner summoner : summoners){
+            String sql = "UPDATE Summoner SET mostPlayedChampionFlex=?, mostPlayedKDAFlex=?, mostPlayedWRFlex=?, mostPlayedNameFlex=?, mostPlayedImageFlex=? WHERE gameName = ? AND tagLine = ?";
+            String[][] opgg = getMostPlayed(summoner.getOpgg(), "FLEXRANKED");
+            updateChampions(summoner, sql, opgg);
+        }
+        return true;
+    }
+
+    private void updateChampions(Summoner summoner, String sql, String[][] opgg) {
+        String[][] mostPlayedNamesImages = getChampionNamesAndImages(opgg, getPatchVersion());
+        try {
+            db.update(sql,
+                    intoString(opgg[0]),
+                    intoString(opgg[1]),
+                    intoString(opgg[2]),
+                    intoString(mostPlayedNamesImages[0]),
+                    intoString(mostPlayedNamesImages[1]),
+                    summoner.getGameName(),
+                    summoner.getTagLine());
+        } catch (Exception e){
+            logger.error("Could not update " + summoner.getGameName());
+            logger.error(e.toString());
+        }
+    }
+
     private boolean updateRanked(Summoner summoner) {
         String sql = "UPDATE Summoner SET gameName=?, tagLine=?, summonerId=?, summonerName=?, rank=?, tier=?, lp=?, summonerIcon=?, wins=?, losses=?, hotStreak=?, flexLp=?, flexRank=?, flexTier=?, flexWins=?, flexLosses=?, flexHotStreak=? WHERE puuid=?";
        try {
@@ -654,7 +691,7 @@ public class SummonerRepository {
     }
 
     public void addSeasonId(){
-        String sql = "UPDATE Info SET seasonsId=? WHERE Type=?";
+        String sql = "UPDATE Info SET seasonsId=?";
         try {
             db.update(sql,
                     SeasonId(),
@@ -764,7 +801,7 @@ public class SummonerRepository {
         return tier + " " + division;
     }
 
-    public String[][] getMostPlayed(String id) {
+    public String[][] getMostPlayed(String id, String queueType) {
         String[][] stats = new String[4][3];
         for (int i = 0; i < 3; i++) {
             stats[0][i] = "0";
@@ -772,7 +809,7 @@ public class SummonerRepository {
             stats[2][i] = "0";
         }
 
-        String url = "https://op.gg/api/v1.0/internal/bypass/summoners/euw/" + id + "/most-champions/rank?game_type=SOLORANKED&season_id=" + getSeasonId();
+        String url = "https://op.gg/api/v1.0/internal/bypass/summoners/euw/" + id + "/most-champions/rank?game_type=" + queueType + "&season_id=" + getSeasonId();
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(url);
             String json = EntityUtils.toString(httpClient.execute(request).getEntity());

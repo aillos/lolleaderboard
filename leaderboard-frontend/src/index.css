@@ -786,10 +786,52 @@ h2{
   margin-top: -2px;
 }
 
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+.dropdown-menu {
+    background-color: var(--color-accent-border) !important;
+    color: #f0f4ef;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    margin-right:2px;
+    padding: 2px 6px;
+    font-size: 15px;
+    text-align: center;
+
+}
+
+.dropdown-item{
+    background-color: var(--color-accent-border) !important;
+    color: #f0f4ef !important;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    margin-right:2px;
+    padding: 2px 6px;
+    font-size: 15px;
+    text-align: center !important;
+}
+
+.dropdown-item:hover{
+    color: #f0f4ef !important;
+    border-radius: 8px;
+    border: 1px solid #646cff !important;
+    margin-right:2px;
+    padding: 2px 6px;
+    font-size: 15px;
+    text-align: center !important;
+
+}
+
+#dropdown-custom{
+  border: 0;
+  background-color: transparent;
+}
+
 @media only screen and (max-width: 450px) {
 
   .player-cards-container {
-    margin-top:45px;
     width:100%;
     display: flex;
     justify-content: center;
@@ -988,14 +1030,9 @@ h2{
     align-items: center;
   }
 
-  .mobileButton{
-    margin-bottom:-70px;
-  }
-
   .updateB{
     font-size: 14px;
-    margin-left:auto;
-    margin-right:auto;
+    margin: auto auto 15px;
     width:225px;
     height:35px;
   }
@@ -1004,13 +1041,13 @@ h2{
     width:225px;
     height:35px;
     justify-content: center;
-    margin: auto auto 35px;
+    margin: auto auto 15px;
   }
 
   .moreOptions{
     width:225px;
     height:35px;
-    margin: auto;
+    margin: auto auto 15px;
     justify-content: center;
   }
 

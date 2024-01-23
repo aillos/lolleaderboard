@@ -1,15 +1,12 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {OverlayTrigger, Tooltip} from "react-bootstrap";
+import {OverlayTrigger, Tooltip, Dropdown, DropdownButton} from "react-bootstrap";
 import {
-    faBars,
     faCircle,
     faFire, faGear,
     faMedal,
-    faMoon,
     faRefresh,
-    faSun, faUser,
-    faUserPlus,
+    faUser,
     faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -70,6 +67,25 @@ export const Home = () => {
         await populateSummoners();
     };
 
+    const updateSoloq = async () => {
+        try {
+            const response = await axios.get('api/updateSolo');
+            if (response.data===true) console.log("Update successful");
+        } catch (error) {
+            console.error("Error updating: ", error.message);
+        }
+        await populateSummoners();
+    };
+
+    const updateFlexq = async () => {
+        try {
+            const response = await axios.get('api/updateFlex');
+            if (response.data===true) console.log("Update successful");
+        } catch (error) {
+            console.error("Error updating: ", error.message);
+        }
+        await populateSummoners();
+    };
 
     const lastTimeUpdated = async () => {
         try {
@@ -81,6 +97,11 @@ export const Home = () => {
             console.error("Error getting time " + error.message);
         }
     };
+
+    const updateBoth = async () => {
+        updateSoloq();
+        updateFlexq();
+    }
 
     const assignPositions = (summoners) => {
         let currentPosition = 1;
@@ -449,16 +470,16 @@ export const Home = () => {
                                 placement="top"
                                 overlay={
                                     <Tooltip
-                                        id={summoner.mostPlayedKDA[0] === "0" ? "tooltip-invis" :`tooltip-top`}>
-                                        <b>{summoner.mostPlayedName[0]} </b> <br />
-                                        Games: <b>{games(summoner.mostPlayedWR[0], summoner.mostPlayedWR[1])}</b>  <br/>
-                                        Avg: <b>{summoner.mostPlayedKDA[0]}</b> <br />
-                                        WR: <b> {winrate(summoner.mostPlayedWR[0], summoner.mostPlayedWR[1])} </b>
+                                        id={summoner.mostPlayedKDAFlex[0] === "0" ? "tooltip-invis" :`tooltip-top`}>
+                                        <b>{summoner.mostPlayedNameFlex[0]} </b> <br />
+                                        Games: <b>{games(summoner.mostPlayedWRFlex[0], summoner.mostPlayedWRFlex[1])}</b>  <br/>
+                                        Avg: <b>{summoner.mostPlayedKDAFlex[0]}</b> <br />
+                                        WR: <b> {winrate(summoner.mostPlayedWRFlex[0], summoner.mostPlayedWRFlex[1])} </b>
                                     </Tooltip>
                                 }
                             >
                                 <div className="image-container2">
-                                    <img src={summoner.mostPlayedKDA[0] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImage[0]}`} alt={`${summoner.mostPlayedName[0]} champion`} />
+                                    <img src={summoner.mostPlayedKDAFlex[0] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImageFlex[0]}`} alt={`${summoner.mostPlayedNameFlex[0]} champion`} />
                                 </div>
                             </OverlayTrigger>
                             <div className={"image-bottom"}>
@@ -466,33 +487,33 @@ export const Home = () => {
                                     placement="top"
                                     overlay={
                                         <Tooltip
-                                            id={summoner.mostPlayedKDA[2] === "0" ? "tooltip-invis" :`tooltip-top`}>
-                                            <b>{summoner.mostPlayedName[2]} </b> <br />
-                                            Games: <b>{games(summoner.mostPlayedWR[4], summoner.mostPlayedWR[5])}</b>  <br/>
-                                            Avg: <b>{summoner.mostPlayedKDA[2]}</b> <br />
-                                            WR: <b> {winrate(summoner.mostPlayedWR[4], summoner.mostPlayedWR[5])} </b>
+                                            id={summoner.mostPlayedKDAFlex[2] === "0" ? "tooltip-invis" :`tooltip-top`}>
+                                            <b>{summoner.mostPlayedNameFlex[2]} </b> <br />
+                                            Games: <b>{games(summoner.mostPlayedWRFlex[4], summoner.mostPlayedWRFlex[5])}</b>  <br/>
+                                            Avg: <b>{summoner.mostPlayedKDAFlex[2]}</b> <br />
+                                            WR: <b> {winrate(summoner.mostPlayedWRFlex[4], summoner.mostPlayedWRFlex[5])} </b>
 
                                         </Tooltip>
                                     }
                                 >
                                     <div className="image-container">
-                                        <img src={summoner.mostPlayedKDA[2] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImage[2]}`} alt={`${summoner.mostPlayedName[2]} champion`} />
+                                        <img src={summoner.mostPlayedKDAFlex[2] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImageFlex[2]}`} alt={`${summoner.mostPlayedNameFlex[2]} champion`} />
                                     </div>
                                 </OverlayTrigger>
                                 <OverlayTrigger
                                     placement="top"
                                     overlay={
                                         <Tooltip
-                                            id={summoner.mostPlayedKDA[1] === "0" ? "tooltip-invis" :`tooltip-top`}>
-                                            <b>{summoner.mostPlayedName[1]} </b> <br />
-                                            Games: <b>{games(summoner.mostPlayedWR[2], summoner.mostPlayedWR[3])}</b>  <br/>
-                                            Avg: <b>{summoner.mostPlayedKDA[1]}</b> <br />
-                                            WR: <b> {winrate(summoner.mostPlayedWR[2], summoner.mostPlayedWR[3])} </b>
+                                            id={summoner.mostPlayedKDAFlex[1] === "0" ? "tooltip-invis" :`tooltip-top`}>
+                                            <b>{summoner.mostPlayedNameFlex[1]} </b> <br />
+                                            Games: <b>{games(summoner.mostPlayedWRFlex[2], summoner.mostPlayedWRFlex[3])}</b>  <br/>
+                                            Avg: <b>{summoner.mostPlayedKDAFlex[1]}</b> <br />
+                                            WR: <b> {winrate(summoner.mostPlayedWRFlex[2], summoner.mostPlayedWRFlex[3])} </b>
                                         </Tooltip>
                                     }
                                 >
                                     <div className="image-container1">
-                                        <img src={summoner.mostPlayedKDA[1] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImage[1]}`} alt={`${summoner.mostPlayedName[1]} champion`} />
+                                        <img src={summoner.mostPlayedKDAFlex[1] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImageFlex[1]}`} alt={`${summoner.mostPlayedNameFlex[1]} champion`} />
                                     </div>
                                 </OverlayTrigger>
                             </div>
@@ -546,6 +567,7 @@ export const Home = () => {
     let switchRanked = (sortFlexPoints===true ? "Switch to Solo/Duo" : "Switch to Flex");
     let contents = (sortFlexPoints===true ? renderFlexSummoner(summoners, winrate, patchVersion) : renderSummoner(summoners, winrate, patchVersion));
 
+
     return (
         <div>
             <div className={"updateSection"}>
@@ -588,7 +610,17 @@ export const Home = () => {
                 </div>
                 </OverlayTrigger>
                 <div className={"moreOptions"}>
-                    More options <div className={"optionIcon"}><FontAwesomeIcon icon={faGear} className={""}/> </div>
+                        <DropdownButton
+                            autoClose={"inside"}
+                            id={"dropdown-custom"}
+                            className={"button updateB"}
+                            drop="down-centered"
+                            title={<span>More updates <FontAwesomeIcon icon={faGear} /></span>}
+                        >
+                            <Dropdown.Item onClick={updateSoloq}>Flex Champions</Dropdown.Item>
+                            <Dropdown.Item onClick={updateFlexq}>Solo Champions</Dropdown.Item>
+                            <Dropdown.Item onClick={updateBoth}>Both queues</Dropdown.Item>
+                        </DropdownButton>
                 </div>
 
             </div>

@@ -43,8 +43,18 @@ public class Summoner {
 
     private int flexPoints;
     private int points;
+    private String[] mostPlayedChampionFlex;
 
-    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String opgg, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, String flexRank, String flexTier, int flexLp, int flexWins, int flexLosses, int flexHotStreak, int flexPoints, int points) {
+    private String[] mostPlayedImageFlex;
+
+    private String[] mostPlayedKDAFlex;
+
+    private String[] mostPlayedWRFlex;
+
+    private String[] mostPlayedNameFlex;
+
+
+    public Summoner(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String puuid, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String opgg, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, String flexRank, String flexTier, int flexLp, int flexWins, int flexLosses, int flexHotStreak, int flexPoints, int points, String[] mostPlayedChampionFlex, String[] mostPlayedImageFlex, String[] mostPlayedKDAFlex, String[] mostPlayedWRFlex, String[] mostPlayedNameFlex) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -75,6 +85,51 @@ public class Summoner {
         this.flexHotStreak=flexHotStreak;
         this.flexPoints=flexPoints;
         this.points=points;
+        this.mostPlayedChampionFlex=mostPlayedChampionFlex;
+        this.mostPlayedImageFlex=mostPlayedImageFlex;
+        this.mostPlayedKDAFlex=mostPlayedKDAFlex;
+        this.mostPlayedWRFlex=mostPlayedWRFlex;
+        this.mostPlayedNameFlex=mostPlayedNameFlex;
+    }
+
+    public String[] getMostPlayedChampionFlex() {
+        return mostPlayedChampionFlex;
+    }
+
+    public void setMostPlayedChampionFlex(String[] mostPlayedChampionFlex) {
+        this.mostPlayedChampionFlex = mostPlayedChampionFlex;
+    }
+
+    public String[] getMostPlayedImageFlex() {
+        return mostPlayedImageFlex;
+    }
+
+    public void setMostPlayedImageFlex(String[] mostPlayedImageFlex) {
+        this.mostPlayedImageFlex = mostPlayedImageFlex;
+    }
+
+    public String[] getMostPlayedKDAFlex() {
+        return mostPlayedKDAFlex;
+    }
+
+    public void setMostPlayedKDAFlex(String[] mostPlayedKDAFlex) {
+        this.mostPlayedKDAFlex = mostPlayedKDAFlex;
+    }
+
+    public String[] getMostPlayedWRFlex() {
+        return mostPlayedWRFlex;
+    }
+
+    public void setMostPlayedWRFlex(String[] mostPlayedWRFlex) {
+        this.mostPlayedWRFlex = mostPlayedWRFlex;
+    }
+
+    public String[] getMostPlayedNameFlex() {
+        return mostPlayedNameFlex;
+    }
+
+    public void setMostPlayedNameFlex(String[] mostPlayedNameFlex) {
+        this.mostPlayedNameFlex = mostPlayedNameFlex;
     }
 
     public int getFlexPoints() {

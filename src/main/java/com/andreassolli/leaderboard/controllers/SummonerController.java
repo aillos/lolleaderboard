@@ -52,6 +52,15 @@ public class SummonerController {
         return repo.updateChampionMastery(patch);
     }
 
+    @GetMapping("/updateSolo")
+    public boolean updateSolo(){
+        return repo.updateSoloqOpgg();
+    }
+
+    @GetMapping("/updateFlex")
+    public boolean updateFlex(){
+        return repo.updateFlexOpgg();
+    }
 
     @GetMapping("/scrape")
     public List<Summoner> scrape(){

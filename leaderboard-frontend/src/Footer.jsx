@@ -17,7 +17,7 @@ export const Footer = () => {
     };
 
     const goToManage = () => {
-        navigate('/manage');
+        navigate('/admin');
     };
 
     const navigateToInstagram = () => {

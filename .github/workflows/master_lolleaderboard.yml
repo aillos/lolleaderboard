@@ -19,8 +19,10 @@ jobs:
           RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
           EMAILPASS: ${{ secrets.EMAILPASS }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          SECRET: ${{ secrets.SECRET }}
           DATABASEURL: ${{ secrets.DATABASEURL }}
         run: |
+          echo "SECRET: $SECRET"
           echo "EMAILPASS: $EMAILPASS"
           echo "PASSWORD: $PASSWORD"
           echo "DATABASEURL: $DATABASEURL"
@@ -37,6 +39,7 @@ jobs:
           RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
           EMAILPASS: ${{ secrets.EMAILPASS }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          SECRET: ${{ secrets.SECRET }}
           DATABASEURL: ${{ secrets.DATABASEURL }}
         run: mvn clean install
 

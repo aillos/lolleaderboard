@@ -19,5 +19,15 @@ public class MailController {
         emailService.sendSimpleMessage(mailForm);
     }
 
+    @PostMapping("/api/sendMail/add")
+    public void sendMailAdd(@RequestBody MailForm mailForm) {
+        emailService.sendSimpleMessageAdd(mailForm);
+    }
+
+    @PostMapping("/api/sendMail/remove")
+    public void sendMailRemove(@RequestBody MailForm mailForm) {
+        emailService.sendSimpleMessageRemove(mailForm);
+    }
+
 }
 

@@ -37,6 +37,11 @@ public class SummonerController {
         return repo.getAllSummonersView();
     }
 
+    @GetMapping("/getAllFlex")
+    public List<SummonerDto> getAllFlex() {
+        return repo.getAllSummonersViewFlex();
+    }
+
     @GetMapping("/update")
     public boolean update() {
         return repo.updateSummoners();

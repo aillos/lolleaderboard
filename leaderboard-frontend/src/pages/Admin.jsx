@@ -6,7 +6,7 @@ import {faHome, faRefresh} from '@fortawesome/free-solid-svg-icons'
 import {useNavigate} from "react-router-dom";
 
 
-export const Manage = () => {
+export const Admin = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [playerName, setPlayerName] = useState("");
     const [playerTag, setPlayerTag] = useState("");
@@ -22,8 +22,13 @@ export const Manage = () => {
 
     const updateChampionMastery = async() => {
         setLoading(true);
+        const token = localStorage.getItem('token');
         try {
-            const response = await axios.get('api/updateMastery/' + patchVersion);
+            const response = await axios.get('api/updateMastery/' + patchVersion, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
             if (response.data === true) {
                 console.log("Update successful");
             } else {
@@ -34,7 +39,6 @@ export const Manage = () => {
         } finally {
             setLoading(false);
         }
-
     };
 
 
@@ -54,33 +58,40 @@ export const Manage = () => {
         setIsAuthenticated(auth === 'true');
     }, []);
 
-    const handlePasswordSubmit = (password) => {
-        fetch('/api/verify-password', {
+    const handlePasswordSubmit = (username, password) => {
+        fetch('/auth/generateToken', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(password),
+            body: JSON.stringify({ username: username, password: password }),
             credentials: 'include',
         })
-            .then(response => response.json())
-            .then(isValid => {
-                if (isValid) {
-                    localStorage.setItem('isAuthenticated', 'true');
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                if (data) {
+                    localStorage.setItem('token', data);
                     setIsAuthenticated(true);
                 } else {
-                    alert('Wrong password');
+                    alert('Wrong username or password');
                 }
             });
     };
+
 
     if (!isAuthenticated) {
         return <PasswordModal onPasswordSubmit={handlePasswordSubmit} />;
     }
 
     const searchForPlayer = async (name, tag) => {
+        const token = localStorage.getItem('token');
         try {
-            const response = await axios.get(`/manage/search/${name}/${tag}`);
+            const response = await axios.get(`/manage/search/${name}/${tag}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
             setSummoner(response.data);
             setResponseText("");
         } catch (error) {
@@ -90,8 +101,13 @@ export const Manage = () => {
     };
 
     const removeSummoner = async (name, tag) => {
+        const token = localStorage.getItem('token');
         try {
-            const response = await axios.get(`/manage/remove/${name}/${tag}`);
+            const response = await axios.get(`/manage/remove/${name}/${tag}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
             if (response.data === true) {
                 setResponseText("Successfully removed " + name + "#" + tag);
             } else {
@@ -104,11 +120,15 @@ export const Manage = () => {
     };
 
     const addSummoner = async (name, tag) => {
+        const token = localStorage.getItem('token');
         try {
-            const response = await axios.get(`/manage/add/${name}/${tag}`);
+            const response = await axios.get(`/manage/add/${name}/${tag}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
             if (response.data === true) {
                 setResponseText("Successfully added " + name + "#" + tag);
-                await axios.get(`/manage/mastery/${name}/${tag}/${patchVersion}`);
             } else {
                 setResponseText("Failed to add " + name + "#" + tag);
             }

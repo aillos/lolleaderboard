@@ -11,6 +11,16 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/auth': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/manage': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })

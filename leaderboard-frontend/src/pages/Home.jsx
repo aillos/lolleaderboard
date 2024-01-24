@@ -1,13 +1,17 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {OverlayTrigger, Tooltip, Dropdown, DropdownButton} from "react-bootstrap";
+import {Dropdown, DropdownButton, OverlayTrigger, Tooltip} from "react-bootstrap";
 import {
     faCircle,
-    faFire, faGear,
+    faFire,
+    faGear,
     faMedal,
     faRefresh,
     faUser,
-    faUsers
+    faUserMinus,
+    faUserPlus,
+    faUsers,
+    faUsersViewfinder
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Footer} from "../Footer";
@@ -24,6 +28,14 @@ export const Home = () => {
     const [sortFlexPoints, setSortFlexPoints] = useState(false);
     const goToContact = () => {
         navigate('/contact');
+    };
+
+    const goRemove = () => {
+        navigate('/remove');
+    };
+
+    const goAdd = () => {
+        navigate('/add');
     };
 
     const toggleSort = () => {
@@ -150,15 +162,18 @@ export const Home = () => {
 
     const populateSummoners = async (sortFlexPoints) => {
         try {
-            const response = await axios.get('api/getAll');
-            let summoners = response.data;
-            await axios.get('api/isLive');
+            let summoners;
             if (sortFlexPoints) {
-                summoners.sort((a, b) => b.flexPoints - a.flexPoints);
+                const response = await axios.get('/api/getAllFlex');
+                summoners = response.data;
                 assignFlexPositions(summoners);
             } else {
+                const response = await axios.get('/api/getAll');
+                summoners = response.data;
                 assignPositions(summoners);
             }
+
+            await axios.get('api/isLive');
             setSummoners(summoners);
             setLoading(false);
             await lastTimeUpdated();
@@ -183,8 +198,8 @@ export const Home = () => {
 
     const updateButton = (
         <div className="button updateB mobileButton" onClick={update}>
-            <FontAwesomeIcon icon={faRefresh} />
             Update Ranks
+            <FontAwesomeIcon icon={faRefresh} />
         </div>
     );
 
@@ -272,6 +287,10 @@ export const Home = () => {
 
     const liveBorderStyle = { border: '1px solid green' };
 
+    const goToOpgg = (summoner) => {
+        window.location.href=`https://euw.op.gg/summoner/userName=${summoner.gameName}-${summoner.tagLine}`;
+    }
+
 
     const renderSummoner = (summoners, winrate, patchVersion) => (
 
@@ -280,6 +299,7 @@ export const Home = () => {
                 <div className="player-card"
                      key={summoner.gameName + summoner.tagLine}
                      style={summoner.isLive==="true" ? liveBorderStyle : {border: '1px solid transparent'}}
+                     onClick={goToOpgg.bind(this, summoner)}
                 >
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">
@@ -416,6 +436,7 @@ export const Home = () => {
                 <div className="player-card"
                      key={summoner.gameName + summoner.tagLine}
                      style={summoner.isLive==="true" ? liveBorderStyle : {border: '1px solid transparent'}}
+                     onClick={goToOpgg.bind(this, summoner)}
                 >
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">
@@ -617,9 +638,12 @@ export const Home = () => {
                             drop="down-centered"
                             title={<span>More updates <FontAwesomeIcon icon={faGear} /></span>}
                         >
-                            <Dropdown.Item onClick={updateSoloq}>Flex Champions</Dropdown.Item>
-                            <Dropdown.Item onClick={updateFlexq}>Solo Champions</Dropdown.Item>
-                            <Dropdown.Item onClick={updateBoth}>Both queues</Dropdown.Item>
+                            <Dropdown.Item onClick={updateFlexq}>Flex Champions <FontAwesomeIcon icon={faUsers} id={"upSolo"} /></Dropdown.Item>
+                            <Dropdown.Item onClick={updateSoloq}>Solo Champions <FontAwesomeIcon icon={faUser} id={"upSolo"}/></Dropdown.Item>
+                            <Dropdown.Item onClick={updateBoth}>Both queues <FontAwesomeIcon icon={faUsersViewfinder} id={"upSolo"}/></Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item onClick={goAdd}>Add me <FontAwesomeIcon icon={faUserPlus} id={"upSolo"}/></Dropdown.Item>
+                            <Dropdown.Item onClick={goRemove}>Remove me <FontAwesomeIcon icon={faUserMinus} id={"upSolo"}/></Dropdown.Item>
                         </DropdownButton>
                 </div>
 

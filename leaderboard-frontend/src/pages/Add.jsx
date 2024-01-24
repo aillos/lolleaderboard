@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faHome, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
 
-function Contact() {
+function Add() {
     const [form, setForm] = useState({ name: '', tag: '' });
     const navigate = useNavigate();
     
@@ -18,7 +18,7 @@ function Contact() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            await axios.post('api/sendMail', form);
+            await axios.post('api/sendMail/add', form);
             alert('Message sent!');
             setForm({ name: '', tag: '' });
         } catch (error) {
@@ -73,4 +73,4 @@ function Contact() {
     );
 }
 
-export default Contact;
+export default Add;

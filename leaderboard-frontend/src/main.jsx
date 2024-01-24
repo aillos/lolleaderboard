@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./pages/Home";
-import { Manage } from "./pages/Manage";
+import { Admin } from "./pages/Admin.jsx";
 import {Header} from "./Header.jsx";
 import 'bootstrap/dist/css/bootstrap.css';
-import Contact from "./pages/Contact.jsx";
+import Add from "./pages/Add.jsx";
+import Remove from "./pages/Remove.jsx";
 
 const App = () => {
 
@@ -16,12 +17,16 @@ const App = () => {
             element: <Home />,
         },
         {
-            path: "/manage",
-            element: <Manage />,
+            path: "/admin",
+            element: <Admin />,
         },
         {
-            path: "/contact",
-            element: <Contact />,
+            path: "/add",
+            element: <Add />,
+        },
+        {
+            path: "/remove",
+            element: <Remove />,
         },
     ]);
 

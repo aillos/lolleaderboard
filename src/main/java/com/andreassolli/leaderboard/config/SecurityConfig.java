@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken").permitAll()
                         .requestMatchers("/auth/user/**").authenticated()
                         .requestMatchers("/auth/admin/**").authenticated()
+                        .requestMatchers("/manage/**").hasAuthority("ROLE_USER")
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

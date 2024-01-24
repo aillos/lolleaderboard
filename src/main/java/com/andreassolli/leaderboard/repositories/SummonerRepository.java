@@ -69,7 +69,16 @@ public class SummonerRepository {
 
     //VIEW FUNCTIONS START
     public List<SummonerDto> getAllSummonersView() {
-        String sql = "SELECT * FROM frontendSummoner ORDER BY dbo.rankToInt(CONCAT(rank, tier, lp)) DESC";
+        String sql = "SELECT * FROM frontendSummoner ORDER BY points DESC";
+        return getSummonerDtos(sql);
+    }
+
+    public List<SummonerDto> getAllSummonersViewFlex() {
+        String sql = "SELECT * FROM frontendSummoner ORDER BY flexPoints DESC";
+        return getSummonerDtos(sql);
+    }
+
+    private List<SummonerDto> getSummonerDtos(String sql) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             List<SummonerDto> summoners = db.query(sql, new BeanPropertyRowMapper<>(SummonerDto.class));
@@ -87,7 +96,7 @@ public class SummonerRepository {
     }
 
     public List<Summoner> getAllSummoners() {
-        String sql = "SELECT * FROM Summoner ORDER BY dbo.rankToInt(CONCAT(rank, tier, lp)) DESC";
+        String sql = "SELECT * FROM Summoner ORDER BY points DESC";
 
         try {
             return db.query(sql, new BeanPropertyRowMapper<>(Summoner.class));
@@ -337,7 +346,7 @@ public class SummonerRepository {
                 return true;
             }
         } catch (Exception e) {
-            logger.error("Error updating summoner: " + summoner.getSummonerName(), e);
+            logger.error("Error updating summoner: " + summoner.getGameName(), e);
             return true;
         }
         return false;
@@ -402,9 +411,12 @@ public class SummonerRepository {
 
     //ADD FUNCTIONS START
     private boolean addSummoner(Summoner summoner) {
-        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid, opgg, mostPlayedChampion, mostPlayedKDA, mostPlayedWR, mostPlayedName, mostPlayedImage, prevRank) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Summoner (gameName, tagLine, summonerId, summonerName, rank, tier, lp, summonerIcon, wins, losses, hotstreak, puuid, opgg, mostPlayedChampion, mostPlayedKDA, mostPlayedWR, mostPlayedName, mostPlayedImage, prevRank, mostPlayedChampionFlex, mostPlayedKDAFlex, mostPlayedWRFlex, mostPlayedNameFlex, mostPlayedImageFlex, flexLp, flexRank, flexTier, flexWins, flexLosses) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        summoner.setOpgg(addOpgg(summoner));
         String[][] opgg = getMostPlayed(summoner.getOpgg(), "SOLORANKED");
         String[][] mostPlayedNamesImages = getChampionNamesAndImages(opgg, getPatchVersion());
+        String[][] opgg2 = getMostPlayed(summoner.getOpgg(), "FLEXRANKED");
+        String[][] mostPlayedNamesImages2 = getChampionNamesAndImages(opgg, getPatchVersion());
         String prevSeason = getPreviousSeason(summoner);
         try {
             db.update(sql,
@@ -420,13 +432,23 @@ public class SummonerRepository {
                     summoner.getLosses(),
                     summoner.getHotStreak(),
                     summoner.getPuuid(),
+                    addOpgg(summoner),
                     intoString(opgg[0]),
                     intoString(opgg[1]),
                     intoString(opgg[2]),
                     intoString(mostPlayedNamesImages[0]),
                     intoString(mostPlayedNamesImages[1]),
                     prevSeason,
-                    addOpgg(summoner));
+                    intoString(opgg2[0]),
+                    intoString(opgg2[1]),
+                    intoString(opgg2[2]),
+                    intoString(mostPlayedNamesImages2[0]),
+                    intoString(mostPlayedNamesImages2[1]),
+                    summoner.getFlexLp(),
+                    summoner.getFlexRank(),
+                    summoner.getFlexTier(),
+                    summoner.getFlexWins(),
+                    summoner.getFlexLosses());
             return true;
         } catch (Exception e) {
             logger.error("Error inserting summoner: " + e);
@@ -620,10 +642,9 @@ public class SummonerRepository {
     }
 
     public boolean removeSummoner(String gameName, String tagLine) {
-        //if (!(getVerify().equals(password))) return;
-        String sql = "DELETE FROM Summoner WHERE gameName=? AND tagLine=?";
+        String sql = "DELETE FROM Summoner WHERE REPLACE(gameName, ' ', '') = ? AND tagLine = ?";
         try {
-            db.update(sql, gameName, tagLine);
+            db.update(sql, gameName.replace(" ", ""), tagLine);
             return true;
         } catch (Exception e) {
             logger.error("Could not delete " + gameName + "#" + tagLine);

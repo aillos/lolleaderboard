@@ -3,12 +3,14 @@ package com.andreassolli.leaderboard.controllers;
 import com.andreassolli.leaderboard.models.SummonerDto;
 import com.andreassolli.leaderboard.repositories.SummonerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@PreAuthorize("hasAuthority('ROLE_USER')")
 @RequestMapping("/manage")
 public class ManageController {
 
@@ -35,7 +37,7 @@ public class ManageController {
     }
 
     @GetMapping("/mastery/{name}/{tag}/{patch}")
-    public void championMaster(@PathVariable String name, @PathVariable String tag, @PathVariable String patch){
+    public void championMastery(@PathVariable String name, @PathVariable String tag, @PathVariable String patch){
         repo.updateChampionForSummoner(name, tag, patch);
     }
 }

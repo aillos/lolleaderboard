@@ -24,4 +24,22 @@ public class EmailService {
         message.setText("From: " + mailForm.getName() + " #" + mailForm.getTag());
         mailSender.send(message);
     }
+
+    public void sendSimpleMessageAdd(MailForm mailForm) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("leaderboard@lol.com");
+        message.setTo(myEmailAddress);
+        message.setSubject("Add Summoner Request from " + mailForm.getName());
+        message.setText("From: " + mailForm.getName() + " #" + mailForm.getTag());
+        mailSender.send(message);
+    }
+
+    public void sendSimpleMessageRemove(MailForm mailForm) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("leaderboard@lol.com");
+        message.setTo(myEmailAddress);
+        message.setSubject("Remove Summoner Request from " + mailForm.getName());
+        message.setText("From: " + mailForm.getName() + " #" + mailForm.getTag());
+        mailSender.send(message);
+    }
 }

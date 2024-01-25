@@ -19,6 +19,7 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -194,6 +195,15 @@ public class SummonerRepository {
         }
 
         return true;
+    }
+
+    public String getGameNameByPuuid(String puuid) {
+        String sql = "SELECT gameName FROM Summoner WHERE puuid = ?";
+        try {
+            return db.queryForObject(sql, String.class, puuid);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     private void updateSummonerNameIcon(Summoner summoner, String summonerName) {
@@ -955,10 +965,14 @@ public class SummonerRepository {
     private LiveGameDto convertToLiveGameDto(LiveGame liveGame) {
         try {
             JSONObject championsData = getChampionData(patchVersion);
-
             List<ParticipantDto> participantDtos = liveGame.getParticipants().stream()
-                    .map(participant -> convertToParticipantDto(participant, championsData))
-                    .collect(Collectors.toList());
+                    .map(participant -> {
+                        String gameName = getGameNameByPuuid(participant.getPuuid());
+                        if (gameName != null) {
+                            participant.setSummonerName(gameName);
+                        }
+                        return convertToParticipantDto(participant, championsData);
+                    }).collect(Collectors.toList());
 
             // Additional logic might be needed here for bannedChampions if you want to include names and images
             List<String[]> bannedChampions = liveGame.getBannedChampions().stream()

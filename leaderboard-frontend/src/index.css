@@ -736,6 +736,21 @@ h2{
   font-size:24px;
 }
 
+.render{
+  -webkit-animation: loadingCards 2s infinite;
+  -moz-animation: loadingCards 2s infinite;
+  -o-animation: loadingCards 2s infinite;
+  animation: loadingCards 2s infinite
+}
+
+@-webkit-keyframes loadingCards {
+  0%   {opacity: 0.3;}
+  25%  {opacity: 1;}
+  50%  {opacity: 1;}
+  75%  {opacity: 1;}
+  100% {opacity: 0.3;}
+}
+
 .rankedtoggle{
   margin-left:10px;
   display: flex;
@@ -743,12 +758,63 @@ h2{
   align-items: center;
   margin-right:auto;
   width:150px;
+  color: var(--color-foreground);
 }
 
 .rankedText{
   margin-left:5px;
   font-size: 16px;
   margin-bottom:5px;
+}
+
+.row{
+  display: flex !important;
+}
+
+.left > h1{
+  font-size: 22px;
+  color: blue;
+}
+
+.right > h1{
+  font-size: 22px;
+  color: red;
+}
+
+.left{
+  width:200px !important;
+  margin-right:auto;
+  text-align: left;
+}
+
+.right{
+  width:200px !important;
+  margin-left:auto;
+  text-align: right;
+}
+
+.center{
+  width:20px !important;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.left > img{
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border: 1px solid black;
+  margin-bottom: 3px;
+  margin-right:3px;
+}
+
+.right > img{
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border: 1px solid black;
+  margin-bottom: 3px;
+  margin-left:3px;
 }
 
 .fa-users,
@@ -844,6 +910,19 @@ h2{
 #upSolo{
     margin-left:2px;
     color: #f0f4ef;
+}
+
+.liveModal .modal-content{
+  background-color: var(--color-accent-border);
+  color: #f0f4ef;
+}
+
+.liveModal .modal-header{
+  border-color: var(--color-background);
+}
+
+.liveModal .modal-footer{
+  border-color: var(--color-background);
 }
 
 @media only screen and (max-width: 450px) {
@@ -1059,6 +1138,7 @@ h2{
     height:35px;
     justify-content: center;
     margin: auto auto 15px;
+    color: var(--color-foreground);
   }
 
   .moreOptions{

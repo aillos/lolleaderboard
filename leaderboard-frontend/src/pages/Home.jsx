@@ -17,11 +17,13 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Footer} from "../Footer";
 import {useNavigate} from "react-router-dom";
 import Toggle from "react-toggle";
+import LiveModal from "../modals/LiveModal.jsx";
 
 export const Home = () => {
     const [patchVersion, setPatchVersion] = useState(null);
     const [summoners, setSummoners] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingSummoners, setLoadingSummoners] = useState(true);
     const [timeUpdated, setTimeUpdated] = useState("");
     const [updateTime, setUpdateTime] = useState("");
     const navigate = useNavigate();
@@ -176,6 +178,7 @@ export const Home = () => {
             await axios.get('api/isLive');
             setSummoners(summoners);
             setLoading(false);
+            setLoadingSummoners(false);
             await lastTimeUpdated();
         } catch (error) {
             console.error("Error fetching summoners:", error);
@@ -291,6 +294,13 @@ export const Home = () => {
         window.location.href=`https://euw.op.gg/summoner/userName=${summoner.gameName}-${summoner.tagLine}`;
     }
 
+    const [showLiveModal, setShowLiveModal] = useState(false);
+    const [liveData, setLiveData] = useState(null);
+
+    const toggleLiveModal = (liveData) => {
+        setLiveData(liveData);
+        setShowLiveModal(true);
+    };
 
     const renderSummoner = (summoners, winrate, patchVersion) => (
 
@@ -299,7 +309,7 @@ export const Home = () => {
                 <div className="player-card"
                      key={summoner.gameName + summoner.tagLine}
                      style={summoner.isLive==="true" ? liveBorderStyle : {border: '1px solid transparent'}}
-                     onClick={goToOpgg.bind(this, summoner)}
+                     onClick={ summoner.isLive==="true" ? toggleLiveModal.bind(this, summoner.liveGameDto) : goToOpgg.bind(this, summoner) }
                 >
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">
@@ -436,7 +446,7 @@ export const Home = () => {
                 <div className="player-card"
                      key={summoner.gameName + summoner.tagLine}
                      style={summoner.isLive==="true" ? liveBorderStyle : {border: '1px solid transparent'}}
-                     onClick={goToOpgg.bind(this, summoner)}
+                     onClick={ summoner.isLive==="true" ? toggleLiveModal.bind(this, summoner.liveGameDto) : goToOpgg.bind(this, summoner) }
                 >
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">
@@ -588,6 +598,16 @@ export const Home = () => {
     let switchRanked = (sortFlexPoints===true ? "Switch to Solo/Duo" : "Switch to Flex");
     let contents = (sortFlexPoints===true ? renderFlexSummoner(summoners, winrate, patchVersion) : renderSummoner(summoners, winrate, patchVersion));
 
+    const loadingCards = (
+        <div className="player-cards-container">
+            <div className="player-card render"/>
+            <div className="player-card render"/>
+            <div className="player-card render"/>
+            <div className="player-card render"/>
+            <div className="player-card render"/>
+            <div className="player-card render"/>
+        </div>
+    );
 
     return (
         <div>
@@ -648,7 +668,8 @@ export const Home = () => {
                 </div>
 
             </div>
-            {contents}
+            <LiveModal show={showLiveModal} onHide={() => setShowLiveModal(false)} liveData={liveData} />
+            {loadingSummoners ? loadingCards : contents}
             <Footer />
         </div>
 

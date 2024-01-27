@@ -1,12 +1,25 @@
 import Modal from 'react-bootstrap/Modal';
 import axios from "axios";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
-import React from "react";
+import React, {useEffect} from "react";
 
-const response = await axios.get('https://ddragon.leagueoflegends.com/realms/euw.json');
-const patchVersion = response.data.v;
+async function fetchPatchVersion() {
+    const response = await axios.get('https://ddragon.leagueoflegends.com/realms/euw.json');
+    return response.data.v;
+}
+
 
 function LiveModal({ show, onHide, liveData }) {
+    const [patchVersion, setPatchVersion] = React.useState(null);
+
+    useEffect(() => {
+        async function fetchData() {
+            const version = await fetchPatchVersion();
+            setPatchVersion(version);
+        }
+        fetchData();
+    }, []);
+
     if (liveData) {
         return (
         <>

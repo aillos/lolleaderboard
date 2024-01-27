@@ -606,7 +606,7 @@ public class SummonerRepository {
     }
 
     private boolean updateRanked(Summoner summoner) {
-        String sql = "UPDATE Summoner SET gameName=?, tagLine=?, summonerId=?, summonerName=?, rank=?, tier=?, lp=?, summonerIcon=?, wins=?, losses=?, hotStreak=?, flexLp=?, flexRank=?, flexTier=?, flexWins=?, flexLosses=?, flexHotStreak=? WHERE puuid=?";
+        String sql = "UPDATE Summoner SET gameName=?, tagLine=?, summonerId=?, summonerName=?, rank=?, tier=?, lp=?, summonerIcon=?, wins=?, losses=?, hotStreak=?, flexLp=?, flexRank=?, flexTier=?, flexWins=?, flexLosses=?, flexHotStreak=? flexPoints=dbo.rankToInt(CONCAT(rank, tier, lp)) WHERE puuid=?";
        try {
             db.update(sql,
                     summoner.getGameName(),

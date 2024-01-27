@@ -84,4 +84,7 @@ public class SummonerController {
 
     @GetMapping("/isLive")
     public void isLive() { repo.isLive(); }
+
+    @GetMapping("/add/{name}/{tag}")
+    public void add(@PathVariable String name, @PathVariable String tag) { repo.addGameNameTag(name, tag); }
 }

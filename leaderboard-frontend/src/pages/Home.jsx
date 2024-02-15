@@ -272,7 +272,7 @@ export const Home = () => {
         return hotstreak === 1;
     }
 
-    const streak = (
+    const streak = (name) => (
         <OverlayTrigger
             placement="top"
             overlay={
@@ -282,7 +282,7 @@ export const Home = () => {
                 </Tooltip>
             }
         >
-        <span className="streak">
+        <span className="streak" style={{fontSize: name.length > 11 ? '16px' : '20px'}}>
             <FontAwesomeIcon icon={faFire} />
         </span>
         </OverlayTrigger>
@@ -324,12 +324,13 @@ export const Home = () => {
                             </span>
                     </div>
                     <div className="player-avatar">
+                        {summoner.tier !== "UNRANKED" ? <img id={"ranked-border"} src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem/wings/wings_${summoner.tier.toLowerCase()}.png`} alt={`Ranked border`} /> : ""}
                         <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt={`${summoner.gameName} avatar`} />
                     </div>
                     <div className="player-info">
                         <div className={"rankAndName"}>
                             <div className="nameAndStreak">
-                                {hotstreak(summoner.hotStreak) ? streak : ""}
+                                {hotstreak(summoner.hotStreak) ? streak(summoner.gameName) : ""}
                                 <OverlayTrigger
                                     placement="top"
                                     overlay={
@@ -338,7 +339,7 @@ export const Home = () => {
                                         </Tooltip>
                                     }
                                 >
-                                    <h2 className="summoner-name">
+                                    <h2 className="summoner-name" style={{fontSize: summoner.gameName.length > 11 ? '20px' : '24px'}}>
                                         {summoner.gameName}
                                     </h2>
                                 </OverlayTrigger>

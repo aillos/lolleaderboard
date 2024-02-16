@@ -292,8 +292,7 @@ export const Home = () => {
             );
         } else {
            return(
-                <span className="streak" style={{fontSize: name.length > 11 ? '16px' : '20px'}}>
-                    <FontAwesomeIcon icon={faFire} />
+                <span className="streak">
                 </span>
             );
         }
@@ -369,12 +368,12 @@ export const Home = () => {
                                 placement="bottom"
                                 overlay={
                                     <Tooltip id={`tooltip-bottom2`}>
-                                        Previous: <b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank }</b> <img src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`} alt={`${summoner.prevRank} icon`} style={{marginBottom:'2px'}}/>
+                                        Previous: <img src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`} alt={`${summoner.prevRank} icon`} style={{marginBottom:'2px'}}/><b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank}</b>
                                     </Tooltip>
                                 }
                             >
-                            <div>
-                                <span style={{ color: getRankColor(summoner.tier), fontWeight: "bold"}}>
+                                <div>
+                                <span style={{color: getRankColor(summoner.tier), fontWeight: "bold"}}>
                                     {summoner.tier} {summoner.rank}
                                 </span>
                                 <span> {summoner.lp} LP</span>
@@ -515,7 +514,7 @@ export const Home = () => {
                                 placement="bottom"
                                 overlay={
                                     <Tooltip id={`tooltip-bottom2`}>
-                                        Previous: <b>{summoner.prevRank}</b>
+                                        Previous: <img src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`} alt={`${summoner.prevRank} icon`} style={{marginBottom:'2px'}}/><b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank}</b>
                                     </Tooltip>
                                 }
                             >

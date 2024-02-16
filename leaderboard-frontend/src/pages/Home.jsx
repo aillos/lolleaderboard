@@ -28,6 +28,7 @@ export const Home = () => {
     const [updateTime, setUpdateTime] = useState("");
     const navigate = useNavigate();
     const [sortFlexPoints, setSortFlexPoints] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const goToContact = () => {
         navigate('/contact');
     };
@@ -272,21 +273,31 @@ export const Home = () => {
         return hotstreak === 1;
     }
 
-    const streak = (name) => (
-        <OverlayTrigger
-            placement="top"
-            overlay={
-                <Tooltip
-                    id={`tooltip-top`}>
-                    Winstreak
-                </Tooltip>
-            }
-        >
-        <span className="streak" style={{fontSize: name.length > 11 ? '16px' : '20px'}}>
-            <FontAwesomeIcon icon={faFire} />
-        </span>
-        </OverlayTrigger>
-    );
+    const streak = (name) => {
+        if (windowWidth > 400) {
+            return (
+                <OverlayTrigger
+                    placement="top"
+                    overlay={
+                        <Tooltip
+                            id={`tooltip-top`}>
+                            Winstreak
+                        </Tooltip>
+                    }
+                >
+                    <span className="streak" style={{fontSize: name.length > 11 ? '16px' : '20px'}}>
+                        <FontAwesomeIcon icon={faFire} />
+                    </span>
+                </OverlayTrigger>
+            );
+        } else {
+           return(
+                <span className="streak" style={{fontSize: name.length > 11 ? '16px' : '20px'}}>
+                    <FontAwesomeIcon icon={faFire} />
+                </span>
+            );
+        }
+    };
 
     const liveBorderStyle = { border: '1px solid green' };
 
@@ -302,6 +313,16 @@ export const Home = () => {
         setShowLiveModal(true);
     };
 
+    const splitPrevRank = (prevRank) => {
+        if (prevRank === "UNRANKED") return "UNRANKED";
+        return prevRank.split(" ")[0];
+    }
+
+    const highElo = (rank) => {
+        const highElo = ["MASTER", "GRANDMASTER", "CHALLENGER"];
+        return highElo.includes(rank);
+    }
+
     const renderSummoner = (summoners, winrate, patchVersion) => (
 
     <div className="player-cards-container">
@@ -309,7 +330,7 @@ export const Home = () => {
                 <div className="player-card"
                      key={summoner.gameName + summoner.tagLine}
                      style={summoner.isLive==="true" ? liveBorderStyle : {border: '1px solid transparent'}}
-                     onClick={ summoner.isLive==="true" ? toggleLiveModal.bind(this, summoner.liveGameDto) : goToOpgg.bind(this, summoner) }
+                     onClick={ summoner.isLive==="true" ? toggleLiveModal.bind(this, summoner.liveGameDto) : '' }
                 >
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">
@@ -348,7 +369,7 @@ export const Home = () => {
                                 placement="bottom"
                                 overlay={
                                     <Tooltip id={`tooltip-bottom2`}>
-                                        Previous: <b>{summoner.prevRank}</b>
+                                        Previous: <b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank }</b> <img src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`} alt={`${summoner.prevRank} icon`} style={{marginBottom:'2px'}}/>
                                     </Tooltip>
                                 }
                             >
@@ -413,40 +434,48 @@ export const Home = () => {
                                 </OverlayTrigger>
                             </div>
                         </div>
-                        <OverlayTrigger
-                            placement="right"
-                            overlay={
-                                <Tooltip
-                                    id={`tooltip-right`}>
-                                    {summoner.wins} wins<br />
-                                    {summoner.losses} losses<br />
-                                    {games(summoner.wins,summoner.losses)} games<br />
-                                </Tooltip>
-                            }
-                        >
-                        <div className={"winRate"}>
+                        {windowWidth > 400 ?
+                            <OverlayTrigger
+                                placement="right"
+                                overlay={
+                                    <Tooltip
+                                        id={`tooltip-right`}>
+                                        {summoner.wins} wins<br/>
+                                        {summoner.losses} losses<br/>
+                                        {games(summoner.wins, summoner.losses)} games<br/>
+                                    </Tooltip>
+                                }
+                            >
+                                <div className={"winRate"}>
 
-                            <div className={"winrate1"}>
-                            <p> {winrate(summoner.wins, summoner.losses)}</p>
+                                    <div className={"winrate1"}>
+                                        <p> {winrate(summoner.wins, summoner.losses)}</p>
+                                    </div>
+                                    <div className={"winrate2"}>
+                                        <p>WINRATE</p>
+                                    </div>
+                                </div>
+                            </OverlayTrigger> :
+                            <div className={"winRate"}>
+
+                                <div className={"winrate1"}>
+                                    <p> {winrate(summoner.wins, summoner.losses)}</p>
+                                </div>
                             </div>
-                            <div className={"winrate2"}>
-                                <p>WINRATE</p>
+                        }
                             </div>
-                        </div>
-                        </OverlayTrigger>
+                            </div>
+                            ))}
                     </div>
-                </div>
-            ))}
-        </div>
-    );
+                    );
 
-    const renderFlexSummoner = (summoners, winrate, patchVersion) => (
+                    const renderFlexSummoner = (summoners, winrate, patchVersion) => (
 
-        <div className="player-cards-container">
-            {summoners.map((summoner) => (
-                <div className="player-card"
-                     key={summoner.gameName + summoner.tagLine}
-                     style={summoner.isLive==="true" ? liveBorderStyle : {border: '1px solid transparent'}}
+                    <div className="player-cards-container">
+                        {summoners.map((summoner) => (
+                            <div className="player-card"
+                                 key={summoner.gameName + summoner.tagLine}
+                                 style={summoner.isLive === "true" ? liveBorderStyle : {border: '1px solid transparent'}}
                      onClick={ summoner.isLive==="true" ? toggleLiveModal.bind(this, summoner.liveGameDto) : goToOpgg.bind(this, summoner) }
                 >
                     <div className="player-rank">
@@ -462,6 +491,7 @@ export const Home = () => {
                             </span>
                     </div>
                     <div className="player-avatar">
+                        {summoner.tier !== "UNRANKED" ? <img id={"ranked-border"} src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem/wings/wings_${summoner.tier.toLowerCase()}.png`} alt={`Ranked border`} /> : ""}
                         <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt={`${summoner.gameName} avatar`} />
                     </div>
                     <div className="player-info">
@@ -550,18 +580,29 @@ export const Home = () => {
                                 </OverlayTrigger>
                             </div>
                         </div>
-                        <OverlayTrigger
-                            placement="right"
-                            overlay={
-                                <Tooltip
-                                    id={`tooltip-right`}>
-                                    {summoner.flexWins} wins<br />
-                                    {summoner.flexLosses} losses<br />
-                                    {games(summoner.flexWins,summoner.flexLosses)} games<br />
-                                </Tooltip>
-                            }
-                        >
-                            <div className={"winRate"}>
+                        {windowWidth > 400 ?
+                            <OverlayTrigger
+                                placement="right"
+                                overlay={
+                                    <Tooltip
+                                        id={`tooltip-right`}>
+                                        {summoner.flexWins} wins<br/>
+                                        {summoner.flexLosses} losses<br/>
+                                        {games(summoner.flexWins, summoner.flexLosses)} games<br/>
+                                    </Tooltip>
+                                }
+                            >
+                                <div className={"winRate"}>
+
+                                    <div className={"winrate1"}>
+                                        <p> {winrate(summoner.flexWins, summoner.flexLosses)}</p>
+                                    </div>
+                                    <div className={"winrate2"}>
+                                        <p>WINRATE</p>
+                                    </div>
+                                </div>
+                            </OverlayTrigger> :
+                                <div className={"winRate"}>
 
                                 <div className={"winrate1"}>
                                     <p> {winrate(summoner.flexWins, summoner.flexLosses)}</p>
@@ -570,7 +611,7 @@ export const Home = () => {
                                     <p>WINRATE</p>
                                 </div>
                             </div>
-                        </OverlayTrigger>
+                        }
                     </div>
                 </div>
             ))}

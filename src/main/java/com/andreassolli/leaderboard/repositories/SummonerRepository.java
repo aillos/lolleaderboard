@@ -44,13 +44,6 @@ public class SummonerRepository {
     @Value("${RIOT_KEY}")
     private String riotKey;
 
-    @Value("${PASSWORD}")
-    private String managePassword;
-
-    private String getPassword(){
-        return managePassword;
-    }
-
     private String getApiUrl() {
         return "?api_key=" + riotKey;
     }
@@ -660,11 +653,6 @@ public class SummonerRepository {
             logger.error("Could not delete " + gameName + "#" + tagLine);
             return false;
         }
-    }
-
-    public boolean checkPassword(String inputPassword) {
-        BCrypt.Result result = BCrypt.verifyer().verify(inputPassword.toCharArray(), getPassword());
-        return result.verified;
     }
 
     public void processChampionData(int champId, JSONObject championsData, String[] championNames, String[] championImages, String[] masteryPoints, ChampionMastery[] championMasteries, int i) throws JSONException {

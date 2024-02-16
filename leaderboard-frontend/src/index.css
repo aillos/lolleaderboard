@@ -468,6 +468,8 @@ h2{
   color: var(--color-foreground);
 }
 
+
+
 #tooltip-right .tooltip-arrow::before {
   border-right-color: var(--color-background);
 }
@@ -602,13 +604,12 @@ h2{
 }
 
 .player-avatar #ranked-border {
-
   position: absolute;
   width: 210px;
   height: 270px;
   margin-left: -35px;
   margin-top: -127px;
-  z-index: 2; /* Ensures the border is above the player icon */
+  z-index: 2;
 }
 
 
@@ -949,16 +950,25 @@ h2{
   }
 
   .player-avatar img {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    margin-left:-25px;
+    margin-left:10px;
     margin-right:0;
   }
 
   .player-avatar{
     width:60px;
     margin: auto;
+  }
+
+  .player-avatar #ranked-border {
+    position: absolute;
+    width: 88px;
+    height: 110px;
+    margin-left: -20px;
+    margin-top: -51px;
+    z-index: 2;
   }
 
   .header{
@@ -998,11 +1008,16 @@ h2{
     width:130px;
     font-size: 10px;
     align-items: center;
-    margin-left:-15px;
+    margin-left:-2px;
+
   }
 
   .nameAndStreak{
-    width:130px;
+    margin:0 auto 0 auto;
+    width:60px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: center;
   }
 
   .rankAndName > p{
@@ -1010,19 +1025,18 @@ h2{
   }
 
   .rankAndName > h2{
-    font-size: 12px;
+    font-size: 10px !important;
     margin-bottom: -10px;
   }
 
   .nameAndStreak > h2{
-    font-size: 15px;
+    font-size: 13px !important;
 
   }
 
   .streak{
-    font-size: 16px;
-    margin-top:-3px;
-
+    font-size: 0 !important;
+    position: absolute;
   }
 
 
@@ -1041,7 +1055,7 @@ h2{
 
 
   .image-container2 {
-    margin: 2px auto -5px;
+    margin: 2px 4px -5px;
     width: 26px;
     height: 26px;
   }
@@ -1053,8 +1067,9 @@ h2{
 
   .winsLosses{
     width:40px;
-    margin-top:-17px;
-    margin-right:-80px;
+    height:10px;
+    margin-top:-13px;
+    margin-right:5px;
   }
 
   .rankingIcon{
@@ -1082,8 +1097,11 @@ h2{
 
   .winRate{
     font-size:10px;
-    margin-bottom:-17px;
     width:50px;
+    position: absolute;
+    z-index: 2;
+    margin-top:35px;
+    margin-left:113px;
   }
   .winrate1{
     font-size:16px;
@@ -1092,6 +1110,8 @@ h2{
 
   .winrate2{
     font-size: 0;
+    height:0;
+    width:0;
   }
 
   .player-rank{

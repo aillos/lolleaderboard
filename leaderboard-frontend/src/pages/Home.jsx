@@ -490,7 +490,7 @@ export const Home = () => {
                             </span>
                     </div>
                     <div className="player-avatar">
-                        {summoner.tier !== "UNRANKED" ? <img id={"ranked-border"} src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem/wings/wings_${summoner.tier.toLowerCase()}.png`} alt={`Ranked border`} /> : ""}
+                        {summoner.flexTier !== "UNRANKED" ? <img id={"ranked-border"} src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem/wings/wings_${summoner.flexTier.toLowerCase()}.png`} /> : ""}
                         <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt={`${summoner.gameName} avatar`} />
                     </div>
                     <div className="player-info">

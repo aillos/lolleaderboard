@@ -368,7 +368,7 @@ export const Home = () => {
                                 placement="bottom"
                                 overlay={
                                     <Tooltip id={`tooltip-bottom2`}>
-                                        Previous: <img src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`} alt={`${summoner.prevRank} icon`} style={{marginBottom:'2px'}}/><b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank}</b>
+                                        Previous: <img src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`} alt={`${summoner.prevRank} icon`} style={{marginBottom:'2px'}}/> <b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank}</b>
                                     </Tooltip>
                                 }
                             >
@@ -514,7 +514,7 @@ export const Home = () => {
                                 placement="bottom"
                                 overlay={
                                     <Tooltip id={`tooltip-bottom2`}>
-                                        Previous: <img src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`} alt={`${summoner.prevRank} icon`} style={{marginBottom:'2px'}}/><b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank}</b>
+                                        Previous: <img src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`} alt={`${summoner.prevRank} icon`} style={{marginBottom:'2px'}}/> <b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank}</b>
                                     </Tooltip>
                                 }
                             >

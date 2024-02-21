@@ -52,13 +52,13 @@ export const Profile = () => {
                 </Tooltip>
             }
         >
-            <div className="image-container2">
+            <div className="profile-image-container2">
                 <img
                     src={kda[0] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${image[0]}`}
                     alt={`${name[0]} champion`}/>
             </div>
         </OverlayTrigger>
-        <div className={"image-bottom"}>
+        <div className={"profile-image-bottom"}>
             <OverlayTrigger
                 placement="top"
                 overlay={
@@ -72,7 +72,7 @@ export const Profile = () => {
                     </Tooltip>
                 }
             >
-                <div className="image-container">
+                <div className="profile-image-container">
                     <img
                         src={kda[2] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${image[2]}`}
                         alt={`${name[2]} champion`}/>
@@ -90,7 +90,7 @@ export const Profile = () => {
                     </Tooltip>
                 }
             >
-                <div className="image-container1">
+                <div className="profile-image-container1">
                     <img
                         src={kda[1] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${image[1]}`}
                         alt={`${name[1]} champion`}/>
@@ -118,13 +118,13 @@ export const Profile = () => {
                         </Tooltip>
                     }
                 >
-                    <div className="image-container2">
+                    <div className="profile-image-container2">
                         <img
                             src={points[0] === "" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${image[0]}`}
                             alt={`${name[0]} champion`}/>
                     </div>
                 </OverlayTrigger>
-                <div className={"image-bottom"}>
+                <div className={"profile-image-bottom"}>
                     <OverlayTrigger
                         placement="top"
                         overlay={
@@ -135,7 +135,7 @@ export const Profile = () => {
                             </Tooltip>
                         }
                     >
-                        <div className="image-container">
+                        <div className="profile-image-container">
                             <img
                                 src={points[2] === "" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${image[2]}`}
                                 alt={`${name[2]} champion`}/>
@@ -151,7 +151,7 @@ export const Profile = () => {
                             </Tooltip>
                         }
                     >
-                        <div className="image-container1">
+                        <div className="profile-image-container1">
                             <img
                                 src={points[1] === "" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${image[1]}`}
                                 alt={`${name[1]} champion`}/>

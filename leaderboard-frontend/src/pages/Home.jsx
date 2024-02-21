@@ -304,6 +304,10 @@ export const Home = () => {
         window.location.href=`https://euw.op.gg/summoner/userName=${summoner.gameName}-${summoner.tagLine}`;
     }
 
+    const goToProfile = (name, tag) => {
+        navigate(`/profile/${name}/${tag}`);
+    }
+
     const [showLiveModal, setShowLiveModal] = useState(false);
     const [liveData, setLiveData] = useState(null);
 
@@ -328,8 +332,8 @@ export const Home = () => {
             {summoners.map((summoner) => (
                 <div className="player-card"
                      key={summoner.gameName + summoner.tagLine}
-                     style={summoner.isLive==="true" ? liveBorderStyle : {border: '1px solid transparent'}}
-                     onClick={ summoner.isLive==="true" ? toggleLiveModal.bind(this, summoner.liveGameDto) : '' }
+                     style={summoner.isLive==="true" ? liveBorderStyle : {}}
+                     onClick={ () => goToProfile(summoner.gameName, summoner.tagLine) }
                 >
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">

@@ -87,4 +87,9 @@ public class SummonerController {
 
     @GetMapping("/add/{name}/{tag}")
     public void add(@PathVariable String name, @PathVariable String tag) { repo.addGameNameTag(name, tag); }
+
+    @GetMapping("/profile/{name}/{tag}")
+    public SummonerDto getProfile(@PathVariable String name, @PathVariable String tag) {
+        return repo.getProfile(name, tag);
+    }
 }

@@ -1069,6 +1069,15 @@ public class SummonerRepository {
     }
 
 
+    public SummonerDto getProfile(String name, String tag){
+       String sql = "SELECT * FROM frontendSummoner WHERE gameName=? AND tagLine=?";
+         try {
+              return db.queryForObject(sql, new BeanPropertyRowMapper<>(SummonerDto.class), name, tag);
+         } catch (Exception e) {
+              logger.error("Error " + e);
+              return null;
+         }
+    }
 
 
 

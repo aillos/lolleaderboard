@@ -8,6 +8,7 @@ import {Header} from "./Header.jsx";
 import 'bootstrap/dist/css/bootstrap.css';
 import Add from "./pages/Add.jsx";
 import Remove from "./pages/Remove.jsx";
+import {Profile} from "./pages/Profile.jsx";
 
 const App = () => {
 
@@ -27,6 +28,10 @@ const App = () => {
         {
             path: "/remove",
             element: <Remove />,
+        },
+        {
+            path: "/profile/:name/:tag",
+            element: <Profile />,
         },
     ]);
 

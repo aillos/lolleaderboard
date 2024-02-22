@@ -92,4 +92,9 @@ public class SummonerController {
     public SummonerDto getProfile(@PathVariable String name, @PathVariable String tag) {
         return repo.getProfile(name, tag);
     }
+
+    @GetMapping("/opgg/{name}/{tag}")
+    public String getOpgg(@PathVariable String name, @PathVariable String tag) {
+        return repo.getOpgg(name, tag);
+    }
 }

@@ -332,7 +332,6 @@ export const Home = () => {
             {summoners.map((summoner) => (
                 <div className="player-card"
                      key={summoner.gameName + summoner.tagLine}
-                     style={summoner.isLive==="true" ? liveBorderStyle : {}}
                      onClick={ () => goToProfile(summoner.gameName, summoner.tagLine) }
                 >
                     <div className="player-rank">
@@ -478,9 +477,8 @@ export const Home = () => {
                         {summoners.map((summoner) => (
                             <div className="player-card"
                                  key={summoner.gameName + summoner.tagLine}
-                                 style={summoner.isLive === "true" ? liveBorderStyle : {border: '1px solid transparent'}}
-                     onClick={ summoner.isLive==="true" ? toggleLiveModal.bind(this, summoner.liveGameDto) : goToOpgg.bind(this, summoner) }
-                >
+                                 onClick={ () => goToProfile(summoner.gameName, summoner.tagLine) }
+                            >
                     <div className="player-rank">
                             <span className="fa-layers fa-fw">
                                     <FontAwesomeIcon

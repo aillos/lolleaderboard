@@ -505,6 +505,12 @@ h2{
   color: transparent;
 }
 
+#tooltip-invis, #tooltip-top2, #tooltip-top, #tooltip-bottom2,
+#tooltip-bottom, #tooltip-right{
+  position:fixed;
+}
+
+
 .placementText{
   font-weight: bold;
   margin-top:7px;

@@ -1071,6 +1071,9 @@ public class SummonerRepository {
          }
     }
 
-
+    public String getOpgg(String name, String tag){
+        String sql = "SELECT opgg FROM Summoner WHERE gameName=? AND tagLine=?";
+        return db.queryForObject(sql, String.class, name, tag);
+    }
 
 }

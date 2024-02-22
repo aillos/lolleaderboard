@@ -1,0 +1,88 @@
+.match {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-accent-border);
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.match-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.result {
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.result.win {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.result.lose {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.queue-type {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.game-duration {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.champion-items {
+    display: flex;
+    align-items: center;
+}
+
+.champion-icon{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    margin-right:20px;
+    margin-left:10px;
+}
+
+.item-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+}
+
+.emptyItem {
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+    background-color: var(--color-background);
+}
+
+.trinket {
+    margin-left: auto;
+}
+
+.items {
+    display: flex;
+}
+
+.stats {
+    width:95%;
+    margin: 10px auto auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight:bold;
+}

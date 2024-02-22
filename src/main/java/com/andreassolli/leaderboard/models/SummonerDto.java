@@ -35,11 +35,6 @@ public class SummonerDto {
 
     private String[] mostPlayedWR;
 
-    private String isLive;
-
-    private String liveData;
-
-    private LiveGameDto liveGameDto;
 
     private String flexRank;
 
@@ -63,7 +58,7 @@ public class SummonerDto {
 
     private String[] mostPlayedNameFlex;
 
-    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String isLive, String liveData, LiveGameDto liveGameDto, String flexRank, String flexTier, int flexLp, int flexWins, int flexLosses, int flexHotStreak, int flexPoints, int points, String[] mostPlayedChampionFlex, String[] mostPlayedImageFlex, String[] mostPlayedKDAFlex, String[] mostPlayedWRFlex, String[] mostPlayedNameFlex) {
+    public SummonerDto(String gameName, String tagLine, String summonerName, String rank, String tier, int lp, int summonerIcon, String summonerId, int wins, int losses, String[] championMastery, String[] championImages, String[] masteryPoints, int hotStreak, String prevRank, String[] mostPlayedName, String[] mostPlayedChampion, String[] mostPlayedImage, String[] mostPlayedKDA, String[] mostPlayedWR, String flexRank, String flexTier, int flexLp, int flexWins, int flexLosses, int flexHotStreak, int flexPoints, int points, String[] mostPlayedChampionFlex, String[] mostPlayedImageFlex, String[] mostPlayedKDAFlex, String[] mostPlayedWRFlex, String[] mostPlayedNameFlex) {
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.summonerName = summonerName;
@@ -84,9 +79,6 @@ public class SummonerDto {
         this.mostPlayedKDA=mostPlayedKDA;
         this.mostPlayedWR=mostPlayedWR;
         this.mostPlayedName=mostPlayedName;
-        this.isLive=isLive;
-        this.liveData=liveData;
-        this.liveGameDto=liveGameDto;
         this.flexRank=flexRank;
         this.flexTier=flexTier;
         this.flexLp=flexLp;
@@ -207,30 +199,6 @@ public class SummonerDto {
 
     public void setFlexHotStreak(int flexHotStreak) {
         this.flexHotStreak = flexHotStreak;
-    }
-
-    public LiveGameDto getLiveGameDto() {
-        return liveGameDto;
-    }
-
-    public void setLiveGameDto(LiveGameDto liveGameDto) {
-        this.liveGameDto = liveGameDto;
-    }
-
-    public String getLiveData() {
-        return liveData;
-    }
-
-    public void setLiveData(String liveData) {
-        this.liveData = liveData;
-    }
-
-    public String getIsLive() {
-        return isLive;
-    }
-
-    public void setIsLive(String isLive) {
-        this.isLive = isLive;
     }
 
     public String[] getMostPlayedName() {

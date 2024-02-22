@@ -73,16 +73,8 @@ public class SummonerRepository {
     }
 
     private List<SummonerDto> getSummonerDtos(String sql) {
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            List<SummonerDto> summoners = db.query(sql, new BeanPropertyRowMapper<>(SummonerDto.class));
-            for (SummonerDto summoner : summoners) {
-                if (summoner.getLiveData() != null){
-                    summoner.setLiveGameDto(objectMapper.readValue(summoner.getLiveData(), LiveGameDto.class));
-                    summoner.setLiveData(null);
-                }
-            }
-            return summoners;
+            return db.query(sql, new BeanPropertyRowMapper<>(SummonerDto.class));
         } catch (Exception e) {
             logger.error("Error in getting all summoners " + e);
             return null;

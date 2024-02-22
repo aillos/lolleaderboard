@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import PasswordModal from '../modals/PasswordModal';
+import PasswordModal from '../components/PasswordModal';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faHome, faRefresh} from '@fortawesome/free-solid-svg-icons'

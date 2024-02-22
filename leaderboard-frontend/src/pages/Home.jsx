@@ -17,7 +17,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Footer} from "../Footer";
 import {useNavigate} from "react-router-dom";
 import Toggle from "react-toggle";
-import LiveModal from "../modals/LiveModal.jsx";
+import LiveModal from "../components/LiveModal.jsx";
 
 export const Home = () => {
     const [patchVersion, setPatchVersion] = useState(null);
@@ -29,9 +29,6 @@ export const Home = () => {
     const navigate = useNavigate();
     const [sortFlexPoints, setSortFlexPoints] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    const goToContact = () => {
-        navigate('/contact');
-    };
 
     const goRemove = () => {
         navigate('/remove');
@@ -176,11 +173,10 @@ export const Home = () => {
                 assignPositions(summoners);
             }
 
-            await axios.get('api/isLive');
             setSummoners(summoners);
             setLoading(false);
             setLoadingSummoners(false);
-            await lastTimeUpdated();
+            lastTimeUpdated();
         } catch (error) {
             console.error("Error fetching summoners:", error);
         }
@@ -196,9 +192,6 @@ export const Home = () => {
             console.error('Error fetching data:', error);
         }
     };
-
-
-    let updateText = (sortFlexPoints===true ? "Update Flex" : "Update Solo");
 
     const updateButton = (
         <div className="button updateB mobileButton" onClick={update}>
@@ -297,12 +290,6 @@ export const Home = () => {
             );
         }
     };
-
-    const liveBorderStyle = { border: '1px solid green' };
-
-    const goToOpgg = (summoner) => {
-        window.location.href=`https://euw.op.gg/summoner/userName=${summoner.gameName}-${summoner.tagLine}`;
-    }
 
     const goToProfile = (name, tag) => {
         navigate(`/profile/${name}/${tag}`);

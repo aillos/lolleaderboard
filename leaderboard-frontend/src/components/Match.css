@@ -35,6 +35,7 @@
     color: #0c5460;
     padding: 2px 5px;
     border-radius: 4px;
+    margin-left:-25px;
 }
 
 .game-duration {
@@ -55,12 +56,29 @@
     border-radius:50%;
     margin-right:20px;
     margin-left:10px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.champion-icon > img{
+    display:block;
+    width:110%;
+    height:110%;
 }
 
 .item-icon {
     width: 40px;
     height: 40px;
     margin-right: 5px;
+    border-radius:10px;
+}
+
+.item-icon > img{
+    width:45px;
+    height:45px;
+    position:absolute;
 }
 
 .emptyItem {
@@ -68,6 +86,7 @@
     height: 40px;
     margin-right: 5px;
     background-color: var(--color-background);
+    border-radius:10px;
 }
 
 .trinket {
@@ -79,10 +98,28 @@
 }
 
 .stats {
-    width:95%;
+    width:97%;
     margin: 10px auto auto;
     display: flex;
     justify-content: space-between;
     font-size: 18px;
     font-weight:bold;
+    border-radius:25px;
+    /*background-color: rgba(227, 227, 227, 0.35);*/
+    padding: 0 10px;
+}
+
+.result-win {
+    background-color: #3d6e3f;
+}
+
+
+.result-lose{
+    background-color: #5f3537;
+}
+
+.average-rank{
+    background-color: rgba(227, 227, 227, 0.35);
+    padding:0 5px;
+    border-radius:20px;
 }

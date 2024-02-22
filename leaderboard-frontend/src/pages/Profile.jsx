@@ -3,7 +3,7 @@ import axios from "axios";
 import React, {useEffect, useState} from "react";
 import './Profile.css';
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
-import Match from "../modals/Match.jsx";
+import Match from "../components/Match.jsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faHome} from "@fortawesome/free-solid-svg-icons";
 

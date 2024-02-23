@@ -169,7 +169,7 @@
 .summoner-spells{
     display: flex;
     flex-direction: column;
-    margin-right:15px;
+    margin-right:5px;
     gap:5px;
 }
 

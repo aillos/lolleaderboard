@@ -6,7 +6,7 @@ import fight from '../assets/fight.png';
 import gold from '../assets/gold.png';
 import clock from '../assets/clock.png';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCalendarDays, faChartLine} from "@fortawesome/free-solid-svg-icons";
+import {faCalendarDays, faChartLine, faMap} from "@fortawesome/free-solid-svg-icons";
 import spellJson from '../assets/summoner.json';
 import runeJson from '../assets/runesReforged.json';
 
@@ -165,8 +165,14 @@ const Match = ({ match, championJson, patchVersion, name, tag, itemJson }) => {
                 >
                     <span className="queue-type">{match.queue_info.queue_translate}</span>
                 </OverlayTrigger>
+                <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id={`tooltip-top`} ><FontAwesomeIcon icon={faMap} style={{color:participant.team_key.toString()==='RED' ? 'red' : 'blue'}}/> {participant.team_key}</Tooltip>}
+                >
                 <span
-                    className="game-duration"><img src={clock} alt={"Clock"}/>{Math.floor(match.game_length_second / 60)}m {match.game_length_second % 60}s</span>
+                    className="game-duration"><img src={clock} alt={"Clock"}/>{Math.floor(match.game_length_second / 60)}m {match.game_length_second % 60}s<
+                    /span>
+                </OverlayTrigger>
             </div>
             <div className="champion-items">
                 {championJson &&

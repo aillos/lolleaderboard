@@ -1,7 +1,7 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Spiegel Sans', sans-serif;
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: normal;
 
 
   color: rgba(255, 255, 255, 0.87);
@@ -511,11 +511,31 @@ h2{
 }
 
 
-.placementText{
-  font-weight: bold;
+.player-rank{
+  font-family: "beaufort-pro", serif;
+  font-weight: 700;
+  font-style: normal;
   margin-top:7px;
   margin-left:10px;
+  margin-right:30px;
   font-size: 24px;
+  z-index:2;
+  width:50px;
+  height:50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.player-rank > span > img{
+  margin-top:-22px;
+  margin-left:-31px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:50px;
+  height:50px;
 }
 .footer{
   width:600px;
@@ -595,15 +615,8 @@ h2{
   border: 1px solid #646cff;
 }
 
-.player-rank {
-  margin-left:0;
-  margin-right:15px;
-  width:40px;
-  height:40px;
-}
-
 .player-avatar img {
-  margin-left:35px;
+  margin-left:25px;
   margin-right:-80px;
   width: 70px;
   height: 70px;
@@ -618,7 +631,7 @@ h2{
   position: absolute;
   width: 210px;
   height: 270px;
-  margin-left: -35px;
+  margin-left: -45px;
   margin-top: -127px;
   z-index: 2;
 }

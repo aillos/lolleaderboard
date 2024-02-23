@@ -18,7 +18,10 @@ import {Footer} from "../Footer";
 import {useNavigate} from "react-router-dom";
 import Toggle from "react-toggle";
 import LiveModal from "../components/LiveModal.jsx";
-
+import first from '../assets/first.png';
+import second from '../assets/second.png';
+import third from '../assets/third.png';
+import none from '../assets/none.png';
 export const Home = () => {
     const [patchVersion, setPatchVersion] = useState(null);
     const [summoners, setSummoners] = useState([]);
@@ -253,6 +256,19 @@ export const Home = () => {
         return { color, icon, icon2, medal };
     };
 
+    const getPlacementColor = (rank) =>{
+        if (rank === 1){
+            return "#9d7730";
+        } else if (rank === 2){
+            return "#bfbfbf";
+        } else if (rank === 3){
+            return "#9f6a4e";
+        } else {
+            return "white";
+        }
+
+    }
+
     const games = (wins, losses) =>{
         return Number(wins)+Number(losses);
     }
@@ -313,6 +329,19 @@ export const Home = () => {
         return highElo.includes(rank);
     }
 
+    const placementIcon = (rank) => {
+        console.log(rank);
+        if (rank === 1){
+            return first;
+        } else if (rank === 2){
+            return second;
+        } else if (rank === 3){
+            return third;
+        } else {
+            return none;
+        }
+    }
+
     const renderSummoner = (summoners, winrate, patchVersion) => (
 
     <div className="player-cards-container">
@@ -321,17 +350,9 @@ export const Home = () => {
                      key={summoner.gameName + summoner.tagLine}
                      onClick={ () => goToProfile(summoner.gameName, summoner.tagLine) }
                 >
-                    <div className="player-rank">
-                            <span className="fa-layers fa-fw">
-                                    <FontAwesomeIcon
-                                        icon={getPlacement(summoner.position - 1).icon}
-                                        style={{ color: getPlacement(summoner.position - 1).color }}
-                                        className={"rankingIcon"}
-                                        transform={"down-1"}
-                                    />
-                                    <FontAwesomeIcon icon={getPlacement(summoner.position - 1).icon2} transform={"down-8 right-10"} className={"placementCircle"} color={getPlacement(summoner.position - 1).color}/>
-                                <span className="fa-layers-text placementText" style={{color: getPlacement(summoner.position - 1).medal}} >{summoner.position}</span>
-                            </span>
+                    <div className="player-rank" style={{color:getPlacementColor(summoner.position)}}>
+                        {summoner.position}
+                        <span><img src={placementIcon(summoner.position)}  alt={"Placement"}/></span>
                     </div>
                     <div className="player-avatar">
                         {summoner.tier !== "UNRANKED" ? <img id={"ranked-border"} src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem/wings/wings_${summoner.tier.toLowerCase()}.png`} alt={`Ranked border`} /> : ""}
@@ -464,147 +485,154 @@ export const Home = () => {
                         {summoners.map((summoner) => (
                             <div className="player-card"
                                  key={summoner.gameName + summoner.tagLine}
-                                 onClick={ () => goToProfile(summoner.gameName, summoner.tagLine) }
+                                 onClick={() => goToProfile(summoner.gameName, summoner.tagLine)}
                             >
-                    <div className="player-rank">
-                            <span className="fa-layers fa-fw">
-                                    <FontAwesomeIcon
-                                        icon={getPlacement(summoner.position - 1).icon}
-                                        style={{ color: getPlacement(summoner.position - 1).color }}
-                                        className={"rankingIcon"}
-                                        transform={"down-1"}
-                                    />
-                                    <FontAwesomeIcon icon={getPlacement(summoner.position - 1).icon2} transform={"down-8 right-10"} className={"placementCircle"} color={getPlacement(summoner.position - 1).color}/>
-                                <span className="fa-layers-text placementText" style={{color: getPlacement(summoner.position - 1).medal}} >{summoner.position}</span>
-                            </span>
-                    </div>
-                    <div className="player-avatar">
-                        {summoner.flexTier !== "UNRANKED" ? <img id={"ranked-border"} src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem/wings/wings_${summoner.flexTier.toLowerCase()}.png`} /> : ""}
-                        <img src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`} alt={`${summoner.gameName} avatar`} />
-                    </div>
-                    <div className="player-info">
-                        <div className={"rankAndName"}>
-                            <div className="nameAndStreak">
-                                {hotstreak(summoner.flexHotStreak) ? streak : ""}
-                                <OverlayTrigger
-                                    placement="top"
-                                    overlay={
-                                        <Tooltip id={`tooltip-top`}>
-                                            {summoner.gameName} #{summoner.tagLine}
-                                        </Tooltip>
-                                    }
-                                >
-                                    <h2 className="summoner-name">
-                                        {summoner.gameName}
-                                    </h2>
-                                </OverlayTrigger>
-                            </div>
-                            <OverlayTrigger
-                                placement="bottom"
-                                overlay={
-                                    <Tooltip id={`tooltip-bottom2`}>
-                                        Previous: <img src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`} alt={`${summoner.prevRank} icon`} style={{marginBottom:'2px'}}/> <b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank}</b>
-                                    </Tooltip>
-                                }
-                            >
-                                <div>
-                                <span style={{ color: getRankColor(summoner.flexTier), fontWeight: "bold"}}>
+                                <div className="player-rank" style={{color: getPlacementColor(summoner.position)}}>
+                                    {summoner.position}
+                                    <span><img src={placementIcon(summoner.position)} alt={"Placement"}/></span>
+                                </div>
+                                <div className="player-avatar">
+                                    {summoner.flexTier !== "UNRANKED" ? <img id={"ranked-border"}
+                                                                             src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem/wings/wings_${summoner.flexTier.toLowerCase()}.png`}/> : ""}
+                                    <img
+                                        src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`}
+                                        alt={`${summoner.gameName} avatar`}/>
+                                </div>
+                                <div className="player-info">
+                                    <div className={"rankAndName"}>
+                                        <div className="nameAndStreak">
+                                            {hotstreak(summoner.flexHotStreak) ? streak : ""}
+                                            <OverlayTrigger
+                                                placement="top"
+                                                overlay={
+                                                    <Tooltip id={`tooltip-top`}>
+                                                        {summoner.gameName} #{summoner.tagLine}
+                                                    </Tooltip>
+                                                }
+                                            >
+                                                <h2 className="summoner-name">
+                                                    {summoner.gameName}
+                                                </h2>
+                                            </OverlayTrigger>
+                                        </div>
+                                        <OverlayTrigger
+                                            placement="bottom"
+                                            overlay={
+                                                <Tooltip id={`tooltip-bottom2`}>
+                                                    Previous: <img
+                                                    src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${splitPrevRank(summoner.prevRank).toLowerCase()}.svg`}
+                                                    alt={`${summoner.prevRank} icon`} style={{marginBottom: '2px'}}/>
+                                                    <b>{highElo(splitPrevRank(summoner.prevRank)) ? splitPrevRank(summoner.prevRank) : summoner.prevRank}</b>
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <div>
+                                <span style={{color: getRankColor(summoner.flexTier), fontWeight: "bold"}}>
                                     {summoner.flexTier} {summoner.flexRank}
                                 </span>
-                                    <span> {summoner.flexLp} LP</span>
-                                </div>
-                            </OverlayTrigger>
-                        </div>
-                        <div className={"winsLosses"}>
-                            <OverlayTrigger
-                                placement="top"
-                                overlay={
-                                    <Tooltip
-                                        id={summoner.mostPlayedKDAFlex[0] === "0" ? "tooltip-invis" :`tooltip-top`}>
-                                        <b>{summoner.mostPlayedNameFlex[0]} </b> <br />
-                                        Games: <b>{games(summoner.mostPlayedWRFlex[0], summoner.mostPlayedWRFlex[1])}</b>  <br/>
-                                        Avg: <b>{summoner.mostPlayedKDAFlex[0]}</b> <br />
-                                        WR: <b> {winrate(summoner.mostPlayedWRFlex[0], summoner.mostPlayedWRFlex[1])} </b>
-                                    </Tooltip>
-                                }
-                            >
-                                <div className="image-container2">
-                                    <img src={summoner.mostPlayedKDAFlex[0] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImageFlex[0]}`} alt={`${summoner.mostPlayedNameFlex[0]} champion`} />
-                                </div>
-                            </OverlayTrigger>
-                            <div className={"image-bottom"}>
-                                <OverlayTrigger
-                                    placement="top"
-                                    overlay={
-                                        <Tooltip
-                                            id={summoner.mostPlayedKDAFlex[2] === "0" ? "tooltip-invis" :`tooltip-top`}>
-                                            <b>{summoner.mostPlayedNameFlex[2]} </b> <br />
-                                            Games: <b>{games(summoner.mostPlayedWRFlex[4], summoner.mostPlayedWRFlex[5])}</b>  <br/>
-                                            Avg: <b>{summoner.mostPlayedKDAFlex[2]}</b> <br />
-                                            WR: <b> {winrate(summoner.mostPlayedWRFlex[4], summoner.mostPlayedWRFlex[5])} </b>
+                                                <span> {summoner.flexLp} LP</span>
+                                            </div>
+                                        </OverlayTrigger>
+                                    </div>
+                                    <div className={"winsLosses"}>
+                                        <OverlayTrigger
+                                            placement="top"
+                                            overlay={
+                                                <Tooltip
+                                                    id={summoner.mostPlayedKDAFlex[0] === "0" ? "tooltip-invis" : `tooltip-top`}>
+                                                    <b>{summoner.mostPlayedNameFlex[0]} </b> <br/>
+                                                    Games: <b>{games(summoner.mostPlayedWRFlex[0], summoner.mostPlayedWRFlex[1])}</b>
+                                                    <br/>
+                                                    Avg: <b>{summoner.mostPlayedKDAFlex[0]}</b> <br/>
+                                                    WR: <b> {winrate(summoner.mostPlayedWRFlex[0], summoner.mostPlayedWRFlex[1])} </b>
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <div className="image-container2">
+                                                <img
+                                                    src={summoner.mostPlayedKDAFlex[0] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImageFlex[0]}`}
+                                                    alt={`${summoner.mostPlayedNameFlex[0]} champion`}/>
+                                            </div>
+                                        </OverlayTrigger>
+                                        <div className={"image-bottom"}>
+                                            <OverlayTrigger
+                                                placement="top"
+                                                overlay={
+                                                    <Tooltip
+                                                        id={summoner.mostPlayedKDAFlex[2] === "0" ? "tooltip-invis" : `tooltip-top`}>
+                                                        <b>{summoner.mostPlayedNameFlex[2]} </b> <br/>
+                                                        Games: <b>{games(summoner.mostPlayedWRFlex[4], summoner.mostPlayedWRFlex[5])}</b>
+                                                        <br/>
+                                                        Avg: <b>{summoner.mostPlayedKDAFlex[2]}</b> <br/>
+                                                        WR: <b> {winrate(summoner.mostPlayedWRFlex[4], summoner.mostPlayedWRFlex[5])} </b>
 
-                                        </Tooltip>
+                                                    </Tooltip>
+                                                }
+                                            >
+                                                <div className="image-container">
+                                                    <img
+                                                        src={summoner.mostPlayedKDAFlex[2] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImageFlex[2]}`}
+                                                        alt={`${summoner.mostPlayedNameFlex[2]} champion`}/>
+                                                </div>
+                                            </OverlayTrigger>
+                                            <OverlayTrigger
+                                                placement="top"
+                                                overlay={
+                                                    <Tooltip
+                                                        id={summoner.mostPlayedKDAFlex[1] === "0" ? "tooltip-invis" : `tooltip-top`}>
+                                                        <b>{summoner.mostPlayedNameFlex[1]} </b> <br/>
+                                                        Games: <b>{games(summoner.mostPlayedWRFlex[2], summoner.mostPlayedWRFlex[3])}</b>
+                                                        <br/>
+                                                        Avg: <b>{summoner.mostPlayedKDAFlex[1]}</b> <br/>
+                                                        WR: <b> {winrate(summoner.mostPlayedWRFlex[2], summoner.mostPlayedWRFlex[3])} </b>
+                                                    </Tooltip>
+                                                }
+                                            >
+                                                <div className="image-container1">
+                                                    <img
+                                                        src={summoner.mostPlayedKDAFlex[1] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImageFlex[1]}`}
+                                                        alt={`${summoner.mostPlayedNameFlex[1]} champion`}/>
+                                                </div>
+                                            </OverlayTrigger>
+                                        </div>
+                                    </div>
+                                    {windowWidth > 400 ?
+                                        <OverlayTrigger
+                                            placement="right"
+                                            overlay={
+                                                <Tooltip
+                                                    id={`tooltip-right`}>
+                                                    {summoner.flexWins} wins<br/>
+                                                    {summoner.flexLosses} losses<br/>
+                                                    {games(summoner.flexWins, summoner.flexLosses)} games<br/>
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <div className={"winRate"}>
+
+                                                <div className={"winrate1"}>
+                                                    <p> {winrate(summoner.flexWins, summoner.flexLosses)}</p>
+                                                </div>
+                                                <div className={"winrate2"}>
+                                                    <p>WINRATE</p>
+                                                </div>
+                                            </div>
+                                        </OverlayTrigger> :
+                                        <div className={"winRate"}>
+
+                                            <div className={"winrate1"}>
+                                                <p> {winrate(summoner.flexWins, summoner.flexLosses)}</p>
+                                            </div>
+                                            <div className={"winrate2"}>
+                                                <p>WINRATE</p>
+                                            </div>
+                                        </div>
                                     }
-                                >
-                                    <div className="image-container">
-                                        <img src={summoner.mostPlayedKDAFlex[2] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImageFlex[2]}`} alt={`${summoner.mostPlayedNameFlex[2]} champion`} />
-                                    </div>
-                                </OverlayTrigger>
-                                <OverlayTrigger
-                                    placement="top"
-                                    overlay={
-                                        <Tooltip
-                                            id={summoner.mostPlayedKDAFlex[1] === "0" ? "tooltip-invis" :`tooltip-top`}>
-                                            <b>{summoner.mostPlayedNameFlex[1]} </b> <br />
-                                            Games: <b>{games(summoner.mostPlayedWRFlex[2], summoner.mostPlayedWRFlex[3])}</b>  <br/>
-                                            Avg: <b>{summoner.mostPlayedKDAFlex[1]}</b> <br />
-                                            WR: <b> {winrate(summoner.mostPlayedWRFlex[2], summoner.mostPlayedWRFlex[3])} </b>
-                                        </Tooltip>
-                                    }
-                                >
-                                    <div className="image-container1">
-                                        <img src={summoner.mostPlayedKDAFlex[1] === "0" ? `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/29.png` : `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${summoner.mostPlayedImageFlex[1]}`} alt={`${summoner.mostPlayedNameFlex[1]} champion`} />
-                                    </div>
-                                </OverlayTrigger>
-                            </div>
-                        </div>
-                        {windowWidth > 400 ?
-                            <OverlayTrigger
-                                placement="right"
-                                overlay={
-                                    <Tooltip
-                                        id={`tooltip-right`}>
-                                        {summoner.flexWins} wins<br/>
-                                        {summoner.flexLosses} losses<br/>
-                                        {games(summoner.flexWins, summoner.flexLosses)} games<br/>
-                                    </Tooltip>
-                                }
-                            >
-                                <div className={"winRate"}>
-
-                                    <div className={"winrate1"}>
-                                        <p> {winrate(summoner.flexWins, summoner.flexLosses)}</p>
-                                    </div>
-                                    <div className={"winrate2"}>
-                                        <p>WINRATE</p>
-                                    </div>
-                                </div>
-                            </OverlayTrigger> :
-                                <div className={"winRate"}>
-
-                                <div className={"winrate1"}>
-                                    <p> {winrate(summoner.flexWins, summoner.flexLosses)}</p>
-                                </div>
-                                <div className={"winrate2"}>
-                                    <p>WINRATE</p>
                                 </div>
                             </div>
-                        }
+                        ))}
                     </div>
-                </div>
-            ))}
-        </div>
-    );
+                    );
 
     const formatDateTime = (isoString) => {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

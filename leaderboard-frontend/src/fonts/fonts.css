@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'Spiegel Sans';
+    src: url('./SpiegelSans-5Regular_TRIAL.woff2') format('woff2'),
+    url('./SpiegelSans-5Regular_TRIAL.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Spiegel Sans';
+    src: url('./SpiegelSans-3Light_TRIAL.woff2') format('woff2'),
+    url('./SpiegelSans-3Light_TRIAL.otf') format('opentype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Spiegel Sans';
+    src: url('./SpiegelSans-7Bold_TRIAL.woff2') format('woff2'),
+    url('./SpiegelSans-7Bold_TRIAL.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}

@@ -2,10 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Dropdown, DropdownButton, OverlayTrigger, Tooltip} from "react-bootstrap";
 import {
-    faCircle,
-    faFire,
     faGear,
-    faMedal,
     faRefresh,
     faUser,
     faUserMinus,
@@ -46,8 +43,6 @@ export const Home = () => {
             return newSortFlexPoints;
         });
     };
-
-
 
     const update = async () => {
 

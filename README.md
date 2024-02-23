@@ -41,5 +41,10 @@ The website tracks everyones ranks through the Riot API. Sensitive information s
 I then retrieve that information from the database using a REST API, I have made calls such as /api/update and /api/getAll for storing new data and retrieving all data.
 However as I dont wish to expose all the data to the user, such as private Ids, I have created a FrontendSummoner View which excludes summonerId, puuid, and opggId from our data. 
 After retrieving the data, I then render each summoner using a helper class. This helper class makes our code more organized, while removing the need for duplicate code. I have done this for other parts of the code as well, but to highlight some, I have also done it for simple functions such as formatting with spaces for numbers, calculating winrate, generating colors based on rank and so on.
-For displaying certain parts of the information I am sending from the backend, I chose to use tooltips from React Bootstrap. I am styling them on my own but relying on their already exisiting component and logic for displaying it. The information I am using the tooltips for is things like winrate, mastery points, kda's, amount of games, last seasons rank and other tooltip stuff. I have provided some images of how this looks for the user.
+For displaying certain parts of the information I am sending from the backend, I chose to use tooltips from React Bootstrap. I am styling them on my own but relying on their already exisiting component and logic for displaying it. The information I am using the tooltips for is things like winrate, mastery points, kda's, amount of games, last seasons rank and other tooltip stuff. I have provided some images of how this looks for the user. Everything marked in red is hoverable. <br />
+<img src="https://raw.githubusercontent.com/aillos/lolleaderboard/master/leaderboard-frontend/src/assets/screenshot2.png" height="150">
+<img src="https://raw.githubusercontent.com/aillos/lolleaderboard/master/leaderboard-frontend/src/assets/screenshot1.png" height="150">
+<br />
+Clicking on a player card brings you to their respective profile with a match history filled with matches as shown in image 1.
+
 

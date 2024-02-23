@@ -32,5 +32,14 @@ While most of the data is being fetched from the Riot Games API, I am also fetch
 - [CDragon](https://raw.communitydragon.org/14.4/cdragon/)
 
 ## How does everything work?
-The website tracks everyones ranks through the Riot API. The data being stored about each person is as follows:
-![image](https://github.com/aillos/lolleaderboard/assets/91605277/b4b8647f-2cd5-469e-a02d-6288579f1a10) ![image](https://github.com/aillos/lolleaderboard/assets/91605277/b96bb8f0-6831-49a4-b03f-f07ef6121501)
+The website tracks everyones ranks through the Riot API. Sensitive information such as database url, riot api key and email password is being stored as environment secrets. And for more privacyour fetch calls to the Riot API is being handled backend. This allows for both the API Key as well as unique identifiers to be hidden from the user themselves. The data being stored from the Riot API about each person is as follows: 
+<br />
+<img src="https://github.com/aillos/lolleaderboard/assets/91605277/f426dd1b-2293-40d3-84a2-9423643ff159" height="200">
+<img src="https://github.com/aillos/lolleaderboard/assets/91605277/97a26ef1-7e00-4bbd-8e2c-e8ca169cad81" height="200">
+<img src="https://github.com/aillos/lolleaderboard/assets/91605277/b96bb8f0-6831-49a4-b03f-f07ef6121501" height="200">
+<br />
+I then retrieve that information from the database using a REST API, I have made calls such as /api/update and /api/getAll for storing new data and retrieving all data.
+However as I dont wish to expose all the data to the user, such as private Ids, I have created a FrontendSummoner View which excludes summonerId, puuid, and opggId from our data. 
+After retrieving the data, I then render each summoner using a helper class. This helper class makes our code more organized, while removing the need for duplicate code. I have done this for other parts of the code as well, but to highlight some, I have also done it for simple functions such as formatting with spaces for numbers, calculating winrate, generating colors based on rank and so on.
+For displaying certain parts of the information I am sending from the backend, I chose to use tooltips from React Bootstrap. I am styling them on my own but relying on their already exisiting component and logic for displaying it. The information I am using the tooltips for is things like winrate, mastery points, kda's, amount of games, last seasons rank and other tooltip stuff. I have provided some images of how this looks for the user.
+

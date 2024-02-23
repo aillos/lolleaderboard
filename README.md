@@ -1,4 +1,6 @@
 # [League of Legends Leaderboard](https://lol.aillos.no)
+https://lol.aillos.no
+<br/>
 
 This repository is for the web application or website; League of Legends Leaderboard.
 The website is for me and my friends to track our League of Legends progress and compare our rank to eachother.

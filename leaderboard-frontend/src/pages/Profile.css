@@ -1,5 +1,5 @@
 .profileCard{
-    width: 500px;
+    width: 600px;
     background-color: var(--color-accent-border);
     height:500px;
     border-radius:25px;
@@ -87,7 +87,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: -20px auto 4px 22px;
+    margin: -20px auto 4px 28px;
     width: 60px;
     height: 60px;
     overflow: hidden;
@@ -136,5 +136,9 @@
 
 .championLabel{
     font-size: 20px;
-    margin: auto;
+    margin: -30px auto 35px;
+}
+
+.championLabel > img{
+    width:35px;
 }

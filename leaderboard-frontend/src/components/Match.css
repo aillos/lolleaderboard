@@ -2,9 +2,10 @@
     display: flex;
     flex-direction: column;
     background-color: var(--color-accent-border);
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top:10px;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 15px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -15,7 +16,6 @@
 }
 
 .result {
-    font-weight: bold;
     padding: 2px 5px;
     border-radius: 4px;
 }
@@ -31,16 +31,17 @@
 }
 
 .queue-type {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    padding: 2px 5px;
-    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(248, 248, 248, 0.24);
+    color: white;
+    padding: 0 10px;
+    border-radius: 25px;
     margin-left:-25px;
 }
 
 .game-duration {
-    background-color: #fff3cd;
-    color: #856404;
     padding: 2px 5px;
     border-radius: 4px;
 }
@@ -51,15 +52,31 @@
 }
 
 .champion-icon{
-    width:60px;
-    height:60px;
+    width:70px;
+    height:70px;
     border-radius:50%;
-    margin-right:20px;
+    margin-right:15px;
     margin-left:10px;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.champion-level {
+    position: absolute;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(40, 40, 40, 0.91);
+    color: white;
+    font-size: 16px;
+    font-weight:bold;
+    width:35px;
+    height:35px;
+    border-radius: 50%;
+    margin-top:45px;
+    margin-left:50px;
 }
 
 .champion-icon > img{
@@ -73,6 +90,7 @@
     height: 40px;
     margin-right: 5px;
     border-radius:10px;
+    overflow: hidden;
 }
 
 .item-icon > img{
@@ -90,7 +108,17 @@
 }
 
 .trinket {
-    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:30px;
+    height:30px;
+    margin: auto auto auto 5px;
+}
+
+.trinket > img{
+    width:30px;
+    height:30px;
 }
 
 .items {
@@ -98,7 +126,7 @@
 }
 
 .stats {
-    width:97%;
+    width:100%;
     margin: 10px auto auto;
     display: flex;
     justify-content: space-between;
@@ -107,6 +135,20 @@
     border-radius:25px;
     /*background-color: rgba(227, 227, 227, 0.35);*/
     padding: 0 10px;
+}
+
+.stats > span >img{
+    width:18px;
+    height:18px;
+    margin-bottom:5px;
+    margin-right:2px;
+}
+
+.game-duration > img{
+    width:18px;
+    height:18px;
+    margin-bottom:5px;
+    margin-right:2px;
 }
 
 .result-win {
@@ -119,7 +161,61 @@
 }
 
 .average-rank{
-    background-color: rgba(227, 227, 227, 0.35);
+    background-color: rgba(227, 227, 227, 0.2);
     padding:0 5px;
     border-radius:20px;
+}
+
+.summoner-spells{
+    display: flex;
+    flex-direction: column;
+    margin-right:15px;
+    gap:5px;
+}
+
+.summoner-spells > img{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+}
+
+.position > img{
+    width:45px;
+    height:45px;
+}
+
+.position{
+    margin-left:auto;
+    margin-right:10px;
+}
+
+.position > span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    font-weight: bold;
+    width:35px;
+    height:35px;
+    margin-left:-10px;
+    margin-top:-20px;
+    border-radius:50%;
+}
+
+.runes > img{
+    margin-top:-15px;
+    width:45px;
+    height:45px;
+    margin-right:15px;
+}
+
+#secondaryRune{
+    position: absolute;
+    margin-left:-30px;
+    margin-top:15px;
+}
+
+#secondaryRune > img{
+    width:20px;
+    height:20px;
 }

@@ -12,6 +12,7 @@ export const Profile = () => {
     const [patchVersion, setPatchVersion] = useState(null);
     const [matches, setMatches] = useState([]);
     const [championJson, setChampionJson] = useState({});
+    const [itemJson, setItemJson] = useState({});
     const navigate = useNavigate();
 
     const getPatchVersion = async () => {
@@ -19,6 +20,8 @@ export const Profile = () => {
         setPatchVersion(response.data.v);
         const champions = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${response.data.v}/data/en_US/champion.json`);
         setChampionJson(champions.data.data);
+        const items = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${response.data.v}/data/en_US/item.json`);
+        setItemJson(items.data.data);
     }
 
     const { name, tag } = useParams();
@@ -206,6 +209,16 @@ export const Profile = () => {
         setMatches(response.data.data);
     }
 
+    const splitPrevRank = (prevRank) => {
+        if (prevRank === "UNRANKED") return "UNRANKED";
+        return prevRank.split(" ")[0];
+    }
+
+    const highElo = (rank) => {
+        const highElo = ["MASTER", "GRANDMASTER", "CHALLENGER"];
+        return highElo.includes(rank);
+    }
+
     const renderSummoner = () => {
             return (
                 <div className={"profileCard"}>
@@ -223,40 +236,82 @@ export const Profile = () => {
                     </div>
                     <h1>{summoner.gameName}</h1>
                     <div className={"profileRanks"}>
-
+                        <img
+                            src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${summoner.tier.toLowerCase()}.svg`}
+                            alt={`${summoner.tier} icon`} style={{marginBottom: '5px', marginRight: '5px'}}/>
                         <span style={{color: getRankColor(summoner.tier), fontWeight: "bold"}}>
                                         {summoner.tier} {summoner.rank}
                                     </span>
                         <span> {summoner.lp} LP</span>
                         <br/>
+                        <img
+                            src={`https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${summoner.flexTier.toLowerCase()}.svg`}
+                            alt={`${summoner.flexTier} icon`} style={{marginBottom: '5px', marginRight: '5px'}}/>
                         <span style={{color: getRankColor(summoner.flexTier), fontWeight: "bold"}}>
                                         {summoner.flexTier} {summoner.flexRank}
                                     </span>
                         <span> {summoner.flexLp} LP</span>
                     </div>
                     <div className={"championsSection"}>
-                        <div className={"masteryChampions"}>
-                            {renderMastery(summoner.championMastery, summoner.championImages, summoner.masteryPoints)}
-                            <div className={"championLabel"}>
-                                MASTERY
-                            </div>
-                        </div>
                         <div className={"soloQChampions"}>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                    <Tooltip id={`tooltip-top`}>
+                                        Solo Queue
+                                    </Tooltip>
+                                }
+                            >
+                                <div className={"championLabel"}>
+                                    <img
+                                        src={"https://raw.communitydragon.org/latest/game/assets/ux/minimap/pings/target_gray.png"}
+                                        alt={"Solo icon"}/>
+                                </div>
+                            </OverlayTrigger>
                             {renderChampions(summoner.mostPlayedName, summoner.mostPlayedImage, summoner.mostPlayedWR, summoner.mostPlayedKDA)}
-                            <div className={"championLabel"}>
-                                SOLO
-                            </div>
+                        </div>
+                        <div className={"masteryChampions"}>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                    <Tooltip id={`tooltip-top`}>
+                                        Mastery Points
+                                    </Tooltip>
+                                }
+                            >
+                                <div className={"championLabel"}>
+                                    <img
+                                        src={"https://raw.communitydragon.org/14.4/plugins/rcp-fe-lol-collections/global/default/images/item-element/tooltip-champ-mastery.png"}
+                                        alt={"Mastery icon"}/>
+                                </div>
+                            </OverlayTrigger>
+                            {renderMastery(summoner.championMastery, summoner.championImages, summoner.masteryPoints)}
+
                         </div>
                         <div className={"flexQChampions"}>
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                    <Tooltip id={`tooltip-top`}>
+                                        Flex Queue
+                                    </Tooltip>
+                                }
+                            >
+                                <div className={"championLabel"}>
+                                    <img
+                                        src={"https://raw.communitydragon.org/latest/game/assets/ux/minimap/pings/all_in_gray.png"}
+                                        alt={"Flex icon"}/>
+                                </div>
+                            </OverlayTrigger>
                             {renderChampions(summoner.mostPlayedNameFlex, summoner.mostPlayedImageFlex, summoner.mostPlayedWRFlex, summoner.mostPlayedKDAFlex)}
-                            <div className={"championLabel"}>
-                                FLEX
-                            </div>
                         </div>
                     </div>
                     <div className="matchHistory">
                         <h2>Match History</h2>
-                        {matches && matches.map(match => <Match key={match.id} match={match} championJson={championJson} patchVersion={patchVersion} name={summoner.gameName} tag={summoner.tagLine}/>)}
+                        <br/>
+                        {matches && matches.map(match => <Match key={match.id} match={match} championJson={championJson}
+                                                                patchVersion={patchVersion} name={summoner.gameName}
+                                                                tag={summoner.tagLine} itemJson={itemJson}/>)}
                     </div>
                 </div>
             );

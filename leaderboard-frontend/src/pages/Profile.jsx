@@ -5,7 +5,7 @@ import './Profile.css';
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import Match from "../components/Match.jsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHome} from "@fortawesome/free-solid-svg-icons";
+import {faHome, faMedal, faRefresh} from "@fortawesome/free-solid-svg-icons";
 
 export const Profile = () => {
     const [summoner, setSummoner] = useState(null);
@@ -14,6 +14,7 @@ export const Profile = () => {
     const [championJson, setChampionJson] = useState({});
     const [itemJson, setItemJson] = useState({});
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const getPatchVersion = async () => {
         const response = await axios.get('https://ddragon.leagueoflegends.com/realms/euw.json');
@@ -23,6 +24,8 @@ export const Profile = () => {
         const items = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${response.data.v}/data/en_US/item.json`);
         setItemJson(items.data.data);
     }
+
+
 
     const { name, tag } = useParams();
 
@@ -60,6 +63,13 @@ export const Profile = () => {
     const navigateHome = () => {
         navigate('/');
     };
+
+    const updateOpgg = async () => {
+        setLoading(true);
+        const id = await axios.get(`/api/opgg/${summoner.gameName}/${summoner.tagLine}`);
+        await axios.post(`https://op.gg/api/v1.0/internal/bypass/summoners/euw/${id.data}/renewal`);
+        setLoading(false);
+    }
 
     const renderChampions = (name, image, wr, kda) => {
         return(
@@ -128,6 +138,17 @@ export const Profile = () => {
     const formatNumberWithSpaces = (number) => {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     };
+
+    const loadingSpinner = (
+        <div className="spinner-container"><div className="spinner"/></div>
+    );
+
+    const updateButton = (
+        <div className="button updateOpgg mobileButton" onClick={updateOpgg}>
+           <img src={'https://i0.wp.com/log.op.gg/wp-content/uploads/2022/01/cropped-opgg_favicon.png'} alt={"Opgg update"} />
+             Update
+        </div>
+    );
 
     const renderMastery = (name, image, points) => {
         return(
@@ -232,7 +253,11 @@ export const Profile = () => {
                                 src={`https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/profileicon/${summoner.summonerIcon}.png`}
                                 alt={`${summoner.gameName} avatar`}/>
                         </div>
-                        <div className={"updateProfile"}></div>
+                        <div className={"updateProfile"}>
+                            <div className={"updateButton"}>
+                                {loading ? loadingSpinner : updateButton}
+                            </div>
+                        </div>
                     </div>
                     <h1>{summoner.gameName}</h1>
                     <div className={"profileRanks"}>
@@ -319,9 +344,9 @@ export const Profile = () => {
     }
     return (
         <div>
-            <div className="backButton" onClick={navigateHome}>
-                <FontAwesomeIcon icon={faHome} className="backIcon"/>
-                Home
+            <div className="leaderboardButton" onClick={navigateHome}>
+                <FontAwesomeIcon icon={faMedal} className="backIcon"/>
+                Leaderboard
             </div>
             {summoner ? renderSummoner() : <h1>Loading...</h1>}
         </div>

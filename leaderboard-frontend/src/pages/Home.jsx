@@ -150,15 +150,15 @@ export const Home = () => {
         });
     };
 
-    const populateSummoners = (sortFlexPoints) => {
+    const populateSummoners = async(sortFlexPoints) => {
         try {
             let summoners;
             if (sortFlexPoints) {
-                const response = axios.get('/api/getAllFlex');
+                const response = await axios.get('/api/getAllFlex');
                 summoners = response.data;
                 assignFlexPositions(summoners);
             } else {
-                const response = axios.get('/api/getAll');
+                const response = await axios.get('/api/getAll');
                 summoners = response.data;
                 assignPositions(summoners);
             }

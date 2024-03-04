@@ -555,20 +555,30 @@ public class SummonerRepository {
 
     public boolean updateSoloqOpgg(){
         List<Summoner> summoners = getAllSummoners();
-        for (Summoner summoner : summoners){
-            String sql = "UPDATE Summoner SET mostPlayedChampion=?, mostPlayedKDA=?, mostPlayedWR=?, mostPlayedName=?, mostPlayedImage=? WHERE gameName = ? AND tagLine = ?";
-            String[][] opgg = getMostPlayed(summoner.getOpgg(), "SOLORANKED");
-            updateChampions(summoner, sql, opgg);
+        try {
+            for (Summoner summoner : summoners) {
+                String sql = "UPDATE Summoner SET mostPlayedChampion=?, mostPlayedKDA=?, mostPlayedWR=?, mostPlayedName=?, mostPlayedImage=? WHERE gameName = ? AND tagLine = ?";
+                String[][] opgg = getMostPlayed(summoner.getOpgg(), "SOLORANKED");
+                updateChampions(summoner, sql, opgg);
+            }
+        } catch (Exception e){
+            logger.error("Could not update " + summoners);
+            return false;
         }
         return true;
     }
 
     public boolean updateFlexOpgg(){
         List<Summoner> summoners = getAllSummoners();
-        for (Summoner summoner : summoners){
-            String sql = "UPDATE Summoner SET mostPlayedChampionFlex=?, mostPlayedKDAFlex=?, mostPlayedWRFlex=?, mostPlayedNameFlex=?, mostPlayedImageFlex=? WHERE gameName = ? AND tagLine = ?";
-            String[][] opgg = getMostPlayed(summoner.getOpgg(), "FLEXRANKED");
-            updateChampions(summoner, sql, opgg);
+        try {
+            for (Summoner summoner : summoners) {
+                String sql = "UPDATE Summoner SET mostPlayedChampionFlex=?, mostPlayedKDAFlex=?, mostPlayedWRFlex=?, mostPlayedNameFlex=?, mostPlayedImageFlex=? WHERE gameName = ? AND tagLine = ?";
+                String[][] opgg = getMostPlayed(summoner.getOpgg(), "FLEXRANKED");
+                updateChampions(summoner, sql, opgg);
+            }
+        } catch (Exception e){
+        logger.error("Could not update " + summoners);
+        return false;
         }
         return true;
     }

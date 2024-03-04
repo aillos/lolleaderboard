@@ -16,7 +16,7 @@ import {useNavigate} from "react-router-dom";
 import Toggle from "react-toggle";
 import LiveModal from "../components/LiveModal.jsx";
 import {renderSummoner} from "../components/RenderSummoner.jsx";
-import {winrate} from "../components/HelperMethods.jsx";
+import {formatDateTime, winrate} from "../components/HelperMethods.jsx";
 export const Home = () => {
     const [patchVersion, setPatchVersion] = useState(null);
     const [summoners, setSummoners] = useState([]);
@@ -39,7 +39,7 @@ export const Home = () => {
     const toggleSort = () => {
         setSortFlexPoints(prevSortFlexPoints => {
             const newSortFlexPoints = !prevSortFlexPoints;
-            populateSummoners(newSortFlexPoints);
+            populateSummoners(newSortFlexPoints).then(r => console.log("Updated"));
             return newSortFlexPoints;
         });
     };
@@ -69,25 +69,15 @@ export const Home = () => {
         await populateSummoners();
     };
 
-    const updateSoloq = async () => {
+    const updateQueue = async (queue) => {
         try {
-            const response = await axios.get('api/updateSolo');
+            const response = await axios.get(`api/update${queue}`);
             if (response.data===true) console.log("Update successful");
         } catch (error) {
             console.error("Error updating: ", error.message);
         }
-        await populateSummoners();
-    };
-
-    const updateFlexq = async () => {
-        try {
-            const response = await axios.get('api/updateFlex');
-            if (response.data===true) console.log("Update successful");
-        } catch (error) {
-            console.error("Error updating: ", error.message);
-        }
-        await populateSummoners();
-    };
+        populateSummoners();
+    }
 
     const lastTimeUpdated = async () => {
         try {
@@ -101,20 +91,25 @@ export const Home = () => {
     };
 
     const updateBoth = async () => {
-        updateSoloq();
-        updateFlexq();
+        await updateQueue("Solo");
+        await updateQueue("Flex");
     }
 
     const assignPositions = (summoners) => {
         let currentPosition = 1;
         let skipCount = 1;
-        let lastRank = null, lastTier = null, lastLP = null;
-
+        let prevPoints = null;
+        let points;
         summoners.forEach((summoner, index) => {
+            if (sortFlexPoints === true) {
+                points = summoner.flexPoints;
+            } else {
+                points = summoner.points;
+            }
             if (index === 0) {
                 summoner.position = currentPosition;
             } else {
-                if (summoner.rank === lastRank && summoner.tier === lastTier && summoner.lp === lastLP) {
+                if (points === prevPoints) {
                     summoner.position = currentPosition;
                     skipCount++;
                 } else {
@@ -123,45 +118,22 @@ export const Home = () => {
                     skipCount = 1;
                 }
             }
-            lastRank = summoner.rank;
-            lastTier = summoner.tier;
-            lastLP = summoner.lp;
-        });
-    };
-
-    const assignFlexPositions = (summoners) => {
-        let currentPosition = 1;
-        let skipCount = 1;
-        let flexPoints = null;
-        summoners.forEach((summoner, index) => {
-            if (index === 0) {
-                summoner.position = currentPosition;
-            } else {
-                if (summoner.flexPoints === flexPoints) {
-                    summoner.position = currentPosition;
-                    skipCount++;
-                } else {
-                    currentPosition += skipCount;
-                    summoner.position = currentPosition;
-                    skipCount = 1;
-                }
-            }
-            flexPoints = summoner.flexPoints;
+            prevPoints = points;
         });
     };
 
     const populateSummoners = async(sortFlexPoints) => {
         try {
             let summoners;
+            let url;
             if (sortFlexPoints) {
-                const response = await axios.get('/api/getAllFlex');
-                summoners = response.data;
-                assignFlexPositions(summoners);
+                url = '/api/getAllFlex';
             } else {
-                const response = await axios.get('/api/getAll');
-                summoners = response.data;
-                assignPositions(summoners);
+                url = '/api/getAll';
             }
+            const response = await axios.get(url);
+            summoners = response.data;
+            assignPositions(summoners);
 
             setSummoners(summoners);
             setLoading(false);
@@ -207,24 +179,6 @@ export const Home = () => {
         setLiveData(liveData);
         setShowLiveModal(true);
     };
-
-    const formatDateTime = (isoString) => {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const date = new Date(isoString);
-        const day = date.getDate();
-        const month = months[date.getMonth()];
-        const year = date.getFullYear();
-        const hours = date.getHours();
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-
-        return `${day}. ${month} ${year} at ${hours}:${minutes}`;
-    };
-
-    const sortButton = (
-        <div className="button sortB" onClick={toggleSort}>
-            Sort by Flex Points
-        </div>
-    );
 
     let currentRanked = (sortFlexPoints===true ? "Flex Queue" : "Solo Queue");
     let switchRanked = (sortFlexPoints===true ? "Switch to Solo/Duo" : "Switch to Flex");
@@ -290,8 +244,8 @@ export const Home = () => {
                             drop="down-centered"
                             title={<span>More updates <FontAwesomeIcon icon={faGear} /></span>}
                         >
-                            <Dropdown.Item onClick={updateFlexq}>Flex Champions <FontAwesomeIcon icon={faUsers} id={"upSolo"} /></Dropdown.Item>
-                            <Dropdown.Item onClick={updateSoloq}>Solo Champions <FontAwesomeIcon icon={faUser} id={"upSolo"}/></Dropdown.Item>
+                            <Dropdown.Item onClick={updateQueue("Flex")}>Flex Champions <FontAwesomeIcon icon={faUsers} id={"upSolo"} /></Dropdown.Item>
+                            <Dropdown.Item onClick={updateQueue("Solo")}>Solo Champions <FontAwesomeIcon icon={faUser} id={"upSolo"}/></Dropdown.Item>
                             <Dropdown.Item onClick={updateBoth}>Both queues <FontAwesomeIcon icon={faUsersViewfinder} id={"upSolo"}/></Dropdown.Item>
                             <Dropdown.Divider />
                             <Dropdown.Item onClick={goAdd}>Add me <FontAwesomeIcon icon={faUserPlus} id={"upSolo"}/></Dropdown.Item>

@@ -1,0 +1,31 @@
+{
+  "routes": [
+    {
+      "route": "/profile",
+      "statusCode": 200
+    },
+    {
+      "route": "/manage",
+      "statusCode": 200
+    },
+    {
+      "route": "/add",
+      "statusCode": 200
+    },    
+    {
+      "route": "/remove",
+      "statusCode": 200
+    },
+    {
+      "route": "/*",
+      "statusCode": 200
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": ["*.{svg,png,jpg,gif}","*.{css,scss}","*.js"]
+  },
+  "mimeTypes": {
+    ".json": "text/json"
+  }
+}
